@@ -1,0 +1,3 @@
+rootProject.name='AnimalCrossingTools'
+include ':app'
+//include ':turnip_price'

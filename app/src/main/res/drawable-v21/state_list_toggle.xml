@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <transition
+        android:drawable="@drawable/toggle_unchecked_checked"
+        android:fromId="@id/unchecked"
+        android:toId="@id/checked" />
+
+    <transition
+        android:drawable="@drawable/toggle_checked_unchecked"
+        android:fromId="@+id/checked"
+        android:toId="@+id/unchecked" />
+
+</animated-selector>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="IconView">
+        <attr name="icon1" format="reference" />
+        <attr name="icon2" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ScrollViewGroup">
+        <attr name="head" format="reference" />
+        <attr name="body" format="reference" />
+    </declare-styleable>
+</resources>
