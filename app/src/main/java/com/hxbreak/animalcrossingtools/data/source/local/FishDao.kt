@@ -12,7 +12,7 @@ interface FishDao {
     suspend fun getAllFish(): List<FishSaved>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFish(fish: FishSaved)
+    suspend fun insertFish(fish: List<FishSaved>)
 
 //    @Update(entity = Fish::class, onConflict = OnConflictStrategy.REPLACE)
 //    suspend fun updateFish(fish: List<FishAddictionPart>)

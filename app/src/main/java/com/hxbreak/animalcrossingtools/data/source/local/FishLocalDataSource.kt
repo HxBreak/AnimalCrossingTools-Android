@@ -2,6 +2,7 @@ package com.hxbreak.animalcrossingtools.data.source.local
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
+import com.hxbreak.animalcrossingtools.data.FishSaved
 import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.services.AnimalCrossingServiceV2
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntity
@@ -17,6 +18,9 @@ class FishLocalDataSource internal constructor(
     private val service: AnimalCrossingServiceV2,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : FishDataSource {
+    override suspend fun updateFish(fish: List<FishSaved>) {
+        fishDao.insertFish(fish)
+    }
 
 //    override fun observeAllFish(): LiveData<Result<List<Fish>>> {
 //        return fishDao.observeAllFish().map {
@@ -46,6 +50,10 @@ class FishLocalDataSource internal constructor(
             is Result.Error -> result
             else -> throw IllegalStateException("The result from service shouldn\'t using loading")
         }
+    }
+
+    override suspend fun loadAllSaved(): List<FishSaved> {
+        return fishDao.getAllFish()
     }
 
 }

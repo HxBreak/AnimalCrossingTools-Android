@@ -6,8 +6,8 @@ import androidx.lifecycle.*
 import com.google.protobuf.GeneratedMessageV3
 import com.hxbreak.animalcrossingtools.di.ApplicationModule
 import com.hxbreak.animalcrossingtools.fragment.Event
-import com.example.nat.NatPacket
 import com.example.tracker_proto.NetworkUtils
+import com.hxbreak.nat.NatPacket
 import com.hxbreak.tracker_proto.data.ConnectedClient
 import kotlinx.coroutines.*
 import java.lang.Exception

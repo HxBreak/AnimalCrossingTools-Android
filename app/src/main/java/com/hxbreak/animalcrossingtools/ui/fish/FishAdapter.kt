@@ -94,8 +94,7 @@ class FishAdapter(private val viewModel: FishViewModel) :
 //            fish_title.setTextColor(if (isActive) view.context.resources.getColor(R.color.colorAccent) else Color.BLACK)
             fish_title.setText("${fishEntity.fish.fish.name.nameCNzh}-\$${fishEntity.fish.fish.price}")
             fish_subtitle.setText(
-                "${
-                if (entity.availability.isIsAllDay) "All Day" else
+                "${if (entity.availability.isIsAllDay) "All Day" else
                     fishEntity.fish.fish.availability.time}-${fishEntity.fish.fish.availability.location}"
             )
         }

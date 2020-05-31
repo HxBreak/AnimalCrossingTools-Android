@@ -1,6 +1,6 @@
 package com.hxbreak.tracker_proto.data
 
-import com.example.nat.NatPacket
+import com.hxbreak.nat.NatPacket
 import java.io.Serializable
 
 data class ConnectedClient(
