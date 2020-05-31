@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.ui.fish
 
+import android.util.Pair
 import androidx.lifecycle.*
 import com.hxbreak.animalcrossingtools.data.FishAddictionPart
 import com.hxbreak.animalcrossingtools.data.FishSaved
@@ -44,15 +45,21 @@ class FishViewModel @Inject constructor(
     private val repository: DataRepository
 ) : ViewModel() {
 
-    private val refresh = MutableLiveData(false)
+    val refresh = MutableLiveData(false)
+    val loading = MutableLiveData(false)
+    val error = MutableLiveData<Pair<Exception, () -> Unit>>()
 
     private val items: LiveData<List<FishEntityMix>> = refresh.switchMap { forceUpdate ->
+        loading.value = true
         liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
             val result = repository.fishSource().allFish()
             isDataLoadingError.postValue(result !is Result.Success)
+            loading.postValue(false)
             when (result) {
                 is Result.Success -> emit(result.data)
-                is Result.Error -> handleError(result.exception)
+                is Result.Error -> handleError(result.exception) {
+                    refresh.postValue(forceUpdate)
+                }
                 else -> throw IllegalStateException("Unsupported State $result")
             }
         }
@@ -92,8 +99,8 @@ class FishViewModel @Inject constructor(
         }
     }
 
-    private fun handleError(exception: Exception) {
-
+    private fun handleError(exception: Exception, retry: () -> Unit) {
+        error.postValue(Pair.create(exception, retry))
     }
 
     private val selected = MutableLiveData<List<FishEntityMix>>()

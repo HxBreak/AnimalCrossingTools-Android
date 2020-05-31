@@ -9,107 +9,114 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.fish.FishFragment">
 
-        <com.hxbreak.animalcrossingtools.view.ScrollViewGroup
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_layout"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.cardview.widget.CardView
+            <com.hxbreak.animalcrossingtools.view.ScrollViewGroup
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Collected/All"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView2"
-                        app:layout_constraintEnd_toStartOf="@+id/textView3"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/textView2"
-                        app:layout_constraintTop_toTopOf="@+id/textView2" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Found/All"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        app:layout_constraintBottom_toTopOf="@+id/founded_summary"
-                        app:layout_constraintEnd_toStartOf="@+id/textView"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Collected/All"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                            app:layout_constraintEnd_toStartOf="@+id/textView3"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/textView2"
+                            app:layout_constraintTop_toTopOf="@+id/textView2" />
 
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Actived/All"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/textView"
-                        app:layout_constraintTop_toTopOf="@+id/textView" />
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Found/All"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            app:layout_constraintBottom_toTopOf="@+id/founded_summary"
+                            app:layout_constraintEnd_toStartOf="@+id/textView"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/founded_summary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="1/99"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/textView2"
-                        app:layout_constraintStart_toStartOf="@+id/textView2"
-                        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Actived/All"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            app:layout_constraintBottom_toBottomOf="@+id/textView"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/textView"
+                            app:layout_constraintTop_toTopOf="@+id/textView" />
 
-                    <TextView
-                        android:id="@+id/collected_summary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="TextView"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintBottom_toBottomOf="@+id/founded_summary"
-                        app:layout_constraintEnd_toEndOf="@+id/textView"
-                        app:layout_constraintStart_toStartOf="@+id/textView"
-                        app:layout_constraintTop_toTopOf="@+id/founded_summary" />
+                        <TextView
+                            android:id="@+id/founded_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="1/99"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/textView2"
+                            app:layout_constraintStart_toStartOf="@+id/textView2"
+                            app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-                    <TextView
-                        android:id="@+id/active_summary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="TextView"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintBottom_toBottomOf="@+id/collected_summary"
-                        app:layout_constraintEnd_toEndOf="@+id/textView3"
-                        app:layout_constraintStart_toStartOf="@+id/textView3"
-                        app:layout_constraintTop_toTopOf="@+id/collected_summary" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-            <!--            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-            <!--                android:id="@+id/refresh_layout"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="match_parent">-->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-            <!--            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
-        </com.hxbreak.animalcrossingtools.view.ScrollViewGroup>
+                        <TextView
+                            android:id="@+id/collected_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TextView"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintBottom_toBottomOf="@+id/founded_summary"
+                            app:layout_constraintEnd_toEndOf="@+id/textView"
+                            app:layout_constraintStart_toStartOf="@+id/textView"
+                            app:layout_constraintTop_toTopOf="@+id/founded_summary" />
 
+                        <TextView
+                            android:id="@+id/active_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TextView"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintBottom_toBottomOf="@+id/collected_summary"
+                            app:layout_constraintEnd_toEndOf="@+id/textView3"
+                            app:layout_constraintStart_toStartOf="@+id/textView3"
+                            app:layout_constraintTop_toTopOf="@+id/collected_summary" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+                <!--            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+                <!--                android:id="@+id/refresh_layout"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="match_parent">-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <!--            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+            </com.hxbreak.animalcrossingtools.view.ScrollViewGroup>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"

@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import dagger.android.support.DaggerFragment
@@ -63,47 +64,56 @@ class FishFragment : DaggerFragment() {
             viewLifecycleOwner,
             onBackPressedCallback
         )
-//        viewModel.combinedLiveData.observe(viewLifecycleOwner, Observer {
-//            adapter.submitList(it)
-//        })
         viewModel.data.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
-
+        viewModel.loading.observe(viewLifecycleOwner, Observer {
+            refresh_layout.isRefreshing = it == true
+        })
+        refresh_layout.setOnRefreshListener {
+            viewModel.refresh.value = true
+        }
+        viewModel.error.observe(viewLifecycleOwner, Observer {
+            val bar = Snackbar.make(coordinator, it.first.toString(), Snackbar.LENGTH_LONG)
+            bar.setAction("RETRY") { v ->
+                it.second.invoke()
+            }
+            bar.show()
+        })
         viewModel.selectedFish.observe(viewLifecycleOwner, Observer {
             title.let { title ->
                 val toolbarHeight = toolbar.measuredHeight.toFloat()
                 val titleWidth = title.measuredWidth.toFloat()
-//                val newTitle = if (it.isNullOrEmpty()) "Fish" else "${it.size} Selected"
-//                if (title.text == newTitle) {
-//                    return@Observer
-//                }
-//                ObjectAnimator.ofFloat(title, "translationY", 0F, toolbarHeight).apply {
-//                    duration = 200
-//                    addListener(
-//                        onEnd = {
-//                            title.text = newTitle
-//                            title.translationY = 0F
-//                            animation_title.visibility = View.GONE
-//                        }
-//                    )
-//                    start()
-//                }
-//                animation_title.text = newTitle
-//                ObjectAnimator.ofFloat(animation_title, "translationY", -toolbarHeight, 0F).apply {
-//                    duration = 200
-//                    addListener(
-//                        onEnd = {
-//                            animation_title.visibility = View.GONE
-//                        },
-//                        onStart = {
-//                            animation_title.translationX = -titleWidth
-//                            animation_title.visibility = View.VISIBLE
-//                            animation_title.text = newTitle
-//                        }
-//                    )
-//                    start()
-//                }
+                val newTitle = if (it.isNullOrEmpty()) "Fish" else "${it.size} Selected"
+                if (title.text == newTitle) {
+                    return@Observer
+                }
+                ObjectAnimator.ofFloat(title, "translationY", 0F, toolbarHeight).apply {
+                    duration = 200
+                    addListener(
+                        onEnd = {
+                            title.text = newTitle
+                            title.translationY = 0F
+                            animation_title.visibility = View.GONE
+                        }
+                    )
+                    start()
+                }
+                animation_title.text = newTitle
+                ObjectAnimator.ofFloat(animation_title, "translationY", -toolbarHeight, 0F).apply {
+                    duration = 200
+                    addListener(
+                        onEnd = {
+                            animation_title.visibility = View.GONE
+                        },
+                        onStart = {
+                            animation_title.translationX = -titleWidth
+                            animation_title.visibility = View.VISIBLE
+                            animation_title.text = newTitle
+                        }
+                    )
+                    start()
+                }
             }
         })
         val background =
