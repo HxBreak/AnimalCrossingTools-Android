@@ -10,6 +10,7 @@
     </style>
 
     <style name="AppTheme.NoActionBar">
+        <item name="android:windowBackground">#FFFFFF</item>
         <item name="colorOnPrimary">#FFFFFF</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

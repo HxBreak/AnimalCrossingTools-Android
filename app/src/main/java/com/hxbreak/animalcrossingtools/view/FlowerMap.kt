@@ -10,15 +10,8 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewConfiguration
-import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.OverScroller
-import android.widget.ScrollView
-import android.widget.Scroller
-import androidx.core.graphics.minus
-import androidx.core.math.MathUtils
-import kotlin.math.absoluteValue
 import kotlin.math.max
 
 class FlowerMap @JvmOverloads constructor(

@@ -1,7 +1,6 @@
 package com.hxbreak.animalcrossingtools.ui.song
 
 import android.animation.ObjectAnimator
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,7 +75,7 @@ class SongAdapter(private val viewModel: SongViewModel) :
                 if (viewModel.editMode.value == true)
                     checkBox.performClick()
             }
-            Glide.with(fish_image).load("http://acnhapi.com/images/songs/${song.song.id}")
+            Glide.with(fish_image).load("${song.song.imageUrl}")
                 .into(fish_image)
             donated_icon.visibility = View.GONE
             bookmark_icon.visibility =
@@ -86,7 +85,7 @@ class SongAdapter(private val viewModel: SongViewModel) :
 //                i.oct, i.nov, i.dec)
 //            val isActive = activeMonthes.getOrElse(currentMonth){false}
 //            fish_title.setTextColor(if (isActive) view.context.resources.getColor(R.color.colorAccent) else Color.BLACK)
-            fish_title.setText("${song.song.name.namecn} - ${song.song.name.nameen}")
+            fish_title.setText("${song.song.name.nameCNzh} - ${song.song.name.nameCNzh}")
             fish_subtitle.setText(
                 "${if (song.song.buyPrice != null) "$" else ""}${song.song.buyPrice ?: "非卖品"}"
             )

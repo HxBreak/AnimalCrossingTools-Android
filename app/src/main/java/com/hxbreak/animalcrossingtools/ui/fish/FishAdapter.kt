@@ -2,37 +2,22 @@ package com.hxbreak.animalcrossingtools.ui.fish
 
 import android.animation.ObjectAnimator
 import android.graphics.Color
-import android.transition.TransitionManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.view.animation.ScaleAnimation
-import android.widget.CheckBox
-import android.widget.TextView
-import android.widget.Toast
-import android.widget.ViewAnimator
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.animation.addListener
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hxbreak.animalcrossingtools.R
-import com.hxbreak.animalcrossingtools.data.Fish
 import com.hxbreak.animalcrossingtools.view.ViewUtils
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.fish_fragment.*
 
 import kotlinx.android.synthetic.main.fish_item.*
 import java.util.*
 
 class FishAdapter(private val viewModel: FishViewModel) :
-    ListAdapter<SelectableFish, RecyclerView.ViewHolder>(FishDiff()) {
+    ListAdapter<SelectableFishEntity, RecyclerView.ViewHolder>(FishDiff()) {
     var editMode = false
         set(value) {
             if (field != value) {
@@ -77,15 +62,16 @@ class FishAdapter(private val viewModel: FishViewModel) :
             }
         }
 
-        fun bindData(fish: SelectableFish, index: Int, editMode: Boolean) {
+        fun bindData(fishEntity: SelectableFishEntity, index: Int, editMode: Boolean) {
             val width = ViewUtils.dp2px(view.context, 40f)
+            val entity = fishEntity.fish.fish
             val to = if (editMode) 0f else -width.toFloat()
             checkBox.translationX = to
             desc_part.translationX = to + width
             checkBox.setOnCheckedChangeListener(null)
-            checkBox.isChecked = fish.selected
+            checkBox.isChecked = fishEntity.selected
             checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-                viewModel.toggleFish(fish.fish)
+                viewModel.toggleFish(fishEntity.fish)
             }
             fish_item.isClickable = true
             fish_item.setOnClickListener {
@@ -93,19 +79,25 @@ class FishAdapter(private val viewModel: FishViewModel) :
                     checkBox.performClick()
             }
 
-            Glide.with(fish_image).load(fish.fish.imageLink).into(fish_image)
-            donated_icon.visibility = if (fish.fish.donated) View.VISIBLE else View.GONE
-            bookmark_icon.visibility = if (fish.fish.owned) View.VISIBLE else View.GONE
+            Glide.with(fish_image).load(fishEntity.fish.fish.icon_uri).into(fish_image)
+            donated_icon.visibility =
+                if (fishEntity.fish.saved?.donated == true) View.VISIBLE else View.GONE
+            bookmark_icon.visibility =
+                if (fishEntity.fish.saved?.owned == true) View.VISIBLE else View.GONE
             val currentMonth = calendar.get(Calendar.MONTH)
-            val i = fish.fish
-            val activeMonthes = booleanArrayOf(
-                i.jan, i.feb, i.mar, i.apr, i.may, i.jun, i.jul, i.aug, i.sep,
-                i.oct, i.nov, i.dec
+            val i = fishEntity.fish
+//            val activeMonthes = booleanArrayOf(
+//                i.jan, i.feb, i.mar, i.apr, i.may, i.jun, i.jul, i.aug, i.sep,
+//                i.oct, i.nov, i.dec
+//            )
+//            val isActive = activeMonthes.getOrElse(currentMonth) { false }
+//            fish_title.setTextColor(if (isActive) view.context.resources.getColor(R.color.colorAccent) else Color.BLACK)
+            fish_title.setText("${fishEntity.fish.fish.name.nameCNzh}-\$${fishEntity.fish.fish.price}")
+            fish_subtitle.setText(
+                "${
+                if (entity.availability.isIsAllDay) "All Day" else
+                    fishEntity.fish.fish.availability.time}-${fishEntity.fish.fish.availability.location}"
             )
-            val isActive = activeMonthes.getOrElse(currentMonth) { false }
-            fish_title.setTextColor(if (isActive) view.context.resources.getColor(R.color.colorAccent) else Color.BLACK)
-            fish_title.setText("${fish.fish.name}-\$${fish.fish.price}")
-            fish_subtitle.setText("${fish.fish.time}-${fish.fish.location}")
         }
 
         companion object {
@@ -119,12 +111,18 @@ class FishAdapter(private val viewModel: FishViewModel) :
 }
 
 
-class FishDiff : DiffUtil.ItemCallback<SelectableFish>() {
-    override fun areItemsTheSame(oldItem: SelectableFish, newItem: SelectableFish): Boolean {
-        return oldItem.fish.name.equals(newItem.fish.name)
+class FishDiff : DiffUtil.ItemCallback<SelectableFishEntity>() {
+    override fun areItemsTheSame(
+        oldItem: SelectableFishEntity,
+        newItem: SelectableFishEntity
+    ): Boolean {
+        return oldItem.fish.fish.id == newItem.fish.fish.id
     }
 
-    override fun areContentsTheSame(oldItem: SelectableFish, newItem: SelectableFish): Boolean {
+    override fun areContentsTheSame(
+        oldItem: SelectableFishEntity,
+        newItem: SelectableFishEntity
+    ): Boolean {
         return oldItem == newItem
     }
 }

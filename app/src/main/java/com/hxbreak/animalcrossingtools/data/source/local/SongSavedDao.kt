@@ -1,9 +1,6 @@
 package com.hxbreak.animalcrossingtools.data.source.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.hxbreak.animalcrossingtools.data.FishAddictionPart
-import com.hxbreak.animalcrossingtools.data.Fish
 import com.hxbreak.animalcrossingtools.data.SongSaved
 
 @Dao

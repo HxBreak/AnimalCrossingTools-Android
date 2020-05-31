@@ -1,40 +1,34 @@
 package com.hxbreak.animalcrossingtools.fragment
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.savedstate.SavedStateRegistryOwner
-import com.hxbreak.animalcrossingtools.ServiceLocator
-import com.hxbreak.animalcrossingtools.data.source.DataRepository
-import com.hxbreak.animalcrossingtools.ui.fish.FishViewModel
-import com.hxbreak.animalcrossingtools.ui.song.SongViewModel
+import androidx.lifecycle.Observer
 
+open class Event<out T>(private val content: T) {
 
-class ViewModelFactory constructor(
-    private val repository: DataRepository,
-    owner: SavedStateRegistryOwner,
-    defaultArgs: Bundle? = null
-) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+    var hasBeenHandled = false
+        private set // Allow external read but not write
 
-    override fun <T : ViewModel> create(
-        key: String,
-        modelClass: Class<T>,
-        handle: SavedStateHandle
-    ) = with(modelClass) {
-        when {
-            isAssignableFrom(FishViewModel::class.java) ->
-                FishViewModel(repository, handle)
-            isAssignableFrom(SongViewModel::class.java) ->
-                SongViewModel(repository, handle)
-            else ->
-                throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+    /**
+     * Returns the content and prevents its use again.
+     */
+    fun getContentIfNotHandled(): T? {
+        return if (hasBeenHandled) {
+            null
+        } else {
+            hasBeenHandled = true
+            content
         }
-    } as T
+    }
+
+    /**
+     * Returns the content, even if it's already been handled.
+     */
+    fun peekContent(): T = content
 }
 
-fun Fragment.getViewModelFactory(): ViewModelFactory {
-    val repository = ServiceLocator.provideRepository(requireContext())
-    return ViewModelFactory(repository, this)
+class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Observer<Event<T>> {
+    override fun onChanged(event: Event<T>?) {
+        event?.getContentIfNotHandled()?.let {
+            onEventUnhandledContent(it)
+        }
+    }
 }

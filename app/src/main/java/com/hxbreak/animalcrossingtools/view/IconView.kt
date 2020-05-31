@@ -6,7 +6,6 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.google.android.material.ripple.RippleDrawableCompat
 import com.hxbreak.animalcrossingtools.R
 
 class IconView @JvmOverloads constructor(

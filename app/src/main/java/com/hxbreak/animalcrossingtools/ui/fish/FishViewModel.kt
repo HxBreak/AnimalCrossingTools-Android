@@ -1,14 +1,17 @@
 package com.hxbreak.animalcrossingtools.ui.fish
 
 import androidx.lifecycle.*
-import com.hxbreak.animalcrossingtools.data.Fish
 import com.hxbreak.animalcrossingtools.data.FishAddictionPart
 import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
+import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.IllegalStateException
 import java.util.*
+import javax.inject.Inject
 
-data class SelectableFish(var selected: Boolean, val fish: Fish)
+data class SelectableFishEntity(var selected: Boolean, val fish: FishEntityMix)
 
 class CombinedLiveData<T, K, S>(
     source1: LiveData<T>,
@@ -36,70 +39,124 @@ class CombinedLiveData<T, K, S>(
 }
 
 
-class FishViewModel(
-    private val repository: DataRepository,
-    private val savedStateHandle: SavedStateHandle
+class FishViewModel @Inject constructor(
+    private val repository: DataRepository
 ) : ViewModel() {
     private val refresh = MutableLiveData(false)
-    val items: LiveData<List<Fish>> = refresh.switchMap { forceUpdate ->
-        repository.observeAllFish().switchMap { filterFish(it) }
+    val items: LiveData<List<FishEntityMix>> = refresh.switchMap { forceUpdate ->
+        liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+            val result = repository.fishSource().allFish()
+            isDataLoadingError.postValue(result !is Result.Success)
+            when (result) {
+                is Result.Success -> emit(result.data)
+                is Result.Error -> handleError(result.exception)
+                else -> throw IllegalStateException("Unsupported State $result")
+            }
+//            emitSource(repository.observeAllFish().switchMap {
+//                liveData (viewModelScope.coroutineContext + Dispatchers.IO){
+//                    withContext(viewModelScope.coroutineContext){
+//                        isDataLoadingError.value = it !is Result.Success
+//                    }
+//                    emitSource(filterFish(it))
+//                }
+//            }
+//            )
+        }
+    }
+
+    private fun handleError(exception: Exception) {
+
     }
 
     val found = items.map {
-        "${it.count { it.owned }}/${it.size}"
+        "0"
+//        "${it.count { it.owned }}/${it.size}"
     }
 
     val donated = items.map {
-        "${it.count { it.donated }}/${it.size}"
+        //        "${it.count { it.donated }}/${it.size}"
+        "0"
     }
 
     val active = items.map {
-        val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
-        val actives = it.count { i ->
-            booleanArrayOf(
-                i.jan, i.feb, i.mar, i.apr, i.may, i.jun, i.jul, i.aug, i.sep,
-                i.oct, i.nov, i.dec
-            ).getOrElse(currentMonth) { false }
-        }
-        "$actives/${it.size}"
+        //        val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
+//        val actives = it.count { i ->
+//            booleanArrayOf(
+//                i.jan, i.feb, i.mar, i.apr, i.may, i.jun, i.jul, i.aug, i.sep,
+//                i.oct, i.nov, i.dec
+//            ).getOrElse(currentMonth) { false }
+//        }
+//        "$actives/${it.size}"
+        "0"
     }
 
 
-    private val selected = MutableLiveData<List<Fish>>()
-    val selectedFish: LiveData<List<Fish>> = selected
+    private val selected = MutableLiveData<List<FishEntityMix>>()
+
+    /**
+     * expose
+     */
+    val selectedFish: LiveData<List<FishEntityMix>> = selected
     val editMode = MutableLiveData<Boolean>(false)
 
-    val donateAction = selected.map { !it.any { it.donated } }
-    val bookmarkAction = selected.map { !it.any { it.owned } }
+    val donateAction = selected.map { !it.any { it.saved?.donated ?: false } }
+    val bookmarkAction = selected.map { !it.any { it.saved?.owned ?: false } }
 
 
-    val combinedLiveData = CombinedLiveData(selected, items) { x, y ->
-        y?.map {
-            //            SelectableFish(x?.contains(it) ?: false, it)
-            SelectableFish(x?.any { fish -> fish.name.equals(it.name) } ?: false, it)
+//    val combinedLiveData = CombinedLiveData(selected, items) { x, y ->
+//        y?.map {
+//            //            SelectableFish(x?.contains(it) ?: false, it)
+//            SelectableFishEntity(x?.any { fish -> fish.name.equals(it.name) } ?: false, it)
+//        }
+//    }
+
+    val data = MediatorLiveData<List<SelectableFishEntity>>().apply {
+        var tmpSelected: List<FishEntityMix>? = Collections.emptyList()
+        var tmpItems: List<FishEntityMix>? = null
+        fun emit() {
+            viewModelScope.launch(Dispatchers.IO) {
+                tmpItems?.let { itemList ->
+                    val tempSel = tmpSelected.orEmpty()
+                    val value = itemList.map { i ->
+                        SelectableFishEntity(
+                            tempSel.any { it.fish.id == i.fish.id },
+                            i
+                        )
+                    }
+                    postValue(value)
+                }
+            }
+        }
+        addSource(selected) {
+            tmpSelected = it
+            emit()
+        }
+        addSource(items) {
+            tmpItems = it
+            emit()
         }
     }
 
     val isDataLoadingError = MutableLiveData(false)
 
-    private fun filterFish(fishResult: Result<List<Fish>>): LiveData<List<Fish>> {
-        val result = MutableLiveData<List<Fish>>()
-        if (fishResult is Result.Success) {
-            isDataLoadingError.value = false
-            viewModelScope.launch {
-                result.value = fishResult.data
-                /**
-                 * refresh selected data, when new data coming
-                 */
-                selected.value = fishResult.data.filter { f ->
-                    selected.value?.any { f.name == it.name } ?: false
-                }
-            }
-        } else {
-            isDataLoadingError.value = true
-        }
-        return result
-    }
+//    private fun filterFish(fishResult: Result<List<Fish>>): LiveData<List<Fish>> {
+//        val result = MutableLiveData<List<Fish>>()
+//        if (fishResult is Result.Success) {
+////            isDataLoadingError.value = false
+//            viewModelScope.launch {
+//                result.value = fishResult.data
+//                /**
+//                 * refresh selected data, when new data coming
+//                 */
+//                selected.value = fishResult.data.filter { f ->
+//                    selected.value?.any { f.name == it.name } ?: false
+//                }
+//            }
+//        } else {
+////            isDataLoadingError.value = true
+//        }
+//        return result
+//    }
 
     init {
         loadFish()
@@ -109,14 +166,15 @@ class FishViewModel(
         refresh.value = false//trigger of load
     }
 
-    fun toggleFish(fish: Fish) {
+    fun toggleFish(fish: FishEntityMix) {
         val oldSel = selected.value
-        val newSelected = arrayListOf<Fish>()
+        val newSelected = arrayListOf<FishEntityMix>()
         oldSel?.let {
             newSelected.addAll(it)
         }
-        if (newSelected.contains(fish)) {
-            newSelected.remove(fish)
+        val target = newSelected.firstOrNull { it.fish.id == it.fish.id }
+        if (target != null) {
+            newSelected.remove(target)
         } else {
             newSelected.add(fish)
         }
@@ -127,15 +185,15 @@ class FishViewModel(
         if (selectedFish.value.isNullOrEmpty()) return
         val toValue = bookmarkAction.value!!
         viewModelScope.launch {
-            val modifyStatus = selectedFish.value!!.map {
-                FishAddictionPart(
-                    it.name,
-                    toValue,
-                    it.donated,
-                    it.quantity
-                )
-            }
-            repository.updateFish(modifyStatus)
+            //            val modifyStatus = selectedFish.value!!.map {
+//                FishAddictionPart(
+//                    it.name,
+//                    toValue,
+//                    it.donated,
+//                    it.quantity
+//                )
+//            }
+//            repository.updateFish(modifyStatus)
             loadFish()
         }
     }
@@ -143,18 +201,18 @@ class FishViewModel(
     fun toggleBookmark() {
         if (selectedFish.value.isNullOrEmpty()) return
         val toValue = donateAction.value!!
-        viewModelScope.launch {
-            val modifyStatus = selectedFish.value!!.map {
-                FishAddictionPart(
-                    it.name,
-                    it.owned,
-                    toValue,
-                    it.quantity
-                )
-            }
-            repository.updateFish(modifyStatus)
-            loadFish()
-        }
+//        viewModelScope.launch {
+//            val modifyStatus = selectedFish.value!!.map {
+//                FishAddictionPart(
+//                    it.name,
+//                    it.owned,
+//                    toValue,
+//                    it.quantity
+//                )
+//            }
+//            repository.updateFish(modifyStatus)
+//            loadFish()
+//        }
     }
 
     fun clearSelected() {

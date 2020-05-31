@@ -1,0 +1,56 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+apply plugin: 'com.google.protobuf'
+apply plugin: 'idea'
+
+ext{
+    kotlin_version = '1.3.61'
+}
+
+idea{
+    module {
+        sourceDirs += file("src/main/proto")
+    }
+}
+
+protobuf{
+
+    sourceSets{
+        main{
+            java {
+                srcDir "src/main/java"
+            }
+            proto {
+                srcDir "src/main/proto"
+            }
+        }
+    }
+    protobuf {
+        generatedFilesBaseDir = "$projectDir/src/generated"
+
+        protoc {
+            artifact = 'com.google.protobuf:protoc:3.12.0' // 也可以配置本地编译器路径
+        }
+
+        generateProtoTasks {
+
+            all().each { task ->
+                task.builtins {
+                    remove java
+                    java{}
+                }
+                task.plugins {}
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api "com.google.protobuf:protobuf-java:3.12.0"
+
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"

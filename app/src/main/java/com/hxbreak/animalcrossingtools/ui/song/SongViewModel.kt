@@ -2,19 +2,20 @@ package com.hxbreak.animalcrossingtools.ui.song
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.hxbreak.animalcrossingtools.data.services.Song
+import com.hxbreak.animalcrossingtools.data.source.entity.Song
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.SongSaved
-import com.hxbreak.animalcrossingtools.data.services.SongMix
+import com.hxbreak.animalcrossingtools.data.source.entity.SongMix
 import com.hxbreak.animalcrossingtools.ui.fish.CombinedLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import javax.inject.Inject
 
-class SongViewModel(
-    private val repository: DataRepository,
-    private val savedStateHandle: SavedStateHandle
+class SongViewModel @Inject constructor(
+    private val repository: DataRepository
+//    , private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     val refresh = MutableLiveData(false)

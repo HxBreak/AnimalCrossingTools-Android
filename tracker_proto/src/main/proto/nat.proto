@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+option java_package = "com.hxbreak.nat";
+option java_outer_classname = "NatPacket";
+
+message BasePacket {
+
+    PacketHeader header = 1;
+    int64 seq = 2;
+
+    message PacketHeader {
+
+        enum PacketType {
+            LOGIN = 0;
+            TICK = 1;
+            DISCOVER = 2;
+            CONNECT = 3;
+            TURN = 4;
+            LOGOUT = -1;
+        }
+
+        PacketType type = 1;
+        string id = 2;
+        oneof target {
+            BaseResponse.NetAddr addr = 3;
+            BaseClientCommunication turn = 4;
+        }
+    }
+}
+
+message CommResponse {
+    int32 senderType = 1;
+    int64 seq = 4;
+
+    oneof response {
+        BaseResponse fromServer = 2;
+        BaseClientCommunication fromClient = 3;
+    }
+}
+
+message BaseResponse {
+    int64 seq = 4;
+
+    message NetAddr {
+        string id = 1;
+        int32 ip = 2;
+        int32 port = 3;
+        int64 lastActiveTime = 4;
+    }
+    BaseResponseOrderType order = 1;
+    repeated NetAddr addrs = 2;
+
+
+    oneof options {
+        NetAddr pairedAddr = 3;
+    }
+
+    enum BaseResponseOrderType {
+        OK = 0;
+        REQ = 1;
+        ERRO = -1;
+    }
+}
+
+message ReplyAck {
+    int32 seq = 1;
+}
+
+message BaseClientCommunication {
+    BaseCommType type = 1;
+    string id = 2;
+    oneof content {
+        string text = 3;
+    }
+
+    enum BaseCommType {
+        OK = 0;
+        TEST = 1;
+        TEXT = 2;
+    }
+}

@@ -2,28 +2,29 @@ package com.hxbreak.animalcrossingtools.ui.song
 
 import android.animation.ObjectAnimator
 import android.graphics.drawable.TransitionDrawable
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.hxbreak.animalcrossingtools.R
-import com.hxbreak.animalcrossingtools.fragment.getViewModelFactory
+import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.song_fragment.*
+import javax.inject.Inject
 
-class SongFragment : Fragment() {
+class SongFragment : DaggerFragment() {
 
-    private val viewModel by viewModels<SongViewModel> { getViewModelFactory() }
+    @Inject
+    lateinit var viewModelFactory: DiViewModelFactory
+
+    private val viewModel by viewModels<SongViewModel> { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +46,6 @@ class SongFragment : Fragment() {
             edit_mode.callOnClick()
         }
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
