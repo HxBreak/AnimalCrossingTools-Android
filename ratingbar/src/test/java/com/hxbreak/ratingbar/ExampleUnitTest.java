@@ -1,4 +1,4 @@
-package com.example.ratingbar;
+package com.hxbreak.ratingbar;
 
 import org.junit.Test;
 
@@ -22,6 +22,13 @@ public class ExampleUnitTest {
             float d = star * 2f;
             int tmpStar = ((int) d) + ((d % 1) > 0.5f ? 1 : 0);
             System.out.println(tmpStar);
+        }
+    }
+
+    @Test
+    public void testCase1() {
+        for (int i = 0; i < 11; i++) {
+            System.out.println((i) / 2);
         }
     }
 }

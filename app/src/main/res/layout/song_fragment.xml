@@ -114,18 +114,18 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             app:title="Fish"
             app:titleEnabled="true"
+            android:fitsSystemWindows="true"
             android:id="@+id/toolbar"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:layout_scrollFlags="scroll|snap|enterAlways"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"

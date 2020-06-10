@@ -66,6 +66,20 @@ class FishFragment : DaggerFragment() {
         )
         viewModel.data.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
+            recycler_view.run {
+                if (itemDecorationCount > 0) {
+                    for (i in itemDecorationCount - 1 downTo 0) {
+                        removeItemDecorationAt(i)
+                    }
+                }
+                if (it != null) {
+//                    addItemDecoration(FishDecoration(requireContext(), it.map { it.fish.fish }))
+                    addItemDecoration(FishHeadDecoration(requireContext(), it.map { it.fish.fish }))
+                }
+            }
+        })
+        viewModel.selectedFish.observe(viewLifecycleOwner, Observer {
+
         })
         viewModel.loading.observe(viewLifecycleOwner, Observer {
             refresh_layout.isRefreshing = it == true

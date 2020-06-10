@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
@@ -20,7 +21,8 @@ class TempViewModel @Inject constructor(
         (System.currentTimeMillis() - (lastRecvTime.value ?: 0)) < (1000 * 3)
     }
     val peerConnected = MutableLiveData(false)
-    val peerLastData = MutableLiveData<String>()
+    val peerLastData1 = MutableLiveData<String>()
+    val peerLastData2 = MutableLiveData<String>()
     val peerInfomation = MutableLiveData<ConnectedClient>()
 
 }

@@ -6,14 +6,12 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class RatingBar extends LinearLayout implements View.OnTouchListener {
+public class RatingBar extends LinearLayout {
 
     private OnRatingListener onRatingListener;
-    private Object bindObject;
     private float starImageSize;
     private Drawable starEmptyDrawable;
     private Drawable starFillDrawable;
@@ -27,12 +25,16 @@ public class RatingBar extends LinearLayout implements View.OnTouchListener {
     private int currentRating = 0;
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
+        if (!mEnable) {
+            return false;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
                 currentRating = getRatingNum(Math.min(Math.max(event.getX(), 0), getWidth()),
                         event.getY());
+
                 updateStars();
                 break;
             case MotionEvent.ACTION_UP:
@@ -40,6 +42,11 @@ public class RatingBar extends LinearLayout implements View.OnTouchListener {
                 break;
         }
         return true;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return mEnable;
     }
 
     private float toFloat() {
@@ -89,7 +96,6 @@ public class RatingBar extends LinearLayout implements View.OnTouchListener {
                 imageView.setColorFilter(mDefaultColor);
             addView(imageView);
         }
-        setOnTouchListener(this);
     }
 
     /**
@@ -99,7 +105,18 @@ public class RatingBar extends LinearLayout implements View.OnTouchListener {
      */
     public void setEnable(boolean enable) {
         mEnable = enable;
-        setOnTouchListener(mEnable ? this : null);
+    }
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (mEnable) {
+            requestDisallowInterceptTouchEvent(true);
+            onTouchEvent(ev);
+        } else {
+            requestDisallowInterceptTouchEvent(false);
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     private ImageView getStarImageView(Context context, AttributeSet attrs) {
@@ -147,7 +164,7 @@ public class RatingBar extends LinearLayout implements View.OnTouchListener {
      * @param star 0.0 ~ 5.0
      */
     public void setStar(float star) {
-        if (star < 5f && star > 0f) {
+        if (star <= 5f && star >= 0f) {
             float d = star * 2f;
             int tmpStar = ((int) d) + ((d % 1) > 0.5f ? 1 : 0);
             currentRating = Math.max(0, Math.min(tmpStar, 10));

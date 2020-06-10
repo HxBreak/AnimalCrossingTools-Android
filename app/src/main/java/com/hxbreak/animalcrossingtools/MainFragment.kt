@@ -1,6 +1,7 @@
 package com.hxbreak.animalcrossingtools
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,10 +56,14 @@ class MainFragment : DaggerFragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        (requireActivity() as AppCompatActivity).setSupportActionBar(null)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        map.showScaleControl(true)
-        map.showZoomControls(true)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+
     }
 }

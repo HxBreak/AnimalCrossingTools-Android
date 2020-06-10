@@ -1,4 +1,4 @@
-package com.example.animalcrossingtools
+package com.hxbreak.animalcrossingtools
 
 import androidx.fragment.app.Fragment
 import com.hxbreak.animalcrossingtools.App

@@ -2,6 +2,8 @@ package com.hxbreak.animalcrossingtools.ui.fish
 
 import android.util.Pair
 import androidx.lifecycle.*
+import com.hxbreak.animalcrossingtools.character.CharUtil
+import com.hxbreak.animalcrossingtools.combineLiveData
 import com.hxbreak.animalcrossingtools.data.FishAddictionPart
 import com.hxbreak.animalcrossingtools.data.FishSaved
 import com.hxbreak.animalcrossingtools.data.Result
@@ -9,7 +11,6 @@ import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import java.lang.IllegalStateException
 import java.util.*
 import javax.inject.Inject
@@ -55,6 +56,7 @@ class FishViewModel @Inject constructor(
             val result = repository.fishSource().allFish()
             isDataLoadingError.postValue(result !is Result.Success)
             loading.postValue(false)
+
             when (result) {
                 is Result.Success -> emit(result.data)
                 is Result.Error -> handleError(result.exception) {
@@ -105,6 +107,10 @@ class FishViewModel @Inject constructor(
 
     private val selected = MutableLiveData<List<FishEntityMix>>()
 
+    val unused = combineLiveData(x = selected, y = itemsWithLocalData) { x, y ->
+        emit(arrayListOf<String>())
+    }
+
     /**
      * expose
      */
@@ -131,7 +137,6 @@ class FishViewModel @Inject constructor(
     }
     val editMode = MutableLiveData<Boolean>(false)
 
-    //    val donateAction = selected.map { !it.any { it.saved?.donated ?: false } }
     val donateAction = MediatorLiveData<Boolean>().apply {
         var ids: List<Int>? = null
         var tmpSaved: List<FishSaved>? = null
@@ -195,6 +200,7 @@ class FishViewModel @Inject constructor(
                             i
                         )
                     }
+                        .sortedBy { CharUtil.headPinyin(it.fish.fish.name.nameCNzh) }
                     postValue(value)
                 }
             }

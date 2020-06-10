@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.animalcrossingtools
+package com.hxbreak.animalcrossingtools
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-package com.example.turnip_price
+package com.hxbreak.turnip_price
 
 @UseExperimental(ExperimentalUnsignedTypes::class)
 public class TurnipPrice {

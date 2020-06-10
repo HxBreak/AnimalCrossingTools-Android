@@ -1,4 +1,4 @@
-package com.example.animalcrossingtools
+package com.hxbreak.animalcrossingtools
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest

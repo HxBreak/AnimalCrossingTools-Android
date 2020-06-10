@@ -2,6 +2,7 @@ package com.hxbreak.animalcrossingtools.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.*
@@ -58,20 +59,21 @@ class ScrollViewGroup @JvmOverloads constructor(
     private var mScrolled = 0
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val first = getChildAt(0)
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            if (i == 0) {
-                child.layout(0, -mScrolled, child.measuredWidth, child.measuredHeight - mScrolled)
-            } else {
-                child.layout(
-                    0,
-                    first.measuredHeight - mScrolled,
-                    child.measuredWidth,
-                    measuredHeight
-                )
-            }
-        }
+//        val first = getChildAt(0)
+//        for (i in 0 until childCount) {
+//            val child = getChildAt(i)
+//            if (i == 0) {
+//                child.layout(0, -mScrolled, child.measuredWidth, child.measuredHeight - mScrolled)
+//            } else {
+//                child.layout(
+//                    0,
+//                    first.measuredHeight - mScrolled,
+//                    child.measuredWidth,
+//                    measuredHeight
+//                )
+//            }
+//        }
+        updateLayout()
 //        val body = get(1)
 //        body.measure(MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY),
 //            MeasureSpec.makeMeasureSpec(body.bottom - body.top, MeasureSpec.EXACTLY))
@@ -86,65 +88,61 @@ class ScrollViewGroup @JvmOverloads constructor(
         constructor(source: ViewGroup.LayoutParams?) : super(source) {}
     }
 
-    fun canStickyTopScrollUp(): Boolean {
+    fun effectScroll(dy: Int) {
         val stickyTopView = get(0)
-        return stickyTopView.bottom > 0
-    }
-
-
-    fun canStickyTopScrollDown(): Boolean {
-        val stickyTopView = get(0)
-        return stickyTopView.bottom < stickyTopView.measuredHeight
-    }
-
-    private fun getStickyTopScrollDownLeft(): Int {
-        val stickyTopView = get(0)
-        return stickyTopView.measuredHeight - stickyTopView.bottom
+        mScrolled = (mScrolled + dy).coerceIn(0, stickyTopView.measuredHeight)
     }
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
-        val stickyTopView = get(0)
-        val body = get(1)
-        if (dy > 0) {
-            var offset = 0
-            if (canStickyTopScrollUp()) {
-                offset = dy
-                if (dy > stickyTopView.bottom) {
-                    offset = stickyTopView.bottom
-                }
-                stickyTopView.offsetTopAndBottom(-offset)
-                body.layout(0, stickyTopView.bottom, measuredWidth, measuredHeight)
-                consumed[1] = offset
-                mScrolled += offset
-            }
+        val oldScroll: Int
+        val left = if (dy > 0) {
+            dispatchNestedPreScroll(dx, dy, consumed, null, type)
+            oldScroll = mScrolled
+            dy - consumed[1]
         } else {
-            if (canStickyTopScrollDown()) {
-                val left = getStickyTopScrollDownLeft()
-                var offset = abs(dy)
-                if (abs(dy) > left) {
-                    offset = left
-                }
-                stickyTopView.offsetTopAndBottom(offset)
-                body.layout(0, stickyTopView.bottom, measuredWidth, measuredHeight)
-                consumed[1] = -offset
-                mScrolled -= offset
+            oldScroll = mScrolled
+            dy
+        }
+        effectScroll(left)
+        val scrolled = mScrolled - oldScroll
+        consumed[1] += scrolled
+        if (dy < 0) {
+            dispatchNestedPreScroll(dx, dy - consumed[1], consumed, null, type)
+        }
+
+//        if (dy < 0){
+//            val oldScroll = mScrolled
+//            val left = dy - consumed[1]
+//            Log.e("HxBreak-pre", "$dy, ${consumed[1]}, $left, $scrolled, $oldScroll")
+//            dispatchNestedPreScroll(dx, dy - consumed[1], consumed, null, type)
+//        }else{
+//            dispatchNestedPreScroll(dx, dy, consumed, null, type)
+//            val oldScroll = mScrolled
+//            val left = dy - consumed[1]
+//            effectScroll(left)
+//            val scrolled = mScrolled - oldScroll
+//            consumed[1] += scrolled
+//            Log.e("HxBreak-pre", "$dy, ${consumed[1]}, $left, $scrolled, $oldScroll")
+//        }
+        updateLayout()
+    }
+
+    private fun updateLayout() {
+        var pview: View? = null
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if (pview == null) {
+                pview = child
+                child.layout(0, -mScrolled, child.measuredWidth, child.measuredHeight - mScrolled)
+            } else {
+                child.layout(
+                    0,
+                    pview.measuredHeight - mScrolled,
+                    child.measuredWidth,
+                    measuredHeight
+                )
             }
         }
-        dispatchNestedPreScroll(dx, dy, consumed, null, type)
-    }
-
-    override fun onStopNestedScroll(target: View, type: Int) {
-        mScrollParentHelper.onStopNestedScroll(target, type)
-        stopNestedScroll(type)
-    }
-
-    override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
-        return axes and ViewCompat.SCROLL_AXIS_VERTICAL != 0
-    }
-
-    override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
-        mScrollParentHelper.onNestedScrollAccepted(child, target, axes, type)
-        startNestedScroll(axes, type)
     }
 
     override fun onNestedScroll(
@@ -165,6 +163,20 @@ class ScrollViewGroup @JvmOverloads constructor(
             type,
             consumed
         )
+    }
+
+    override fun onStopNestedScroll(target: View, type: Int) {
+        mScrollParentHelper.onStopNestedScroll(target, type)
+        stopNestedScroll(type)
+    }
+
+    override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
+        return axes and ViewCompat.SCROLL_AXIS_VERTICAL != 0
+    }
+
+    override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
+        mScrollParentHelper.onNestedScrollAccepted(child, target, axes, type)
+        startNestedScroll(axes, type)
     }
 
     override fun onNestedScroll(

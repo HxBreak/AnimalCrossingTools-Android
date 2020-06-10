@@ -1,4 +1,4 @@
-package com.example.ratingbar;
+package com.hxbreak.ratingbar;
 
 import android.content.Context;
 

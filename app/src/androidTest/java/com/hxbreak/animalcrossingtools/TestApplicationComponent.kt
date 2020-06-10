@@ -1,4 +1,4 @@
-package com.example.animalcrossingtools
+package com.hxbreak.animalcrossingtools
 
 import android.content.Context
 import com.hxbreak.animalcrossingtools.data.source.DataRepository

@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <import type="android.view.View" />
     </data>
 
@@ -75,7 +74,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="16dp"
-                            android:text="1/99"
+                            android:text="等待中"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/textView2"
@@ -86,7 +85,7 @@
                             android:id="@+id/collected_summary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="TextView"
+                            android:text="等待中"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                             app:layout_constraintBottom_toBottomOf="@+id/founded_summary"
                             app:layout_constraintEnd_toEndOf="@+id/textView"
@@ -97,7 +96,7 @@
                             android:id="@+id/active_summary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="TextView"
+                            android:text="等待中"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                             app:layout_constraintBottom_toBottomOf="@+id/collected_summary"
                             app:layout_constraintEnd_toEndOf="@+id/textView3"
@@ -105,15 +104,11 @@
                             app:layout_constraintTop_toTopOf="@+id/collected_summary" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
-                <!--            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-                <!--                android:id="@+id/refresh_layout"-->
-                <!--                android:layout_width="match_parent"-->
-                <!--                android:layout_height="match_parent">-->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
+                    android:scrollbars="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-                <!--            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
             </com.hxbreak.animalcrossingtools.view.ScrollViewGroup>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -121,17 +116,17 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <androidx.appcompat.widget.Toolbar
                 app:title="Fish"
                 app:titleEnabled="true"
+                android:fitsSystemWindows="true"
                 android:id="@+id/toolbar"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary"
                 app:layout_scrollFlags="scroll|snap|enterAlways"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
+                android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"

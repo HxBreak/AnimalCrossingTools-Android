@@ -3,6 +3,7 @@ package com.hxbreak.animalcrossingtools.di
 import android.content.Context
 import android.provider.Settings
 import android.util.Log
+import androidx.lifecycle.liveData
 import androidx.room.Room
 import com.hxbreak.animalcrossingtools.data.CoroutinesCallAdapterFactory
 import com.hxbreak.animalcrossingtools.data.LiveDataCallAdapterFactory
@@ -92,7 +93,6 @@ object ApplicationModule {
             .readTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .build()
-
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl("https://acnhapi.com/v1/")

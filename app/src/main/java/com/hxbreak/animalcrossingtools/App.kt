@@ -1,6 +1,5 @@
 package com.hxbreak.animalcrossingtools
 
-import com.baidu.mapapi.SDKInitializer
 import com.hxbreak.animalcrossingtools.data.source.AnimalCrossingDatabase
 import com.hxbreak.animalcrossingtools.di.DaggerApplicationComponent
 import dagger.android.AndroidInjector
@@ -14,7 +13,6 @@ open class App : DaggerApplication() {
 
     override fun onCreate() {
         super.onCreate()
-        SDKInitializer.initialize(this)
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
