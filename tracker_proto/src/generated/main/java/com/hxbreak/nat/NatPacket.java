@@ -140,7 +140,7 @@ public final class NatPacket {
         }
 
         @java.lang.Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
             return com.hxbreak.nat.NatPacket.internal_static_BasePacket_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
@@ -3018,7 +3018,6 @@ public final class NatPacket {
 
             /**
              * <code>int32 senderType = 1;</code>
-             *
              * @return The senderType.
              */
             @java.lang.Override
@@ -3028,7 +3027,6 @@ public final class NatPacket {
 
             /**
              * <code>int32 senderType = 1;</code>
-             *
              * @param value The senderType to set.
              * @return This builder for chaining.
              */
@@ -3041,7 +3039,6 @@ public final class NatPacket {
 
             /**
              * <code>int32 senderType = 1;</code>
-             *
              * @return This builder for chaining.
              */
             public Builder clearSenderType() {
@@ -3055,7 +3052,6 @@ public final class NatPacket {
 
             /**
              * <code>int64 seq = 4;</code>
-             *
              * @return The seq.
              */
             @java.lang.Override
@@ -3065,7 +3061,6 @@ public final class NatPacket {
 
             /**
              * <code>int64 seq = 4;</code>
-             *
              * @param value The seq to set.
              * @return This builder for chaining.
              */
@@ -3078,7 +3073,6 @@ public final class NatPacket {
 
             /**
              * <code>int64 seq = 4;</code>
-             *
              * @return This builder for chaining.
              */
             public Builder clearSeq() {
@@ -3093,7 +3087,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseResponse fromServer = 2;</code>
-             *
              * @return Whether the fromServer field is set.
              */
             @java.lang.Override
@@ -3103,7 +3096,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseResponse fromServer = 2;</code>
-             *
              * @return The fromServer.
              */
             @java.lang.Override
@@ -3246,7 +3238,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseClientCommunication fromClient = 3;</code>
-             *
              * @return Whether the fromClient field is set.
              */
             @java.lang.Override
@@ -3256,7 +3247,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseClientCommunication fromClient = 3;</code>
-             *
              * @return The fromClient.
              */
             @java.lang.Override
@@ -5259,7 +5249,6 @@ public final class NatPacket {
 
             /**
              * <code>int64 seq = 4;</code>
-             *
              * @return The seq.
              */
             @java.lang.Override
@@ -5269,7 +5258,6 @@ public final class NatPacket {
 
             /**
              * <code>int64 seq = 4;</code>
-             *
              * @param value The seq to set.
              * @return This builder for chaining.
              */
@@ -5282,7 +5270,6 @@ public final class NatPacket {
 
             /**
              * <code>int64 seq = 4;</code>
-             *
              * @return This builder for chaining.
              */
             public Builder clearSeq() {
@@ -5296,7 +5283,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseResponse.BaseResponseOrderType order = 1;</code>
-             *
              * @return The enum numeric value on the wire for order.
              */
             @java.lang.Override
@@ -5306,7 +5292,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseResponse.BaseResponseOrderType order = 1;</code>
-             *
              * @param value The enum numeric value on the wire for order to set.
              * @return This builder for chaining.
              */
@@ -5319,7 +5304,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseResponse.BaseResponseOrderType order = 1;</code>
-             *
              * @return The order.
              */
             @java.lang.Override
@@ -5331,7 +5315,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseResponse.BaseResponseOrderType order = 1;</code>
-             *
              * @param value The order to set.
              * @return This builder for chaining.
              */
@@ -5347,7 +5330,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseResponse.BaseResponseOrderType order = 1;</code>
-             *
              * @return This builder for chaining.
              */
             public Builder clearOrder() {
@@ -5622,7 +5604,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseResponse.NetAddr pairedAddr = 3;</code>
-             *
              * @return Whether the pairedAddr field is set.
              */
             @java.lang.Override
@@ -5632,7 +5613,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseResponse.NetAddr pairedAddr = 3;</code>
-             *
              * @return The pairedAddr.
              */
             @java.lang.Override
@@ -5780,7 +5760,7 @@ public final class NatPacket {
             public final Builder mergeUnknownFields(
                     final com.google.protobuf.UnknownFieldSet unknownFields) {
                 return super.mergeUnknownFields(unknownFields);
-            }
+      }
 
 
             // @@protoc_insertion_point(builder_scope:BaseResponse)
@@ -5927,7 +5907,6 @@ public final class NatPacket {
 
         /**
          * <code>int32 seq = 1;</code>
-         *
          * @return The seq.
          */
         @java.lang.Override
@@ -7200,7 +7179,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseClientCommunication.BaseCommType type = 1;</code>
-             *
              * @return The enum numeric value on the wire for type.
              */
             @java.lang.Override
@@ -7210,7 +7188,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseClientCommunication.BaseCommType type = 1;</code>
-             *
              * @param value The enum numeric value on the wire for type to set.
              * @return This builder for chaining.
              */
@@ -7223,7 +7200,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseClientCommunication.BaseCommType type = 1;</code>
-             *
              * @return The type.
              */
             @java.lang.Override
@@ -7235,7 +7211,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseClientCommunication.BaseCommType type = 1;</code>
-             *
              * @param value The type to set.
              * @return This builder for chaining.
              */
@@ -7251,7 +7226,6 @@ public final class NatPacket {
 
             /**
              * <code>.BaseClientCommunication.BaseCommType type = 1;</code>
-             *
              * @return This builder for chaining.
              */
             public Builder clearType() {
@@ -7265,7 +7239,6 @@ public final class NatPacket {
 
             /**
              * <code>string id = 2;</code>
-             *
              * @return The id.
              */
             public java.lang.String getId() {
@@ -7283,7 +7256,6 @@ public final class NatPacket {
 
             /**
              * <code>string id = 2;</code>
-             *
              * @return The bytes for id.
              */
             public com.google.protobuf.ByteString
@@ -7302,7 +7274,6 @@ public final class NatPacket {
 
             /**
              * <code>string id = 2;</code>
-             *
              * @param value The id to set.
              * @return This builder for chaining.
              */
@@ -7319,7 +7290,6 @@ public final class NatPacket {
 
             /**
              * <code>string id = 2;</code>
-             *
              * @return This builder for chaining.
              */
             public Builder clearId() {
@@ -7331,7 +7301,6 @@ public final class NatPacket {
 
             /**
              * <code>string id = 2;</code>
-             *
              * @param value The bytes for id to set.
              * @return This builder for chaining.
              */
@@ -7355,13 +7324,13 @@ public final class NatPacket {
             @java.lang.Override
             public java.lang.String getText() {
                 java.lang.Object ref = "";
-                if (contentCase_ == 3) {
-                    ref = content_;
-                }
+        if (contentCase_ == 3) {
+            ref = content_;
+        }
                 if (!(ref instanceof java.lang.String)) {
                     com.google.protobuf.ByteString bs =
                             (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
+          java.lang.String s = bs.toStringUtf8();
                     if (contentCase_ == 3) {
                         content_ = s;
                     }
@@ -7373,8 +7342,7 @@ public final class NatPacket {
 
             /**
              * <code>string text = 3;</code>
-             *
-             * @return The bytes for text.
+       * @return The bytes for text.
              */
             @java.lang.Override
             public com.google.protobuf.ByteString
@@ -7382,36 +7350,35 @@ public final class NatPacket {
                 java.lang.Object ref = "";
                 if (contentCase_ == 3) {
                     ref = content_;
-                }
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b =
-                            com.google.protobuf.ByteString.copyFromUtf8(
-                                    (java.lang.String) ref);
-                    if (contentCase_ == 3) {
-                        content_ = b;
-                    }
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
+        }
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+            if (contentCase_ == 3) {
+                content_ = b;
+          }
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
             }
 
             /**
              * <code>string text = 3;</code>
-             *
              * @param value The text to set.
              * @return This builder for chaining.
              */
-            public Builder setText(
-                    java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                contentCase_ = 3;
-                content_ = value;
-                onChanged();
-                return this;
-            }
+      public Builder setText(
+          java.lang.String value) {
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          contentCase_ = 3;
+          content_ = value;
+          onChanged();
+          return this;
+      }
 
             /**
              * <code>string text = 3;</code>
@@ -7551,74 +7518,74 @@ public final class NatPacket {
                         "acket.PacketHeader.PacketType\022\n\n\002id\030\002 \001(" +
                         "\t\022%\n\004addr\030\003 \001(\0132\025.BaseResponse.NetAddrH\000" +
                         "\022(\n\004turn\030\004 \001(\0132\030.BaseClientCommunication" +
-                        "H\000\"[\n\nPacketType\022\t\n\005LOGIN\020\000\022\010\n\004TICK\020\001\022\014\n" +
-                        "\010DISCOVER\020\002\022\013\n\007CONNECT\020\003\022\010\n\004TURN\020\004\022\023\n\006LO" +
-                        "GOUT\020\377\377\377\377\377\377\377\377\377\001B\010\n\006target\"\220\001\n\014CommRespon" +
-                        "se\022\022\n\nsenderType\030\001 \001(\005\022\013\n\003seq\030\004 \001(\003\022#\n\nf" +
-                        "romServer\030\002 \001(\0132\r.BaseResponseH\000\022.\n\nfrom" +
-                        "Client\030\003 \001(\0132\030.BaseClientCommunicationH\000" +
-                        "B\n\n\010response\"\263\002\n\014BaseResponse\022\013\n\003seq\030\004 \001" +
-                        "(\003\0222\n\005order\030\001 \001(\0162#.BaseResponse.BaseRes" +
-                        "ponseOrderType\022$\n\005addrs\030\002 \003(\0132\025.BaseResp" +
-                        "onse.NetAddr\022+\n\npairedAddr\030\003 \001(\0132\025.BaseR" +
-                        "esponse.NetAddrH\000\032G\n\007NetAddr\022\n\n\002id\030\001 \001(\t" +
-                        "\022\n\n\002ip\030\002 \001(\005\022\014\n\004port\030\003 \001(\005\022\026\n\016lastActive" +
-                        "Time\030\004 \001(\003\";\n\025BaseResponseOrderType\022\006\n\002O" +
-                        "K\020\000\022\007\n\003REQ\020\001\022\021\n\004ERRO\020\377\377\377\377\377\377\377\377\377\001B\t\n\007optio" +
-                        "ns\"\027\n\010ReplyAck\022\013\n\003seq\030\001 \001(\005\"\241\001\n\027BaseClie" +
-                        "ntCommunication\0223\n\004type\030\001 \001(\0162%.BaseClie" +
-                        "ntCommunication.BaseCommType\022\n\n\002id\030\002 \001(\t" +
-                        "\022\016\n\004text\030\003 \001(\tH\000\"*\n\014BaseCommType\022\006\n\002OK\020\000" +
-                        "\022\010\n\004TEST\020\001\022\010\n\004TEXT\020\002B\t\n\007contentB\034\n\017com.h" +
-                        "xbreak.natB\tNatPacketb\006proto3"
-        };
-        descriptor = com.google.protobuf.Descriptors.FileDescriptor
-                .internalBuildGeneratedFileFrom(descriptorData,
-                        new com.google.protobuf.Descriptors.FileDescriptor[]{
-                        });
-        internal_static_BasePacket_descriptor =
-                getDescriptor().getMessageTypes().get(0);
-        internal_static_BasePacket_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_BasePacket_descriptor,
-                new java.lang.String[]{"Header", "Seq",});
-        internal_static_BasePacket_PacketHeader_descriptor =
-                internal_static_BasePacket_descriptor.getNestedTypes().get(0);
-        internal_static_BasePacket_PacketHeader_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_BasePacket_PacketHeader_descriptor,
-                new java.lang.String[]{"Type", "Id", "Addr", "Turn", "Target",});
-        internal_static_CommResponse_descriptor =
-                getDescriptor().getMessageTypes().get(1);
-        internal_static_CommResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_CommResponse_descriptor,
-                new java.lang.String[]{"SenderType", "Seq", "FromServer", "FromClient", "Response",});
-        internal_static_BaseResponse_descriptor =
-                getDescriptor().getMessageTypes().get(2);
-        internal_static_BaseResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_BaseResponse_descriptor,
-                new java.lang.String[]{"Seq", "Order", "Addrs", "PairedAddr", "Options",});
-        internal_static_BaseResponse_NetAddr_descriptor =
-                internal_static_BaseResponse_descriptor.getNestedTypes().get(0);
-        internal_static_BaseResponse_NetAddr_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_BaseResponse_NetAddr_descriptor,
-                new java.lang.String[]{"Id", "Ip", "Port", "LastActiveTime",});
-        internal_static_ReplyAck_descriptor =
-                getDescriptor().getMessageTypes().get(3);
-        internal_static_ReplyAck_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_ReplyAck_descriptor,
-                new java.lang.String[]{"Seq",});
-        internal_static_BaseClientCommunication_descriptor =
-                getDescriptor().getMessageTypes().get(4);
-        internal_static_BaseClientCommunication_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_BaseClientCommunication_descriptor,
-                new java.lang.String[]{"Type", "Id", "Text", "Content",});
-    }
+      "H\000\"[\n\nPacketType\022\t\n\005LOGIN\020\000\022\010\n\004TICK\020\001\022\014\n" +
+      "\010DISCOVER\020\002\022\013\n\007CONNECT\020\003\022\010\n\004TURN\020\004\022\023\n\006LO" +
+      "GOUT\020\377\377\377\377\377\377\377\377\377\001B\010\n\006target\"\220\001\n\014CommRespon" +
+      "se\022\022\n\nsenderType\030\001 \001(\005\022\013\n\003seq\030\004 \001(\003\022#\n\nf" +
+      "romServer\030\002 \001(\0132\r.BaseResponseH\000\022.\n\nfrom" +
+      "Client\030\003 \001(\0132\030.BaseClientCommunicationH\000" +
+      "B\n\n\010response\"\263\002\n\014BaseResponse\022\013\n\003seq\030\004 \001" +
+      "(\003\0222\n\005order\030\001 \001(\0162#.BaseResponse.BaseRes" +
+      "ponseOrderType\022$\n\005addrs\030\002 \003(\0132\025.BaseResp" +
+      "onse.NetAddr\022+\n\npairedAddr\030\003 \001(\0132\025.BaseR" +
+      "esponse.NetAddrH\000\032G\n\007NetAddr\022\n\n\002id\030\001 \001(\t" +
+      "\022\n\n\002ip\030\002 \001(\005\022\014\n\004port\030\003 \001(\005\022\026\n\016lastActive" +
+      "Time\030\004 \001(\003\";\n\025BaseResponseOrderType\022\006\n\002O" +
+      "K\020\000\022\007\n\003REQ\020\001\022\021\n\004ERRO\020\377\377\377\377\377\377\377\377\377\001B\t\n\007optio" +
+      "ns\"\027\n\010ReplyAck\022\013\n\003seq\030\001 \001(\005\"\241\001\n\027BaseClie" +
+      "ntCommunication\0223\n\004type\030\001 \001(\0162%.BaseClie" +
+      "ntCommunication.BaseCommType\022\n\n\002id\030\002 \001(\t" +
+      "\022\016\n\004text\030\003 \001(\tH\000\"*\n\014BaseCommType\022\006\n\002OK\020\000" +
+      "\022\010\n\004TEST\020\001\022\010\n\004TEXT\020\002B\t\n\007contentB\034\n\017com.h" +
+      "xbreak.natB\tNatPacketb\006proto3"
+    };
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor
+      .internalBuildGeneratedFileFrom(descriptorData,
+        new com.google.protobuf.Descriptors.FileDescriptor[] {
+        });
+    internal_static_BasePacket_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_BasePacket_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_BasePacket_descriptor,
+        new java.lang.String[] { "Header", "Seq", });
+    internal_static_BasePacket_PacketHeader_descriptor =
+      internal_static_BasePacket_descriptor.getNestedTypes().get(0);
+    internal_static_BasePacket_PacketHeader_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_BasePacket_PacketHeader_descriptor,
+        new java.lang.String[] { "Type", "Id", "Addr", "Turn", "Target", });
+    internal_static_CommResponse_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_CommResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_CommResponse_descriptor,
+        new java.lang.String[] { "SenderType", "Seq", "FromServer", "FromClient", "Response", });
+    internal_static_BaseResponse_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_BaseResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_BaseResponse_descriptor,
+        new java.lang.String[] { "Seq", "Order", "Addrs", "PairedAddr", "Options", });
+    internal_static_BaseResponse_NetAddr_descriptor =
+      internal_static_BaseResponse_descriptor.getNestedTypes().get(0);
+    internal_static_BaseResponse_NetAddr_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_BaseResponse_NetAddr_descriptor,
+        new java.lang.String[] { "Id", "Ip", "Port", "LastActiveTime", });
+    internal_static_ReplyAck_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_ReplyAck_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ReplyAck_descriptor,
+        new java.lang.String[] { "Seq", });
+    internal_static_BaseClientCommunication_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_BaseClientCommunication_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_BaseClientCommunication_descriptor,
+        new java.lang.String[] { "Type", "Id", "Text", "Content", });
+  }
 
-    // @@protoc_insertion_point(outer_class_scope)
+  // @@protoc_insertion_point(outer_class_scope)
 }

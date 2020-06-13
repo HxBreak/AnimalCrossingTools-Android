@@ -3,6 +3,7 @@ package com.hxbreak.animalcrossingtools.ui.fish
 import android.animation.ObjectAnimator
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,10 @@ import androidx.core.animation.addListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.snackbar.Snackbar
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
@@ -81,6 +84,9 @@ class FishFragment : DaggerFragment() {
         viewModel.selectedFish.observe(viewLifecycleOwner, Observer {
 
         })
+        viewModel.selectedFishTest.observe(viewLifecycleOwner, Observer {
+            Log.e("HxBreak", "${it.size}");
+        })
         viewModel.loading.observe(viewLifecycleOwner, Observer {
             refresh_layout.isRefreshing = it == true
         })
@@ -90,7 +96,7 @@ class FishFragment : DaggerFragment() {
         viewModel.error.observe(viewLifecycleOwner, Observer {
             val bar = Snackbar.make(coordinator, it.first.toString(), Snackbar.LENGTH_LONG)
             bar.setAction("RETRY") { v ->
-                it.second.invoke()
+                it.second()
             }
             bar.show()
         })
@@ -135,6 +141,7 @@ class FishFragment : DaggerFragment() {
         toolbar.background = background
 
         adapter = FishAdapter(viewModel)
+        recycler_view.itemAnimator = DefaultItemAnimator()
         recycler_view.adapter = adapter
         val layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         recycler_view.layoutManager = layoutManager
@@ -161,7 +168,6 @@ class FishFragment : DaggerFragment() {
         viewModel.active.observe(viewLifecycleOwner, Observer {
             active_summary.text = it
         })
-
 
         viewModel.found.observe(viewLifecycleOwner, Observer {
             founded_summary.text = it

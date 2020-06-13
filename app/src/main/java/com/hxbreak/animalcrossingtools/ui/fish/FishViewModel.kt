@@ -1,19 +1,21 @@
 package com.hxbreak.animalcrossingtools.ui.fish
 
+import android.util.Log
 import android.util.Pair
 import androidx.lifecycle.*
+import com.hxbreak.animalcrossingtools.RunnerType
 import com.hxbreak.animalcrossingtools.character.CharUtil
-import com.hxbreak.animalcrossingtools.combineLiveData
+import com.hxbreak.animalcrossingtools.combinedLiveData
 import com.hxbreak.animalcrossingtools.data.FishAddictionPart
 import com.hxbreak.animalcrossingtools.data.FishSaved
 import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.lang.IllegalStateException
 import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 data class SelectableFishEntity(var selected: Boolean, val fish: FishEntityMix)
 
@@ -107,10 +109,18 @@ class FishViewModel @Inject constructor(
 
     private val selected = MutableLiveData<List<FishEntityMix>>()
 
-    val unused = combineLiveData(x = selected, y = itemsWithLocalData) { x, y ->
-        emit(arrayListOf<String>())
+    val selectedFishTest = combinedLiveData(
+        viewModelScope.coroutineContext + Dispatchers.IO,
+        x = itemsWithLocalData,
+        y = selected,
+        runnerType = RunnerType.CANCEL_PRE_AND_RUN
+    ) { x, y ->
+        repeat(10) {
+            Log.e("HxBreak", "$isActive")
+            yield()
+        }
+        emit(x.orEmpty().filter { cond -> y.orEmpty().map { it.fish.id }.contains(cond.fish.id) })
     }
-
     /**
      * expose
      */

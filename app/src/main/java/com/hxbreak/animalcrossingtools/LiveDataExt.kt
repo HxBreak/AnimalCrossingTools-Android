@@ -4,57 +4,83 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataScope
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.liveData
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import java.lang.IllegalArgumentException
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.experimental.ExperimentalTypeInference
 
+//Copy from LiveData Ktx
 internal const val DEFAULT_TIMEOUT = 5000L
 
-internal typealias Block<R, X, Y> = suspend LiveDataScope<R>.(x: X?, y: Y?) -> Unit
+internal typealias Block<R, X, Y> = suspend CombinedLiveDataScope<R>.(x: X?, y: Y?) -> Unit
 
 
 @UseExperimental(ExperimentalTypeInference::class)
-fun <R, X, Y> combineLiveData(
+fun <R, X, Y> combinedLiveData(
     context: CoroutineContext = EmptyCoroutineContext,
     timeoutInMs: Long = DEFAULT_TIMEOUT,
     x: LiveData<X>,
     y: LiveData<Y>,
-    @BuilderInference block: suspend LiveDataScope<R>.(x: X?, y: Y?) -> Unit
-): LiveData<R> = CoroutineLiveData(context, timeoutInMs, x, y, block)
+    runnerType: RunnerType = RunnerType.LINEAR,
+    @BuilderInference block: suspend CombinedLiveDataScope<R>.(x: X?, y: Y?) -> Unit
+): LiveData<R> = CoroutineLiveData(context, timeoutInMs, x, y, runnerType, block)
+
+enum class RunnerType {
+    LINEAR, CANCEL_PRE_AND_RUN
+}
 
 internal class CoroutineLiveData<R, X, Y>(
-    val context: CoroutineContext = EmptyCoroutineContext,
-    val timeoutInMs: Long = DEFAULT_TIMEOUT,
-    x: LiveData<X>,
-    y: LiveData<Y>,
-    val block: Block<R, X?, Y?>
+    private val context: CoroutineContext = EmptyCoroutineContext,
+    private val timeoutInMs: Long = DEFAULT_TIMEOUT,
+    private val x: LiveData<X>,
+    private val y: LiveData<Y>,
+    private val runnerType: RunnerType = RunnerType.LINEAR,
+    private val block: Block<R, X?, Y?>
 ) : MediatorLiveData<R>() {
-    private var blockRunner: BlockRunner<R, X, Y>? = null
+
     private var emittedSource: EmittedSource? = null
     private var xIsInit = false
     private var yIsInit = false
     private var lastX: X? = null
     private var lastY: Y? = null
 
+    private val supervisorJob = SupervisorJob(context[Job])
+    private val scope = CoroutineScope(Dispatchers.Main.immediate + context + supervisorJob)
+    private var blockRunner: BlockRunnerInterface<R, X, Y>?
+
+    private var runningJob: Job? = null
+
     private fun onChange(xData: X?, yData: Y?) {
         if (!(xIsInit && yIsInit)) return
-        val supervisorJob = SupervisorJob(context[Job])
-        val scope = CoroutineScope(Dispatchers.Main.immediate + context + supervisorJob)
-
-        blockRunner = BlockRunner(
-            liveData = this,
-            block = block,
-            timeoutInMs = timeoutInMs,
-            scope = scope,
-            x = xData,
-            y = yData
-        ) {
-            blockRunner = null
-        }
+        runningJob = blockRunner?.maybeRun(xData, yData)
     }
 
     init {
+        val onDone = {
+            runningJob = null
+        }
+        blockRunner = when (runnerType) {
+            RunnerType.LINEAR -> BlockRunner(
+                liveData = this,
+                block = block,
+                timeoutInMs = timeoutInMs,
+                scope = scope,
+                onDone = onDone
+            )
+            RunnerType.CANCEL_PRE_AND_RUN -> CancelAndJoinBlockRunner(
+                liveData = this,
+                block = block,
+                timeoutInMs = timeoutInMs,
+                scope = scope,
+                onDone = onDone
+            )
+            else -> throw IllegalArgumentException("runnerType not found")
+        }
         addSource(x) {
             xIsInit = true
             lastX = it
@@ -81,7 +107,6 @@ internal class CoroutineLiveData<R, X, Y>(
 
     override fun onActive() {
         super.onActive()
-        blockRunner?.maybeRun()
     }
 
     override fun onInactive() {
@@ -90,27 +115,37 @@ internal class CoroutineLiveData<R, X, Y>(
     }
 }
 
-internal class LiveDataScopeImpl<R, X, Y>(
-    internal var target: CoroutineLiveData<R, X, Y>,
-    context: CoroutineContext
-) : LiveDataScope<R> {
+internal class LiveDataScopeImpl<R>(
+    internal var target: CoroutineLiveData<R, *, *>,
+    private val context: CoroutineContext
+) : CombinedLiveDataScope<R> {
 
     override val latestValue: R?
         get() = target.value
 
     // use `liveData` provided context + main dispatcher to communicate with the target
     // LiveData. This gives us main thread safety as well as cancellation cooperation
-    private val coroutineContext = context + Dispatchers.Main.immediate
+    private val mainContext = context + Dispatchers.Main.immediate
 
-    override suspend fun emitSource(source: LiveData<R>): DisposableHandle =
-        withContext(coroutineContext) {
+    override suspend fun emitSource(source: LiveData<R>) =
+        withContext(mainContext) {
             return@withContext target.emitSource(source)
         }
 
-    override suspend fun emit(value: R) = withContext(coroutineContext) {
+    override suspend fun emit(value: R) = withContext(mainContext) {
         target.clearSource()
         target.value = value
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = context
+}
+
+interface BlockRunnerInterface<R, X, Y> {
+
+    fun maybeRun(x: X?, y: Y?): Job
+
+    fun cancel();
 }
 
 /**
@@ -121,32 +156,32 @@ internal class BlockRunner<R, X, Y>(
     private val block: Block<R, X?, Y?>,
     private val timeoutInMs: Long,
     private val scope: CoroutineScope,
-    val x: X?,
-    val y: Y?,
     private val onDone: () -> Unit
-) {
+) : BlockRunnerInterface<R, X, Y> {
+    private val activeTask = AtomicReference<Job?>(null)
     // currently running block job.
     private var runningJob: Job? = null
 
-    // cancelation job created in cancel.
+    private val mutex = Mutex()
+
     private var cancellationJob: Job? = null
 
     @MainThread
-    fun maybeRun() {
-        cancellationJob?.cancel()
-        cancellationJob = null
-        if (runningJob != null) {
-            return
+    override fun maybeRun(x: X?, y: Y?): Job {
+        val job = scope.launch {
+            mutex.withLock {
+                val liveDataScope = LiveDataScopeImpl(liveData, coroutineContext)
+                block(liveDataScope, x, y)
+                runningJob = null
+                onDone()
+            }
         }
-        runningJob = scope.launch {
-            val liveDataScope = LiveDataScopeImpl(liveData, coroutineContext)
-            block(liveDataScope, x, y)
-            onDone()
-        }
+        runningJob = job
+        return job
     }
 
     @MainThread
-    fun cancel() {
+    override fun cancel() {
         if (cancellationJob != null) {
             error("Cancel call cannot happen without a maybeRun")
         }
@@ -157,8 +192,64 @@ internal class BlockRunner<R, X, Y>(
                 // a running coroutine and cancelation
                 runningJob?.cancel()
                 runningJob = null
+                activeTask.get()?.cancel()
             }
         }
+
+    }
+}
+
+
+/**
+ * Handles running a block at most once to completion.
+ */
+internal class CancelAndJoinBlockRunner<R, X, Y>(
+    private val liveData: CoroutineLiveData<R, X, Y>,
+    private val block: Block<R, X?, Y?>,
+    private val timeoutInMs: Long,
+    private val scope: CoroutineScope,
+    private val onDone: () -> Unit
+) : BlockRunnerInterface<R, X, Y> {
+    private val activeTask = AtomicReference<Job?>(null)
+
+    private var cancellationJob: Job? = null
+
+    override fun maybeRun(x: X?, y: Y?): Job {
+        val jobEntity = scope.launch(start = CoroutineStart.LAZY) {
+            val liveDataScope = LiveDataScopeImpl(liveData, coroutineContext)
+            block(liveDataScope, x, y)
+        }
+        jobEntity.invokeOnCompletion {
+            activeTask.compareAndSet(jobEntity, null)
+        }
+        return scope.launch {
+            while (true) {
+                if (!activeTask.compareAndSet(null, jobEntity)) {
+                    activeTask.get()?.cancelAndJoin()
+                    yield()//take a rest
+                } else {
+                    jobEntity.join()
+                    onDone()
+                    break
+                }
+            }
+        }
+    }
+
+    @MainThread
+    override fun cancel() {
+        if (cancellationJob != null) {
+            error("Cancel call cannot happen without a maybeRun")
+        }
+        cancellationJob = scope.launch(Dispatchers.Main.immediate) {
+            delay(timeoutInMs)
+            if (!liveData.hasActiveObservers()) {
+                // one last check on active observers to avoid any race condition between starting
+                // a running coroutine and cancelation
+                activeTask.get()?.cancel()
+            }
+        }
+
     }
 }
 
@@ -209,3 +300,48 @@ internal suspend fun <R> MediatorLiveData<R>.addDisposableSource(
         mediator = this@addDisposableSource
     )
 }
+
+
+/**
+ * Interface that allows controlling a [LiveData] from a coroutine block.
+ *
+ * @see liveData
+ */
+interface CombinedLiveDataScope<T> : CoroutineScope {
+    /**
+     * Set's the [LiveData]'s value to the given [value]. If you've called [emitSource] previously,
+     * calling [emit] will remove that source.
+     *
+     * Note that this function suspends until the value is set on the [LiveData].
+     *
+     * @param value The new value for the [LiveData]
+     *
+     * @see emitSource
+     */
+    suspend fun emit(value: T)
+
+    /**
+     * Add the given [LiveData] as a source, similar to [MediatorLiveData.addSource]. Calling this
+     * method will remove any source that was yielded before via [emitSource].
+     *
+     * @param source The [LiveData] instance whose values will be dispatched from the current
+     * [LiveData].
+     *
+     * @see emit
+     * @see MediatorLiveData.addSource
+     * @see MediatorLiveData.removeSource
+     */
+    suspend fun emitSource(source: LiveData<T>): DisposableHandle
+
+    /**
+     * References the current value of the [LiveData].
+     *
+     * If the block never `emit`ed a value, [latestValue] will be `null`. You can use this
+     * value to check what was then latest value `emit`ed by your `block` before it got cancelled.
+     *
+     * Note that if the block called [emitSource], then `latestValue` will be last value
+     * dispatched by the `source` [LiveData].
+     */
+    val latestValue: T?
+}
+
