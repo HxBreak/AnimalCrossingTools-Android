@@ -15,7 +15,7 @@
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refresh_layout"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_behavior="com.hxbreak.animalcrossingtools.ui.fish.FishBehavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -104,9 +104,9 @@
                             app:layout_constraintTop_toTopOf="@+id/collected_summary" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
-                <androidx.recyclerview.widget.RecyclerView
+
+                <com.hxbreak.animalcrossingtools.view.IndexedRecyclerView
                     android:id="@+id/recycler_view"
-                    android:scrollbars="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </com.hxbreak.animalcrossingtools.view.ScrollViewGroup>
@@ -123,8 +123,8 @@
                 app:titleEnabled="true"
                 android:fitsSystemWindows="true"
                 android:id="@+id/toolbar"
+                app:layout_scrollFlags="scroll"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary"
-                app:layout_scrollFlags="scroll|snap|enterAlways"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -178,6 +178,16 @@
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
+
+        <ViewStub
+            android:id="@+id/bottom_sheet_viewstub"
+            app:behavior_hideable="true"
+            app:elevation="8dp"
+            app:behavior_peekHeight="144dp"
+            android:layout="@layout/fish_bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/bottom_sheet_behavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

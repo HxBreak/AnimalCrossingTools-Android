@@ -3,7 +3,6 @@ package com.hxbreak.animalcrossingtools.ui.fish
 import android.animation.ObjectAnimator
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +14,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
+import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.hxbreak.animalcrossingtools.R
+import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fish_fragment.*
+import kotlinx.android.synthetic.main.fish_bottom_sheet.*
 import javax.inject.Inject
 
 
@@ -31,6 +33,7 @@ class FishFragment : DaggerFragment() {
 
     private val viewModel by viewModels<FishViewModel> { viewModelFactory }
     private lateinit var adapter: FishAdapter
+    private var bottomSheetView: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,16 +79,15 @@ class FishFragment : DaggerFragment() {
                     }
                 }
                 if (it != null) {
-//                    addItemDecoration(FishDecoration(requireContext(), it.map { it.fish.fish }))
-                    addItemDecoration(FishHeadDecoration(requireContext(), it.map { it.fish.fish }))
+                    addItemDecoration(
+                        FishHeadDecoration(
+                            requireContext(),
+                            it.map { it.fish.fish },
+                            recycler_view.width
+                        )
+                    )
                 }
             }
-        })
-        viewModel.selectedFish.observe(viewLifecycleOwner, Observer {
-
-        })
-        viewModel.selectedFishTest.observe(viewLifecycleOwner, Observer {
-            Log.e("HxBreak", "${it.size}");
         })
         viewModel.loading.observe(viewLifecycleOwner, Observer {
             refresh_layout.isRefreshing = it == true
@@ -188,6 +190,7 @@ class FishFragment : DaggerFragment() {
         })
 
         viewModel.editMode.observe(viewLifecycleOwner, Observer {
+
             adapter.editMode = it
             onBackPressedCallback.isEnabled = it
             /**
@@ -207,6 +210,8 @@ class FishFragment : DaggerFragment() {
             adapter.notifyItemRangeChanged(0, start - 0)
             adapter.notifyItemRangeChanged(end, adapter.itemCount - end - 1)
         })
+
+        viewModel.clickedFish.observe(viewLifecycleOwner, Observer { effectBottomSheet(it) })
     }
 
     /**
@@ -222,6 +227,23 @@ class FishFragment : DaggerFragment() {
                     startDelay = i.toLong() * 150
                     start()
                 }
+        }
+    }
+
+    fun effectBottomSheet(fish: FishEntityMix?) {
+        bottomSheetView = bottomSheetView ?: bottom_sheet_viewstub.inflate()
+        val sheetBehavior = BottomSheetBehavior.from(bottomSheetView!!)
+        if (fish == null) {
+            sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        } else {
+            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            Glide.with(requireContext()).clear(bt_fish_image)
+            Glide.with(requireContext())
+                .load("https://acnhapi.com/v1/images/fish/${fish.fish.id}")
+                .placeholder(R.drawable.ic_fish)
+                .into(bt_fish_image)
+            bt_fish_name.text = fish.fish.name.nameCNzh
+            bt_item_stock.text = "${fish.saved?.quantity ?: 0}"
         }
     }
 }

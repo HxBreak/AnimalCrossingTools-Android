@@ -1,12 +1,9 @@
 package com.hxbreak.animalcrossingtools.ui.fish
 
-import android.util.Log
 import android.util.Pair
 import androidx.lifecycle.*
-import com.hxbreak.animalcrossingtools.RunnerType
 import com.hxbreak.animalcrossingtools.character.CharUtil
 import com.hxbreak.animalcrossingtools.combinedLiveData
-import com.hxbreak.animalcrossingtools.data.FishAddictionPart
 import com.hxbreak.animalcrossingtools.data.FishSaved
 import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
@@ -15,34 +12,8 @@ import kotlinx.coroutines.*
 import java.lang.IllegalStateException
 import java.util.*
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 data class SelectableFishEntity(var selected: Boolean, val fish: FishEntityMix)
-
-class CombinedLiveData<T, K, S>(
-    source1: LiveData<T>,
-    source2: LiveData<K>,
-    private val combine: (data1: T?, data2: K?) -> S
-) : MediatorLiveData<S>() {
-
-    private var data1: T? = null
-    private var data2: K? = null
-
-    init {
-        super.addSource(source1) {
-            data1 = it
-            value = combine(data1, data2)
-        }
-        super.addSource(source2) {
-            data2 = it
-            value = combine(data1, data2)
-        }
-    }
-
-    override fun <T : Any?> removeSource(toRemote: LiveData<T>) {
-        throw UnsupportedOperationException()
-    }
-}
 
 class FishViewModel @Inject constructor(
     private val repository: DataRepository
@@ -77,29 +48,16 @@ class FishViewModel @Inject constructor(
         }
     }
 
-    private val itemsWithLocalData = MediatorLiveData<List<FishEntityMix>>().apply {
-        var tmpItems: List<FishEntityMix>? = null
-        var tmpSaved: List<FishSaved>? = null
-
-        fun emit() {
-            viewModelScope.launch(Dispatchers.IO) {
-                if (tmpItems != null && tmpSaved != null) {
-                    val value = tmpItems.orEmpty().map {
-                        FishEntityMix(
-                            it.fish,
-                            tmpSaved.orEmpty().firstOrNull { x -> x.id == it.fish.id })
-                    }
-                    postValue(value)
-                }
+    private val itemsWithLocalData = combinedLiveData(
+        viewModelScope.coroutineContext + Dispatchers.IO,
+        x = savedList,
+        y = items
+    ) { saved, fetched ->
+        if (saved != null && fetched != null) {
+            val value = fetched.map {
+                FishEntityMix(it.fish, saved.firstOrNull { save -> save.id == it.fish.id })
             }
-        }
-        addSource(savedList) {
-            tmpSaved = it.orEmpty()
-            emit()
-        }
-        addSource(items) {
-            tmpItems = it.orEmpty()
-            emit()
+            emit(value)
         }
     }
 
@@ -109,120 +67,59 @@ class FishViewModel @Inject constructor(
 
     private val selected = MutableLiveData<List<FishEntityMix>>()
 
-    val selectedFishTest = combinedLiveData(
-        viewModelScope.coroutineContext + Dispatchers.IO,
-        x = itemsWithLocalData,
-        y = selected,
-        runnerType = RunnerType.CANCEL_PRE_AND_RUN
-    ) { x, y ->
-        repeat(10) {
-            Log.e("HxBreak", "$isActive")
-            yield()
+    private val internalClickedFishId = MutableLiveData<Int>(-1)
+    val clickedFish = combinedLiveData(x = internalClickedFishId, y = itemsWithLocalData,
+        runCheck = { x, y -> x }) { x, y ->
+        if (x == -1) {
+            emit(null)
+        } else {
+            emit(y?.firstOrNull { it.fish.id == x })
         }
-        emit(x.orEmpty().filter { cond -> y.orEmpty().map { it.fish.id }.contains(cond.fish.id) })
     }
+
     /**
-     * expose
+     * after
      */
-    val selectedFish = MediatorLiveData<List<FishEntityMix>>().apply {
-        var ids: List<Int>? = null
-        var tmpSaved: List<FishEntityMix>? = null
-
-        fun emit() {
-            if (tmpSaved != null && ids != null) {
-                viewModelScope.launch(Dispatchers.IO) {
-                    postValue(tmpSaved.orEmpty().filter { ids?.contains(it.fish.id) ?: false })
-                }
-            }
-        }
-
-        addSource(itemsWithLocalData) {
-            tmpSaved = it.orEmpty()
-            emit()
-        }
-        addSource(selected) {
-            ids = it.orEmpty().map { it.fish.id }
-            emit()
+    val selectedFish = combinedLiveData(context = Dispatchers.IO,
+        x = itemsWithLocalData, y = selected,
+        runCheck = { x, _ -> x }) { items, sel ->
+        if (!(items == null || sel == null)) {
+            val ids = sel.map { it.fish.id }
+            emit(items.filter { ids.contains(it.fish.id) })
         }
     }
+
     val editMode = MutableLiveData<Boolean>(false)
 
-    val donateAction = MediatorLiveData<Boolean>().apply {
-        var ids: List<Int>? = null
-        var tmpSaved: List<FishSaved>? = null
-
-        fun emit() {
-            if (tmpSaved != null && ids != null) {
-                viewModelScope.launch(Dispatchers.IO) {
-                    postValue(!ids.orEmpty().any { id ->
-                        tmpSaved.orEmpty().firstOrNull { it.id == id }?.donated ?: false
-                    })
-                }
-            }
-        }
-
-        addSource(savedList) {
-            tmpSaved = it.orEmpty()
-            emit()
-        }
-        addSource(selected) {
-            ids = it.orEmpty().map { it.fish.id }
-            emit()
-        }
+    val donateAction = combinedLiveData(
+        viewModelScope.coroutineContext + Dispatchers.IO,
+        x = savedList, y = selected
+    ) { saved, sel ->
+        val ids = sel.orEmpty().map { it.fish.id }
+        val value = !ids.any { id -> saved.orEmpty().firstOrNull { it.id == id }?.donated ?: false }
+        emit(value)
     }
 
-    val bookmarkAction = MediatorLiveData<Boolean>().apply {
-        var ids: List<Int>? = null
-        var tmpSaved: List<FishSaved>? = null
 
-        fun emit() {
-            if (tmpSaved != null && ids != null) {
-                viewModelScope.launch(Dispatchers.IO) {
-                    postValue(!ids.orEmpty().any { id ->
-                        tmpSaved.orEmpty().firstOrNull { it.id == id }?.owned ?: false
-                    })
-                }
-            }
-        }
-
-        addSource(savedList) {
-            tmpSaved = it.orEmpty()
-            emit()
-        }
-        addSource(selected) {
-            ids = it.orEmpty().map { it.fish.id }
-            emit()
-        }
+    val bookmarkAction = combinedLiveData(
+        viewModelScope.coroutineContext + Dispatchers.IO,
+        x = savedList, y = selected
+    ) { saved, sel ->
+        val ids = sel.orEmpty().map { it.fish.id }
+        val value = !ids.any { id -> saved.orEmpty().firstOrNull { it.id == id }?.owned ?: false }
+        emit(value)
     }
 
-//    val bookmarkAction = selected.map { !it.any { it.saved?.owned ?: false } }
-
-    val data = MediatorLiveData<List<SelectableFishEntity>>().apply {
-        var tmpSelected: List<FishEntityMix>? = Collections.emptyList()
-        var tmpItems: List<FishEntityMix>? = null
-        fun emit() {
-            viewModelScope.launch(Dispatchers.IO) {
-                tmpItems?.let { itemList ->
-                    val tempSel = tmpSelected.orEmpty()
-                    val value = itemList.map { i ->
-                        SelectableFishEntity(
-                            tempSel.any { it.fish.id == i.fish.id },
-                            i
-                        )
-                    }
-                        .sortedBy { CharUtil.headPinyin(it.fish.fish.name.nameCNzh) }
-                    postValue(value)
-                }
-            }
+    val data = combinedLiveData(viewModelScope.coroutineContext + Dispatchers.IO,
+        x = itemsWithLocalData, y = selected, runCheck = { x, y -> x }) { items, sel ->
+        val value = items.orEmpty().map { item ->
+            SelectableFishEntity(
+                sel.orEmpty().any { it.fish.id == item.fish.id },
+                item
+            )
         }
-        addSource(selected) {
-            tmpSelected = it
-            emit()
-        }
-        addSource(itemsWithLocalData) {
-            tmpItems = it
-            emit()
-        }
+            .sortedBy { CharUtil.headPinyin(it.fish.fish.name.nameCNzh) }
+        emit(value)
     }
 
     val found = data.map {
@@ -234,15 +131,11 @@ class FishViewModel @Inject constructor(
     }
 
     val active = items.map {
-        //        val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
-//        val actives = it.count { i ->
-//            booleanArrayOf(
-//                i.jan, i.feb, i.mar, i.apr, i.may, i.jun, i.jul, i.aug, i.sep,
-//                i.oct, i.nov, i.dec
-//            ).getOrElse(currentMonth) { false }
-//        }
-//        "$actives/${it.size}"
-        "Todo"
+        val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
+        val actives = it.count {
+            it.fish.availability.monthArraySouthern.contains(currentMonth)
+        }
+        "$actives/${it.size}"
     }
 
     val isDataLoadingError = MutableLiveData(false)
@@ -307,5 +200,13 @@ class FishViewModel @Inject constructor(
     fun clearSelected() {
         if (!selected.value.isNullOrEmpty())
             selected.value = emptyList()
+    }
+
+    fun fishOnClick(id: Int) {
+        if (id == internalClickedFishId.value) {
+            internalClickedFishId.value = -1
+        } else {
+            internalClickedFishId.value = id
+        }
     }
 }

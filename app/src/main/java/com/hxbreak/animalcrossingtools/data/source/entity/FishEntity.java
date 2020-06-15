@@ -2,6 +2,8 @@ package com.hxbreak.animalcrossingtools.data.source.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class FishEntity {
 
     private int id;
@@ -261,6 +263,26 @@ public class FishEntity {
         private boolean isAllYear;
         private String location;
         private String rarity;
+        @SerializedName("month-array-northern")
+        private List<Integer> monthArrayNorthern;
+        @SerializedName("month-array-southern")
+        private List<Integer> monthArraySouthern;
+
+        public List<Integer> getMonthArrayNorthern() {
+            return monthArrayNorthern;
+        }
+
+        public void setMonthArrayNorthern(List<Integer> monthArrayNorthern) {
+            this.monthArrayNorthern = monthArrayNorthern;
+        }
+
+        public List<Integer> getMonthArraySouthern() {
+            return monthArraySouthern;
+        }
+
+        public void setMonthArraySouthern(List<Integer> monthArraySouthern) {
+            this.monthArraySouthern = monthArraySouthern;
+        }
 
         public String getMonthnorthern() {
             return monthnorthern;

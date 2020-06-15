@@ -18,7 +18,12 @@ import kotlin.experimental.ExperimentalTypeInference
 internal const val DEFAULT_TIMEOUT = 5000L
 
 internal typealias Block<R, X, Y> = suspend CombinedLiveDataScope<R>.(x: X?, y: Y?) -> Unit
+/**
+ * if return value is False, keep waiting for next call
+ */
+typealias CombinedRunCheck = (x: Boolean, y: Boolean) -> Boolean
 
+internal val DEFAULT_RUN_CHECK: CombinedRunCheck = { x, y -> x && y }
 
 @UseExperimental(ExperimentalTypeInference::class)
 fun <R, X, Y> combinedLiveData(
@@ -26,9 +31,10 @@ fun <R, X, Y> combinedLiveData(
     timeoutInMs: Long = DEFAULT_TIMEOUT,
     x: LiveData<X>,
     y: LiveData<Y>,
+    runCheck: CombinedRunCheck = DEFAULT_RUN_CHECK,
     runnerType: RunnerType = RunnerType.LINEAR,
     @BuilderInference block: suspend CombinedLiveDataScope<R>.(x: X?, y: Y?) -> Unit
-): LiveData<R> = CoroutineLiveData(context, timeoutInMs, x, y, runnerType, block)
+): LiveData<R> = CoroutineLiveData(context, timeoutInMs, x, y, runCheck, runnerType, block)
 
 enum class RunnerType {
     LINEAR, CANCEL_PRE_AND_RUN
@@ -39,6 +45,7 @@ internal class CoroutineLiveData<R, X, Y>(
     private val timeoutInMs: Long = DEFAULT_TIMEOUT,
     private val x: LiveData<X>,
     private val y: LiveData<Y>,
+    private val runCheck: CombinedRunCheck,
     private val runnerType: RunnerType = RunnerType.LINEAR,
     private val block: Block<R, X?, Y?>
 ) : MediatorLiveData<R>() {
@@ -56,7 +63,7 @@ internal class CoroutineLiveData<R, X, Y>(
     private var runningJob: Job? = null
 
     private fun onChange(xData: X?, yData: Y?) {
-        if (!(xIsInit && yIsInit)) return
+        if (!runCheck(xIsInit, yIsInit)) return
         runningJob = blockRunner?.maybeRun(xData, yData)
     }
 

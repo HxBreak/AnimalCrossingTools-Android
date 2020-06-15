@@ -69,6 +69,7 @@ android {
 //            version "3.10.2"
 //        }
 //    }
+
     sourceSets {
         main {
             java {
@@ -114,7 +115,6 @@ dependencies {
     implementation "androidx.cardview:cardview:$cardVersion"
     implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
     implementation "androidx.annotation:annotation:$androidXAnnotations"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     implementation "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
@@ -124,7 +124,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
 
     implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
 
     // Architecture Components
     implementation "androidx.room:room-runtime:$roomVersion"
@@ -162,6 +162,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:1.10.19'
     testImplementation 'androidx.test:core:1.0.0'
 
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
@@ -173,4 +174,6 @@ dependencies {
     implementation 'com.github.promeg:tinypinyin:2.0.3' // TinyPinyin核心包，约80KB
     implementation 'com.github.promeg:tinypinyin-lexicons-android-cncity:2.0.3' // 可选，适用于Android的中国地区词典
 //    implementation 'com.github.promeg:tinypinyin-lexicons-java-cncity:2.0.3' // 可选，适用于Java的中国地区词典
+
+//    implementation(project(":recyclerview-fastscroll"))
 }

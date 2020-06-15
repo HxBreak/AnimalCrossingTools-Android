@@ -77,21 +77,18 @@ class FishAdapter(private val viewModel: FishViewModel) :
             fish_item.setOnClickListener {
                 if (viewModel.editMode.value == true)
                     checkBox.performClick()
+                else
+                    viewModel.fishOnClick(fishEntity.fish.fish.id)
             }
 
-            Glide.with(fish_image).load(fishEntity.fish.fish.icon_uri).into(fish_image)
+            Glide.with(fish_image).load(fishEntity.fish.fish.icon_uri)
+                .placeholder(R.drawable.ic_fish)
+                .into(fish_image)
             donated_icon.visibility =
                 if (fishEntity.fish.saved?.donated == true) View.VISIBLE else View.GONE
             bookmark_icon.visibility =
                 if (fishEntity.fish.saved?.owned == true) View.VISIBLE else View.GONE
-            val currentMonth = calendar.get(Calendar.MONTH)
             val i = fishEntity.fish
-//            val activeMonthes = booleanArrayOf(
-//                i.jan, i.feb, i.mar, i.apr, i.may, i.jun, i.jul, i.aug, i.sep,
-//                i.oct, i.nov, i.dec
-//            )
-//            val isActive = activeMonthes.getOrElse(currentMonth) { false }
-//            fish_title.setTextColor(if (isActive) view.context.resources.getColor(R.color.colorAccent) else Color.BLACK)
             fish_title.setText("${fishEntity.fish.fish.name.nameCNzh}-\$${fishEntity.fish.fish.price}")
             fish_subtitle.setText(
                 "${if (entity.availability.isIsAllDay) "All Day" else

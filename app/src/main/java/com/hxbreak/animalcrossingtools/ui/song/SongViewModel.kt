@@ -7,7 +7,7 @@ import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.SongSaved
 import com.hxbreak.animalcrossingtools.data.source.entity.SongMix
-import com.hxbreak.animalcrossingtools.ui.fish.CombinedLiveData
+import com.hxbreak.animalcrossingtools.livedata.CombinedLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -42,7 +42,7 @@ class SongViewModel @Inject constructor(
             }
     }
 
-    val selItems = CombinedLiveData(selected, cds) { x, y ->
+    private val selItems = CombinedLiveData(selected, cds) { x, y ->
         y?.forEach { it.selected = x?.contains(it.song.id) ?: false }
         return@CombinedLiveData y
     }
