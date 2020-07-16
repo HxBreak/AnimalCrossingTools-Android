@@ -51,6 +51,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs = ["-XXLanguage:+NewInference"]
@@ -68,9 +69,6 @@ android {
             java {
                 srcDir "src/main/java"
             }
-//            proto {
-//                srcDir "src/main/proto"
-//            }
         }
     }
 
@@ -174,5 +172,6 @@ dependencies {
     def paging_version = "3.0.0-alpha02"
 
     implementation "androidx.paging:paging-runtime:$paging_version"
+    implementation 'com.google.android.exoplayer:exoplayer:2.11.7'
 
 }

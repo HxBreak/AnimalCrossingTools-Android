@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hxbreak.animalcrossingtools.R
+import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.view.ViewUtils
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fish_item.*
@@ -89,6 +90,9 @@ class SongAdapter(private val viewModel: SongViewModel) :
             fish_subtitle.setText(
                 "${if (song.song.buyPrice != null) "$" else ""}${song.song.buyPrice ?: "非卖品"}"
             )
+            itemView.setOnClickListener {
+                viewModel.lunchMusicPlayer.value = Event("https://acnhapi.com/v1/music/${song.song.id}")
+            }
         }
 
         companion object {

@@ -46,7 +46,15 @@
     <fragment
         android:id="@+id/songFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.song.SongFragment"
-        android:label="SongFragment" />
+        android:label="SongFragment" >
+        <action
+            android:id="@+id/action_songFragment_to_musicPlayFragment"
+            app:destination="@id/musicPlayFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/chatFragment"
@@ -74,4 +82,13 @@
         android:id="@+id/settingsFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.settings.SettingsFragment"
         android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/musicPlayFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.musicplay.MusicPlayFragment"
+        android:label="music_play_fragment"
+        tools:layout="@layout/music_play_fragment" >
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -7,6 +7,7 @@ import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.SongSaved
 import com.hxbreak.animalcrossingtools.data.source.entity.SongMix
+import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.livedata.CombinedLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,6 +19,7 @@ class SongViewModel @Inject constructor(
 //    , private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    val lunchMusicPlayer = MutableLiveData<Event<String>>()
     val refresh = MutableLiveData(false)
     val loading = MutableLiveData(false)
     val editMode = MutableLiveData(false)

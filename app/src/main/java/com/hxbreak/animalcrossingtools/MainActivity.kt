@@ -8,8 +8,6 @@ import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.utils.updateForTheme
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import java.time.Clock
-import java.util.*
 import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity() {

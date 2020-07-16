@@ -27,6 +27,7 @@
 
     <style name="AppTheme.Widget.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:theme">@style/AppTheme.Widget.Toolbar.Title</item>
+        <item name="popupTheme">@style/ThemeOverlay.MaterialComponents.Dark</item>
     </style>
 
     <style name="AppTheme.Widget.Toolbar.Title" parent="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary">

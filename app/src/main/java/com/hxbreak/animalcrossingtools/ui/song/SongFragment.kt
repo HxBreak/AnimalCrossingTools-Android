@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
+import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.song_fragment.*
 import javax.inject.Inject
@@ -185,6 +186,9 @@ class SongFragment : DaggerFragment() {
         textView.text = "已收集/全部"
         viewModel.collectedText.observe(viewLifecycleOwner, Observer {
             collected_summary.text = it
+        })
+        viewModel.lunchMusicPlayer.observe(viewLifecycleOwner, EventObserver {
+            findNavController().navigate(SongFragmentDirections.actionSongFragmentToMusicPlayFragment(it))
         })
     }
 

@@ -123,7 +123,6 @@
             android:fitsSystemWindows="true"
             android:id="@+id/toolbar"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:layout_scrollFlags="scroll|snap|enterAlways"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
