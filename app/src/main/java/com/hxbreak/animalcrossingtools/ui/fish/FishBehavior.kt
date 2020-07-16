@@ -7,6 +7,7 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.hxbreak.animalcrossingtools.R
+import timber.log.Timber
 
 class FishBehavior(context: Context?, attrs: AttributeSet?) :
     AppBarLayout.ScrollingViewBehavior(context, attrs) {
@@ -30,7 +31,7 @@ class FishBehavior(context: Context?, attrs: AttributeSet?) :
     ): Boolean {
         super.onDependentViewChanged(parent, child, dependency)
         if (dependency.id == R.id.bottom_sheet_viewstub) {
-            Log.e("HxBreak", "${dependency.top}")
+            Timber.e("${dependency.top}")
         }
         return false
     }

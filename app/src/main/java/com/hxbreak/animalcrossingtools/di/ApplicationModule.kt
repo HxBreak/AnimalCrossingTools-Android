@@ -7,6 +7,8 @@ import androidx.lifecycle.liveData
 import androidx.room.Room
 import com.hxbreak.animalcrossingtools.data.CoroutinesCallAdapterFactory
 import com.hxbreak.animalcrossingtools.data.LiveDataCallAdapterFactory
+import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
+import com.hxbreak.animalcrossingtools.data.prefs.SharedPreferenceStorage
 import com.hxbreak.animalcrossingtools.data.services.AnimalCrossingServiceV2
 import com.hxbreak.animalcrossingtools.data.services.AnimalCrossingServices
 import com.hxbreak.animalcrossingtools.data.source.*
@@ -168,6 +170,12 @@ object ApplicationModule {
     @Singleton
     @Provides
     fun provideIoDispatcher() = Dispatchers.IO
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun providesPreferenceStorage(context: Context): PreferenceStorage =
+        SharedPreferenceStorage(context)
 }
 
 @Module

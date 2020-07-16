@@ -21,7 +21,7 @@ internal typealias Block<R, X, Y> = suspend CombinedLiveDataScope<R>.(x: X?, y: 
 /**
  * if return value is False, keep waiting for next call
  */
-typealias CombinedRunCheck = (x: Boolean, y: Boolean) -> Boolean
+typealias CombinedRunCheck = (Boolean, Boolean) -> Boolean
 
 internal val DEFAULT_RUN_CHECK: CombinedRunCheck = { x, y -> x && y }
 
@@ -190,6 +190,7 @@ internal class BlockRunner<R, X, Y>(
     @MainThread
     override fun cancel() {
         if (cancellationJob != null) {
+            //todo bug fix -- add maybeCancel
             error("Cancel call cannot happen without a maybeRun")
         }
         cancellationJob = scope.launch(Dispatchers.Main.immediate) {

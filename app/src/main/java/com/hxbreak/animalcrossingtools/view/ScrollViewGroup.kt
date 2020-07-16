@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Scroller
 import androidx.core.view.*
+import timber.log.Timber
 import kotlin.math.abs
 
 
@@ -15,6 +17,8 @@ class ScrollViewGroup @JvmOverloads constructor(
 
     private val mScrollParentHelper = NestedScrollingParentHelper(this)
     private val mScrollChildHelper = NestedScrollingChildHelper(this)
+    private val mScroller = Scroller(context)
+    private lateinit var mPinnedView: View
 
     init {
         mScrollChildHelper.isNestedScrollingEnabled = true
@@ -41,42 +45,11 @@ class ScrollViewGroup @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-//        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
-//        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-//        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
-//        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
         measureChildren(widthMeasureSpec, heightMeasureSpec)
-//        val first = getChildAt(0)
-//        val second = getChildAt(1)
-//        getChildAt(1).measure(widthMeasureSpec, getChildMeasureSpec(
-//            widthMeasureSpec,
-//            0,
-//            heightSize - first.measuredHeight
-//        ))
-//        setMeasuredDimension(widthSize, heightSize)
     }
 
-    private var mScrolled = 0
-
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-//        val first = getChildAt(0)
-//        for (i in 0 until childCount) {
-//            val child = getChildAt(i)
-//            if (i == 0) {
-//                child.layout(0, -mScrolled, child.measuredWidth, child.measuredHeight - mScrolled)
-//            } else {
-//                child.layout(
-//                    0,
-//                    first.measuredHeight - mScrolled,
-//                    child.measuredWidth,
-//                    measuredHeight
-//                )
-//            }
-//        }
         updateLayout()
-//        val body = get(1)
-//        body.measure(MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY),
-//            MeasureSpec.makeMeasureSpec(body.bottom - body.top, MeasureSpec.EXACTLY))
     }
 
     class LayoutParams : MarginLayoutParams {
@@ -88,56 +61,71 @@ class ScrollViewGroup @JvmOverloads constructor(
         constructor(source: ViewGroup.LayoutParams?) : super(source) {}
     }
 
-    fun effectScroll(dy: Int) {
-        val stickyTopView = get(0)
-        mScrolled = (mScrolled + dy).coerceIn(0, stickyTopView.measuredHeight)
+    private fun effectScroll(dy: Int) {
+        mScroller.finalY = (mScroller.finalY + dy).coerceIn(0, mPinnedView.measuredHeight)
+    }
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        for (i in 0 until childCount) {
+            val view = get(i)
+            if (view.tag is String && "pin" == view.tag) {
+                mPinnedView = view
+            }
+        }
+
+        post {
+            mScroller.startScroll(mScroller.finalX, mScroller.finalY, 0, mPinnedView.height, 1000)
+            requestLayout()
+        }
     }
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
         val oldScroll: Int
         val left = if (dy > 0) {
             dispatchNestedPreScroll(dx, dy, consumed, null, type)
-            oldScroll = mScrolled
+            oldScroll = mScroller.finalY
             dy - consumed[1]
         } else {
-            oldScroll = mScrolled
+            oldScroll = mScroller.finalY
             dy
         }
         effectScroll(left)
-        val scrolled = mScrolled - oldScroll
+        val scrolled = mScroller.finalY - oldScroll
         consumed[1] += scrolled
         if (dy < 0) {
             dispatchNestedPreScroll(dx, dy - consumed[1], consumed, null, type)
         }
-
-//        if (dy < 0){
-//            val oldScroll = mScrolled
-//            val left = dy - consumed[1]
-//            Log.e("HxBreak-pre", "$dy, ${consumed[1]}, $left, $scrolled, $oldScroll")
-//            dispatchNestedPreScroll(dx, dy - consumed[1], consumed, null, type)
-//        }else{
-//            dispatchNestedPreScroll(dx, dy, consumed, null, type)
-//            val oldScroll = mScrolled
-//            val left = dy - consumed[1]
-//            effectScroll(left)
-//            val scrolled = mScrolled - oldScroll
-//            consumed[1] += scrolled
-//            Log.e("HxBreak-pre", "$dy, ${consumed[1]}, $left, $scrolled, $oldScroll")
-//        }
+        mScroller.forceFinished(true)
         updateLayout()
     }
 
+    override fun computeScroll() {
+        super.computeScroll()
+        if (mScroller.computeScrollOffset()) {
+            Timber.i("computeScrollOffset")
+            requestLayout()
+        }
+    }
+
     private fun updateLayout() {
-        var pview: View? = null
+        Timber.i("updateLayout")
+        val oScroller = if (mScroller.isFinished) mScroller.finalY else mScroller.currY
+        val scroll = oScroller.coerceIn(0, mPinnedView.measuredHeight)
+        if (oScroller < 0 || oScroller > mPinnedView.measuredHeight) {
+            Timber.i("forceFinished")
+            mScroller.finalY = scroll
+            mScroller.forceFinished(true)
+        }
+
         for (i in 0 until childCount) {
             val child = getChildAt(i)
-            if (pview == null) {
-                pview = child
-                child.layout(0, -mScrolled, child.measuredWidth, child.measuredHeight - mScrolled)
+            if (child == mPinnedView) {
+                mPinnedView.layout(0, -scroll, child.measuredWidth, child.measuredHeight - scroll)
             } else {
                 child.layout(
                     0,
-                    pview.measuredHeight - mScrolled,
+                    mPinnedView.measuredHeight - scroll,
                     child.measuredWidth,
                     measuredHeight
                 )

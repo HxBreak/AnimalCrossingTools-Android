@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.animation.addListener
+import androidx.core.view.NestedScrollingChild3
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -21,8 +23,9 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fish_fragment.*
 import kotlinx.android.synthetic.main.fish_bottom_sheet.*
+import kotlinx.android.synthetic.main.fish_fragment.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -230,9 +233,27 @@ class FishFragment : DaggerFragment() {
         }
     }
 
+    var lastOffset = -1.0f
+
+    private val listener = object : BottomSheetBehavior.BottomSheetCallback() {
+
+        override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            val child = recycler_view
+            if (child.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL)) {
+                val percent = slideOffset - lastOffset
+                lastOffset = slideOffset
+                Timber.e("$percent")
+                child.nestedScrollBy(0, (percent * bottomSheet.height / 4).toInt())
+            }
+        }
+
+        override fun onStateChanged(bottomSheet: View, newState: Int) {}
+    }
+
     fun effectBottomSheet(fish: FishEntityMix?) {
         bottomSheetView = bottomSheetView ?: bottom_sheet_viewstub.inflate()
         val sheetBehavior = BottomSheetBehavior.from(bottomSheetView!!)
+        sheetBehavior.addBottomSheetCallback(listener)
         if (fish == null) {
             sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         } else {

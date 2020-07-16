@@ -1,7 +1,5 @@
 rootProject.name='AnimalCrossingTools'
-include ':app'
-//,
-//        ':recyclerview-fastscroll'
+include ':app', ':recyclerview-fastscroll'
 include ':turnip_price'
 include ':tracker_proto'
 include ':ratingbar'

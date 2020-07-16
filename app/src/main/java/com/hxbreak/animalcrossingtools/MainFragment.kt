@@ -2,9 +2,7 @@ package com.hxbreak.animalcrossingtools
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
@@ -27,6 +25,10 @@ class MainFragment : DaggerFragment() {
 
     private val viewModel by viewModels<TempViewModel> { viewModelFactory }
 
+    private val navigator by lazy {
+        findNavController()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -35,6 +37,7 @@ class MainFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -43,13 +46,13 @@ class MainFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         Glide.with(this).load(R.drawable.ic_fish).into(fish_category_image)
         fish_category.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_fishFragment2)
+            navigator.navigate(R.id.action_mainFragment_to_fishFragment2)
         }
         button.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_songFragment)
+            navigator.navigate(R.id.action_mainFragment_to_songFragment)
         }
         button2.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_trackerFragment)
+            navigator.navigate(R.id.action_mainFragment_to_trackerFragment)
         }
         rating.setOnRatingListener { v, RatingScore ->
             Toast.makeText(requireContext(), "$RatingScore", Toast.LENGTH_SHORT).show()
@@ -64,6 +67,18 @@ class MainFragment : DaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+    }
 
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_open_setting) {
+            navigator.navigate(R.id.action_mainFragment_to_settingsFragment)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.home_toolbar_menu, menu)
     }
 }

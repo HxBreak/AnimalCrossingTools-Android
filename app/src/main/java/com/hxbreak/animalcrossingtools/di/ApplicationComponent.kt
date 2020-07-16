@@ -16,7 +16,9 @@ import javax.inject.Singleton
         FishListModule::class,
         SongListModule::class,
         TempModule::class,
-        TrackerModule::class
+        TrackerModule::class,
+        SettingModule::class,
+        MainActivityModule::class
     ]
 )
 interface ApplicationComponent : AndroidInjector<App> {

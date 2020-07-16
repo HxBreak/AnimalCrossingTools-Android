@@ -23,6 +23,7 @@ class FishViewModel @Inject constructor(
     val loading = MutableLiveData(false)
     val error = MutableLiveData<Pair<Exception, () -> Unit>>()
 
+
     private val items: LiveData<List<FishEntityMix>> = refresh.switchMap { forceUpdate ->
         loading.value = true
         liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
@@ -68,21 +69,25 @@ class FishViewModel @Inject constructor(
     private val selected = MutableLiveData<List<FishEntityMix>>()
 
     private val internalClickedFishId = MutableLiveData<Int>(-1)
-    val clickedFish = combinedLiveData(x = internalClickedFishId, y = itemsWithLocalData,
-        runCheck = { x, y -> x }) { x, y ->
-        if (x == -1) {
-            emit(null)
-        } else {
-            emit(y?.firstOrNull { it.fish.id == x })
+    val clickedFish: LiveData<FishEntityMix?> =
+        combinedLiveData(x = internalClickedFishId, y = itemsWithLocalData,
+            runCheck = { x, y -> x }) { x, y ->
+            if (x == -1) {
+                emit(null)
+            } else {
+                emit(y?.firstOrNull { it.fish.id == x })
+            }
         }
-    }
+
+
+    fun func(x: Boolean, y: Boolean) = x
 
     /**
      * after
      */
-    val selectedFish = combinedLiveData(context = Dispatchers.IO,
+    val selectedFish: LiveData<List<FishEntityMix>> = combinedLiveData(context = Dispatchers.IO,
         x = itemsWithLocalData, y = selected,
-        runCheck = { x, _ -> x }) { items, sel ->
+        runCheck = { x: Boolean, _: Boolean -> x }) { items, sel ->
         if (!(items == null || sel == null)) {
             val ids = sel.map { it.fish.id }
             emit(items.filter { ids.contains(it.fish.id) })
@@ -110,17 +115,18 @@ class FishViewModel @Inject constructor(
         emit(value)
     }
 
-    val data = combinedLiveData(viewModelScope.coroutineContext + Dispatchers.IO,
-        x = itemsWithLocalData, y = selected, runCheck = { x, y -> x }) { items, sel ->
-        val value = items.orEmpty().map { item ->
-            SelectableFishEntity(
-                sel.orEmpty().any { it.fish.id == item.fish.id },
-                item
-            )
+    val data: LiveData<List<SelectableFishEntity>> =
+        combinedLiveData(viewModelScope.coroutineContext + Dispatchers.IO,
+            x = itemsWithLocalData, y = selected, runCheck = { x, y -> x }) { items, sel ->
+            val value = items.orEmpty().map { item ->
+                SelectableFishEntity(
+                    sel.orEmpty().any { it.fish.id == item.fish.id },
+                    item
+                )
+            }
+                .sortedBy { CharUtil.headPinyin(it.fish.fish.name.nameCNzh) }
+            emit(value)
         }
-            .sortedBy { CharUtil.headPinyin(it.fish.fish.name.nameCNzh) }
-        emit(value)
-    }
 
     val found = data.map {
         "${it.count { it.fish.saved?.owned ?: false }}/${it.size}"
