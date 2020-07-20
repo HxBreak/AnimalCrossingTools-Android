@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.animation.addListener
-import androidx.core.view.NestedScrollingChild3
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -23,8 +22,8 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fish_bottom_sheet.*
-import kotlinx.android.synthetic.main.fish_fragment.*
+import kotlinx.android.synthetic.main.bottom_sheet_fish.*
+import kotlinx.android.synthetic.main.fragment_fish.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -42,7 +41,7 @@ class FishFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fish_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_fish, container, false)
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(false) {

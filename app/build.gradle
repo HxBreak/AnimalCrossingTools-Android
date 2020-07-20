@@ -172,6 +172,8 @@ dependencies {
     def paging_version = "3.0.0-alpha02"
 
     implementation "androidx.paging:paging-runtime:$paging_version"
-    implementation 'com.google.android.exoplayer:exoplayer:2.11.7'
+    def exoplayer_version = "2.11.7"
+    implementation "com.google.android.exoplayer:exoplayer:$exoplayer_version"
 
+    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
 }

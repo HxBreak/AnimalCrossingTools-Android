@@ -15,10 +15,10 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.ui.TrackerViewModel
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.chat_fragment.*
-import kotlinx.android.synthetic.main.chat_fragment.edit_mode
-import kotlinx.android.synthetic.main.chat_fragment.refresh_layout
-import kotlinx.android.synthetic.main.chat_fragment.toolbar
+import kotlinx.android.synthetic.main.fragment_chat.*
+import kotlinx.android.synthetic.main.fragment_chat.edit_mode
+import kotlinx.android.synthetic.main.fragment_chat.refresh_layout
+import kotlinx.android.synthetic.main.fragment_chat.toolbar
 import java.util.*
 import javax.inject.Inject
 
@@ -39,7 +39,7 @@ class ChatFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.chat_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_chat, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

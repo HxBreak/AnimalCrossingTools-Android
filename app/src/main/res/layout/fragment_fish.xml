@@ -179,7 +179,7 @@
         app:behavior_hideable="true"
         app:elevation="8dp"
         app:behavior_peekHeight="144dp"
-        android:layout="@layout/fish_bottom_sheet"
+        android:layout="@layout/bottom_sheet_fish"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/bottom_sheet_behavior" />

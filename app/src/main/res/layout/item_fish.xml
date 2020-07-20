@@ -62,7 +62,7 @@
             app:layout_constraintVertical_bias="0.473"
             tools:srcCompat="@drawable/ic_home_black_24dp" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/donated_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -73,7 +73,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/bookmark_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -88,7 +88,7 @@
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/checkBox"
-        style="@style/checkbox"
+        style="@style/AppTheme.Widget.CheckBox"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:translationX="-32dp"

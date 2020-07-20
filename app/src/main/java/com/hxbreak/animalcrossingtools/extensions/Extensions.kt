@@ -1,4 +1,4 @@
-package com.hxbreak.animalcrossingtools.utils
+package com.hxbreak.animalcrossingtools.extensions
 
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity

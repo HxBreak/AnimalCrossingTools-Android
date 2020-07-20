@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.tracker_fragment.*
+import kotlinx.android.synthetic.main.fragment_tracker.*
 import javax.inject.Inject
 
 class TrackerFragment : DaggerFragment() {
@@ -33,7 +33,7 @@ class TrackerFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tracker_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_tracker, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

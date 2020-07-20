@@ -1,9 +1,11 @@
 package com.hxbreak.animalcrossingtools.di
 
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import dagger.MapKey
 import dagger.Module
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.reflect.KClass
@@ -39,6 +41,11 @@ internal abstract class ViewModelBuilder {
     internal abstract fun bindViewModelFactory(
         factory: DiViewModelFactory
     ): ViewModelProvider.Factory
+}
+
+@Module
+internal abstract class ActivityModuleBuilder {
+
 }
 
 @Target(

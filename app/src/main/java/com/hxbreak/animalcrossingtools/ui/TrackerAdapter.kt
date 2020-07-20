@@ -13,7 +13,7 @@ import com.example.tracker_proto.NetworkUtils
 import com.hxbreak.tracker_proto.data.ConnectedClient
 import kotlinx.android.extensions.LayoutContainer
 
-import kotlinx.android.synthetic.main.fish_item.*
+import kotlinx.android.synthetic.main.item_fish.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -100,7 +100,7 @@ class TrackerAdapter(private val viewModel: TrackerViewModel) :
         companion object {
             fun from(parent: ViewGroup, viewModel: TrackerViewModel): ViewHolder {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.fish_item, parent, false)
+                    .inflate(R.layout.item_fish, parent, false)
                 return ViewHolder(viewModel, view)
             }
         }

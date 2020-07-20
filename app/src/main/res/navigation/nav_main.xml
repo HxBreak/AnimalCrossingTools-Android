@@ -68,7 +68,7 @@
         android:id="@+id/trackerFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.TrackerFragment"
         android:label="tracker_fragment"
-        tools:layout="@layout/tracker_fragment">
+        tools:layout="@layout/fragment_tracker">
 
         <action
             android:id="@+id/action_trackerFragment_to_chatFragment"
@@ -86,7 +86,7 @@
         android:id="@+id/musicPlayFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.musicplay.MusicPlayFragment"
         android:label="music_play_fragment"
-        tools:layout="@layout/music_play_fragment" >
+        tools:layout="@layout/fragment_music_play">
         <argument
             android:name="url"
             app:argType="string" />

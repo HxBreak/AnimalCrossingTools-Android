@@ -1,9 +1,9 @@
 package com.hxbreak.animalcrossingtools.di
 
+import android.content.ComponentName
 import android.content.Context
 import android.provider.Settings
 import android.util.Log
-import androidx.lifecycle.liveData
 import androidx.room.Room
 import com.hxbreak.animalcrossingtools.data.CoroutinesCallAdapterFactory
 import com.hxbreak.animalcrossingtools.data.LiveDataCallAdapterFactory
@@ -16,6 +16,8 @@ import com.hxbreak.animalcrossingtools.data.source.local.FishDataSource
 import com.hxbreak.animalcrossingtools.data.source.local.FishLocalDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.SongDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.SongRemoteDataSource
+import com.hxbreak.animalcrossingtools.media.MusicService
+import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -25,6 +27,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -58,7 +61,7 @@ object ApplicationModule {
     @Provides
     fun provideLogger(): HttpLoggingInterceptor {
         val ret = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
-            Log.e("HxBreak", "$it")
+            Timber.e(it)
         })
         ret.level = HttpLoggingInterceptor.Level.BASIC
         return ret
@@ -134,13 +137,19 @@ object ApplicationModule {
     @JvmStatic
     @Singleton
     @Provides
+    fun provideMusicServiceConnection(context: Context) = MusicServiceConnection.getInstance(
+        context,
+        ComponentName(context, MusicService::class.java)
+    )
+
+    @JvmStatic
+    @Singleton
+    @Provides
     fun provideDatabase(context: Context): AnimalCrossingDatabase {
         val result = Room.databaseBuilder(
             context.applicationContext,
             AnimalCrossingDatabase::class.java, "ACNH.db"
-        )
-//            .createFromAsset("acnh.db")
-            .build()
+        ).build()
         return result
     }
 

@@ -1,7 +1,6 @@
 package com.hxbreak.animalcrossingtools.ui.fish
 
 import android.animation.ObjectAnimator
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,7 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.view.ViewUtils
 import kotlinx.android.extensions.LayoutContainer
 
-import kotlinx.android.synthetic.main.fish_item.*
+import kotlinx.android.synthetic.main.item_fish.*
 import java.util.*
 
 class FishAdapter(private val viewModel: FishViewModel) :
@@ -99,7 +98,7 @@ class FishAdapter(private val viewModel: FishViewModel) :
         companion object {
             fun from(parent: ViewGroup, viewModel: FishViewModel): ViewHolder {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.fish_item, parent, false)
+                    .inflate(R.layout.item_fish, parent, false)
                 return ViewHolder(viewModel, view)
             }
         }

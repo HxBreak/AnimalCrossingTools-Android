@@ -12,7 +12,7 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.view.ViewUtils
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.fish_item.*
+import kotlinx.android.synthetic.main.item_fish.*
 import java.util.*
 
 class SongAdapter(private val viewModel: SongViewModel) :
@@ -38,8 +38,6 @@ class SongAdapter(private val viewModel: SongViewModel) :
         val viewModel: SongViewModel,
         val view: View
     ) : RecyclerView.ViewHolder(view), LayoutContainer {
-
-        val calendar = Calendar.getInstance()
 
         override val containerView: View?
             get() = view
@@ -71,11 +69,7 @@ class SongAdapter(private val viewModel: SongViewModel) :
             checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 viewModel.toggleSong(song.song.id)
             }
-            fish_item.isClickable = true
-            fish_item.setOnClickListener {
-                if (viewModel.editMode.value == true)
-                    checkBox.performClick()
-            }
+            itemView.isClickable = true
             Glide.with(fish_image).load("${song.song.imageUrl}")
                 .into(fish_image)
             donated_icon.visibility = View.GONE
@@ -91,14 +85,19 @@ class SongAdapter(private val viewModel: SongViewModel) :
                 "${if (song.song.buyPrice != null) "$" else ""}${song.song.buyPrice ?: "非卖品"}"
             )
             itemView.setOnClickListener {
-                viewModel.lunchMusicPlayer.value = Event("https://acnhapi.com/v1/music/${song.song.id}")
+                if (viewModel.editMode.value!!) {
+                    checkBox.performClick()
+                } else {
+                    viewModel.lunchMusicPlayer.value =
+                        Event("https://acnhapi.com/v1/music/${song.song.id}")
+                }
             }
         }
 
         companion object {
             fun from(parent: ViewGroup, viewModel: SongViewModel): ViewHolder {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.fish_item, parent, false)
+                    .inflate(R.layout.item_fish, parent, false)
                 return ViewHolder(viewModel, view)
             }
         }

@@ -18,7 +18,8 @@ import javax.inject.Singleton
         TempModule::class,
         TrackerModule::class,
         SettingModule::class,
-        MainActivityModule::class
+        MainActivityModule::class,
+        NowPlayingModule::class
     ]
 )
 interface ApplicationComponent : AndroidInjector<App> {

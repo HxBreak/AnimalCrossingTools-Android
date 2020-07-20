@@ -44,7 +44,6 @@ class MainFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Glide.with(this).load(R.drawable.ic_fish).into(fish_category_image)
         fish_category.setOnClickListener {
             navigator.navigate(R.id.action_mainFragment_to_fishFragment2)
         }
@@ -69,6 +68,10 @@ class MainFragment : DaggerFragment() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
     }
 
+    override fun onResume() {
+        super.onResume()
+        Glide.with(this).load(R.drawable.ic_fish).into(fish_category_image)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_open_setting) {

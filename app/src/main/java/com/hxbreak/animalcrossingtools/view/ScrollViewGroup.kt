@@ -73,11 +73,6 @@ class ScrollViewGroup @JvmOverloads constructor(
                 mPinnedView = view
             }
         }
-
-        post {
-            mScroller.startScroll(mScroller.finalX, mScroller.finalY, 0, mPinnedView.height, 1000)
-            requestLayout()
-        }
     }
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
@@ -241,4 +236,5 @@ class ScrollViewGroup @JvmOverloads constructor(
     override fun startNestedScroll(axes: Int, type: Int): Boolean {
         return mScrollChildHelper.startNestedScroll(axes, type)
     }
+
 }

@@ -17,7 +17,8 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.song_fragment.*
+import kotlinx.android.synthetic.main.fragment_song.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class SongFragment : DaggerFragment() {
@@ -31,7 +32,7 @@ class SongFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.song_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_song, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +56,7 @@ class SongFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.e("onViewCreated")
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener {
             if (viewModel.editMode.value == true) {
@@ -138,7 +140,7 @@ class SongFragment : DaggerFragment() {
             bookmark.isEnabled = !it.isNullOrEmpty()
         })
 
-        viewModel.erro.observe(viewLifecycleOwner, Observer {
+        viewModel.erro.observe(viewLifecycleOwner, EventObserver {
             Toast.makeText(requireContext(), "$it", Toast.LENGTH_SHORT).show()
         })
 

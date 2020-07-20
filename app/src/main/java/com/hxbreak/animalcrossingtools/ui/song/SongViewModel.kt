@@ -23,7 +23,7 @@ class SongViewModel @Inject constructor(
     val refresh = MutableLiveData(false)
     val loading = MutableLiveData(false)
     val editMode = MutableLiveData(false)
-    val erro = MutableLiveData<Exception>()
+    val erro = MutableLiveData<Event<Exception>>()
     val selected = MutableLiveData<MutableList<Int>>()
 
     val cds = refresh.switchMap {
@@ -122,7 +122,7 @@ class SongViewModel @Inject constructor(
                 result.postValue(data.data.values.toList())
             }
         } else if (data is Result.Error) {
-            erro.value = data.exception
+            erro.value = Event(data.exception)
             Log.e("HxBreak", "${data.exception}")
         }
         loading.value = false

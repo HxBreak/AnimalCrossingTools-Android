@@ -9,10 +9,9 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.theme.Theme
 import com.hxbreak.animalcrossingtools.theme.ThemeSettingDialogFragment
-import com.hxbreak.animalcrossingtools.ui.fish.FishViewModel
 import dagger.android.support.DaggerFragment
 
-import kotlinx.android.synthetic.main.settings_fragment.*
+import kotlinx.android.synthetic.main.fragment_settings.*
 import javax.inject.Inject
 
 class SettingsFragment : DaggerFragment() {
@@ -28,7 +27,7 @@ class SettingsFragment : DaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.settings_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
