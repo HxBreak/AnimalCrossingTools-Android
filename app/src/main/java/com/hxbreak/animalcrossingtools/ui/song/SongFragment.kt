@@ -10,6 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestinationBuilder
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 
@@ -189,8 +193,22 @@ class SongFragment : DaggerFragment() {
         viewModel.collectedText.observe(viewLifecycleOwner, Observer {
             collected_summary.text = it
         })
-        viewModel.lunchMusicPlayer.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(SongFragmentDirections.actionSongFragmentToMusicPlayFragment(it))
+
+        viewModel.lunchNowPlayingEvent.observe(viewLifecycleOwner, EventObserver {
+            it.let {
+                it.get()?.let {
+                    val extras = FragmentNavigatorExtras(
+                        it.retrieve("image") to "header_image",
+                        it.retrieve("title") to "header_title"
+                    )
+                    findNavController().navigate(
+                        R.id.action_songFragment_to_musicPlayFragment,
+                        null,
+                        null,
+                        extras
+                    )
+                }
+            }
         })
     }
 

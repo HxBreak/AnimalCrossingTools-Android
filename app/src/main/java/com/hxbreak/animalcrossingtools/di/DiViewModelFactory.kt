@@ -43,11 +43,6 @@ internal abstract class ViewModelBuilder {
     ): ViewModelProvider.Factory
 }
 
-@Module
-internal abstract class ActivityModuleBuilder {
-
-}
-
 @Target(
     AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER
 )

@@ -2,8 +2,10 @@ package com.hxbreak.animalcrossingtools
 
 import android.media.AudioManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.distinctUntilChanged
 import androidx.navigation.fragment.findNavController
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.extensions.updateForTheme
@@ -27,8 +29,10 @@ class MainActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         updateForTheme(viewModel.currentTheme)
         viewModel.theme.observe(this, Observer(::updateForTheme))
+        viewModel.connection.nowPlaying.observe(this, Observer {
+            Toast.makeText(this, "$it", Toast.LENGTH_SHORT).show()
+        })
         setContentView(R.layout.activity_main)
-        AndroidInjection.inject(this)
         volumeControlStream = AudioManager.STREAM_MUSIC
     }
 

@@ -69,7 +69,7 @@ class MusicNotificationManager(
         ).apply {
 
             setMediaSessionToken(sessionToken)
-            setSmallIcon(R.drawable.ic_notifications_black_24dp)
+            setSmallIcon(R.drawable.ic_baseline_music_note_24)
 
             // Don't display the rewind or fast-forward buttons.
             setRewindIncrementMs(0)

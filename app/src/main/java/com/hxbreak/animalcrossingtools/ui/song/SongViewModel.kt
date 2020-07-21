@@ -1,7 +1,15 @@
 package com.hxbreak.animalcrossingtools.ui.song
 
+import android.media.Image
+import android.net.Uri
+import android.os.Bundle
+import android.support.v4.media.MediaMetadataCompat
 import android.util.Log
+import android.view.View
+import androidx.core.app.BundleCompat
+import androidx.core.os.bundleOf
 import androidx.lifecycle.*
+import com.example.android.uamp.media.extensions.*
 import com.hxbreak.animalcrossingtools.data.source.entity.Song
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.Result
@@ -9,22 +17,24 @@ import com.hxbreak.animalcrossingtools.data.SongSaved
 import com.hxbreak.animalcrossingtools.data.source.entity.SongMix
 import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.livedata.CombinedLiveData
+import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class SongViewModel @Inject constructor(
-    private val repository: DataRepository
-//    , private val savedStateHandle: SavedStateHandle
+    private val repository: DataRepository,
+    private val connection: MusicServiceConnection
 ) : ViewModel() {
 
-    val lunchMusicPlayer = MutableLiveData<Event<String>>()
     val refresh = MutableLiveData(false)
     val loading = MutableLiveData(false)
     val editMode = MutableLiveData(false)
     val erro = MutableLiveData<Event<Exception>>()
     val selected = MutableLiveData<MutableList<Int>>()
+    val lunchNowPlayingEvent = MutableLiveData<Event<WeakReference<TransitionView>>>()
 
     val cds = refresh.switchMap {
         loading.value = true
@@ -154,6 +164,21 @@ class SongViewModel @Inject constructor(
             savedChange.value = false
             loading.value = false
         }
+    }
+
+    fun playSong(song: Song, transitionView: TransitionView) {
+        val metadata = MediaMetadataCompat.Builder().apply {
+            mediaUri = song.musicUrl
+            displayTitle = song.name.nameCNzh
+            displaySubtitle = "K.K."
+            title = song.fileName
+            albumArtUri = song.imageUrl
+        }.build()
+        connection.transportControls.playFromUri(
+            Uri.parse(song.musicUrl),
+            bundleOf("MediaMetaData" to metadata)
+        )
+        lunchNowPlayingEvent.value = Event(WeakReference(transitionView))
     }
 }
 

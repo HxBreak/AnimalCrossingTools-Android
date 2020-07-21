@@ -4,13 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
+import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
 import com.hxbreak.animalcrossingtools.theme.Theme
 import com.hxbreak.animalcrossingtools.theme.ThemedActivityDelegate
 import com.hxbreak.animalcrossingtools.theme.themeFromStorageKey
 import javax.inject.Inject
 
 class MainActivityViewModel @Inject constructor(
-    themedActivityDelegate: ThemedActivityDelegateImpl
+    themedActivityDelegate: ThemedActivityDelegateImpl,
+    val connection: MusicServiceConnection
 ) : ViewModel(), ThemedActivityDelegate by themedActivityDelegate
 
 

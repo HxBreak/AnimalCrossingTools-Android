@@ -6,11 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
-import com.example.android.uamp.media.extensions.*
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -107,46 +105,24 @@ open class MusicService : MediaBrowserServiceCompat() {
 
             }
             // Create the PlaybackPreparer of the media session connector.
-            val playbackPreparer = UampPlaybackPreparer(
-                listOf(MediaMetadataCompat.Builder().from().build()),
+            val playbackPreparer = MusicPlaybackPreparer(
+                emptyList(),
                 exoPlayer,
                 dataSourceFactory
             )
 
             connector.setPlayer(exoPlayer)
             connector.setPlaybackPreparer(playbackPreparer)
-            connector.setQueueNavigator(UampQueueNavigator(mediaSession))
+            connector.setQueueNavigator(MusicQueueNavigator(mediaSession))
         }
-    }
-
-    fun MediaMetadataCompat.Builder.from(): MediaMetadataCompat.Builder {
-        // The duration from the JSON is given in seconds, but the rest of the code works in
-        // milliseconds. Here's where we convert to the proper units.
-
-        id = "1"
-        title = "title"
-        duration = 12344
-        mediaUri = "https://acnhapi.com/v1/music/95"
-        albumArtUri = "https://acnhapi.com/v1/images/songs/4"
-        flag = MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-
-        // To make things easier for *displaying* these, set the display properties as well.
-        displayIconUri = "https://acnhapi.com/v1/images/songs/4"
-
-        // Add downloadStatus to force the creation of an "extras" bundle in the resulting
-        // MediaMetadataCompat object. This is needed to send accurate metadata to the
-        // media session during updates.
-        downloadStatus = MediaDescriptionCompat.STATUS_NOT_DOWNLOADED
-
-        // Allow it to be used in the typical builder style.
-        return this
     }
 
     override fun onLoadChildren(
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-        result.sendResult(null)
+        result.detach()
+//        result.sendResult(mutableListOf())
     }
 
     override fun onGetRoot(
@@ -207,7 +183,7 @@ open class MusicService : MediaBrowserServiceCompat() {
  * Helper class to retrieve the the Metadata necessary for the ExoPlayer MediaSession connection
  * extension to call [MediaSessionCompat.setMetadata].
  */
-private class UampQueueNavigator(
+private class MusicQueueNavigator(
     mediaSession: MediaSessionCompat
 ) : TimelineQueueNavigator(mediaSession) {
     private val window = Timeline.Window()

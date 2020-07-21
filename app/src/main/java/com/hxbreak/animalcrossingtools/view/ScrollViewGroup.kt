@@ -98,17 +98,17 @@ class ScrollViewGroup @JvmOverloads constructor(
     override fun computeScroll() {
         super.computeScroll()
         if (mScroller.computeScrollOffset()) {
-            Timber.i("computeScrollOffset")
+//            Timber.i("computeScrollOffset")
             requestLayout()
         }
     }
 
     private fun updateLayout() {
-        Timber.i("updateLayout")
+//        Timber.i("updateLayout")
         val oScroller = if (mScroller.isFinished) mScroller.finalY else mScroller.currY
         val scroll = oScroller.coerceIn(0, mPinnedView.measuredHeight)
         if (oScroller < 0 || oScroller > mPinnedView.measuredHeight) {
-            Timber.i("forceFinished")
+//            Timber.i("forceFinished")
             mScroller.finalY = scroll
             mScroller.forceFinished(true)
         }

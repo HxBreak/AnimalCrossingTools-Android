@@ -33,9 +33,6 @@ class MusicPlayFragment : DaggerFragment() {
 
     private val viewModel by viewModels<MusicPlayViewModel> { viewModelFactory }
 
-    private val args: MusicPlayFragmentArgs by navArgs()
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,25 +40,12 @@ class MusicPlayFragment : DaggerFragment() {
         return inflater.inflate(R.layout.fragment_music_play, container, false)
     }
 
-    val player by lazy { SimpleExoPlayer.Builder(requireContext()).build() }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(
-            context,
-            Util.getUserAgent(requireContext(), "")
-        )
-        val videoSource: MediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(Uri.parse(args.url))
-
-//        player.prepare(videoSource)
-//        player.playWhenReady = true
-        viewModel
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        player.release()
     }
 
 }

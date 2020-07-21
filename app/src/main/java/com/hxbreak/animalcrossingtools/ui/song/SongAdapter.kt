@@ -1,6 +1,7 @@
 package com.hxbreak.animalcrossingtools.ui.song
 
 import android.animation.ObjectAnimator
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,11 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.view.ViewUtils
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.fragment_fish.*
+import kotlinx.android.synthetic.main.fragment_music_play.*
+import kotlinx.android.synthetic.main.fragment_music_play.title
 import kotlinx.android.synthetic.main.item_fish.*
+import java.lang.RuntimeException
 import java.util.*
 
 class SongAdapter(private val viewModel: SongViewModel) :
@@ -84,12 +89,19 @@ class SongAdapter(private val viewModel: SongViewModel) :
             fish_subtitle.setText(
                 "${if (song.song.buyPrice != null) "$" else ""}${song.song.buyPrice ?: "非卖品"}"
             )
+
             itemView.setOnClickListener {
                 if (viewModel.editMode.value!!) {
                     checkBox.performClick()
                 } else {
-                    viewModel.lunchMusicPlayer.value =
-                        Event("https://acnhapi.com/v1/music/${song.song.id}")
+                    viewModel.playSong(song.song, object : TransitionView {
+                        override fun retrieve(name: String) = when (name) {
+                            "image" -> fish_image
+                            "title" -> fish_title
+                            else -> throw RuntimeException()
+                        }
+
+                    })
                 }
             }
         }
@@ -104,6 +116,9 @@ class SongAdapter(private val viewModel: SongViewModel) :
     }
 }
 
+interface TransitionView {
+    fun retrieve(name: String): View
+}
 
 class FishDiff : DiffUtil.ItemCallback<SongMixSelectable>() {
     override fun areItemsTheSame(oldItem: SongMixSelectable, newItem: SongMixSelectable): Boolean {
