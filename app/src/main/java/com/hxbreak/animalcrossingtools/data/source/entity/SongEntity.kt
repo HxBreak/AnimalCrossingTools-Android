@@ -2,6 +2,7 @@ package com.hxbreak.animalcrossingtools.data.source.entity
 
 import com.google.gson.annotations.SerializedName
 import com.hxbreak.animalcrossingtools.data.SongSaved
+import java.io.Serializable
 
 
 data class Song(
@@ -18,7 +19,7 @@ data class Song(
     val imageUrl: String?,
     @SerializedName("music_uri")
     val musicUrl: String?
-)
+) : Serializable
 
 open class SongMix(
     val song: Song,

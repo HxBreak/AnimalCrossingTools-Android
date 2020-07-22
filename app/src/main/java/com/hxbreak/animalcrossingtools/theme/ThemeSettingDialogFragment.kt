@@ -44,7 +44,7 @@ class ThemeSettingDialogFragment : DaggerAppCompatDialogFragment() {
             android.R.layout.simple_list_item_single_choice
         )
 
-        return MaterialAlertDialogBuilder(context)
+        return MaterialAlertDialogBuilder(requireContext())
             .setTitle("选择主题")
             .setSingleChoiceItems(listAdapter, 0) { dialog, position ->
                 dialog.dismiss()

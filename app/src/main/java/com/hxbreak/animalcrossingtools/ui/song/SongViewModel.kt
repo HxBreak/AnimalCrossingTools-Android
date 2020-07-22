@@ -18,6 +18,7 @@ import com.hxbreak.animalcrossingtools.data.source.entity.SongMix
 import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.livedata.CombinedLiveData
 import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
+import kotlinx.android.synthetic.main.item_fish.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -34,7 +35,7 @@ class SongViewModel @Inject constructor(
     val editMode = MutableLiveData(false)
     val erro = MutableLiveData<Event<Exception>>()
     val selected = MutableLiveData<MutableList<Int>>()
-    val lunchNowPlayingEvent = MutableLiveData<Event<WeakReference<TransitionView>>>()
+    val lunchNowPlayingEvent = MutableLiveData<Event<WeakReference<Pair<TransitionView, Song>>>>()
 
     val cds = refresh.switchMap {
         loading.value = true
@@ -133,7 +134,6 @@ class SongViewModel @Inject constructor(
             }
         } else if (data is Result.Error) {
             erro.value = Event(data.exception)
-            Log.e("HxBreak", "${data.exception}")
         }
         loading.value = false
         return result
@@ -178,7 +178,7 @@ class SongViewModel @Inject constructor(
             Uri.parse(song.musicUrl),
             bundleOf("MediaMetaData" to metadata)
         )
-        lunchNowPlayingEvent.value = Event(WeakReference(transitionView))
+        lunchNowPlayingEvent.value = Event(WeakReference(transitionView to song))
     }
 }
 
@@ -187,3 +187,6 @@ data class SongMixSelectable(
     private val songSaved1: SongSaved?,
     var selected: Boolean
 ) : SongMix(song1, songSaved1)
+
+fun Song.imageTransitionName(): String = "$fileName-image"
+fun Song.titleTransitionName(): String = "$fileName-title"

@@ -2,7 +2,9 @@ package com.hxbreak.animalcrossingtools.ui.song
 
 import android.animation.ObjectAnimator
 import android.graphics.drawable.TransitionDrawable
+import android.os.Build
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -42,6 +44,7 @@ class SongFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        postponeEnterTransition()
     }
 
     var adapter: SongAdapter? = null
@@ -85,6 +88,7 @@ class SongFragment : DaggerFragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         viewModel.items.observe(viewLifecycleOwner, Observer {
             adapter?.submitList(it)
+            startPostponedEnterTransition()
         })
         viewModel.loading.observe(viewLifecycleOwner, Observer {
             refresh_layout.isRefreshing = it == true
@@ -198,14 +202,14 @@ class SongFragment : DaggerFragment() {
             it.let {
                 it.get()?.let {
                     val extras = FragmentNavigatorExtras(
-                        it.retrieve("image") to "header_image",
-                        it.retrieve("title") to "header_title"
+                        it.first.retrieve("image") to it.second.imageTransitionName(),
+                        it.first.retrieve("title") to it.second.titleTransitionName()
                     )
+
                     findNavController().navigate(
-                        R.id.action_songFragment_to_musicPlayFragment,
-                        null,
-                        null,
-                        extras
+                        SongFragmentDirections.actionSongFragmentToMusicPlayFragment(
+                            it.second
+                        ), extras
                     )
                 }
             }

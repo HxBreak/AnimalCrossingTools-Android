@@ -15,14 +15,11 @@
             android:id="@+id/imageView"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:transitionName="header_image"
-            android:background="#FF0000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/textView6"
-            android:transitionName="header_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

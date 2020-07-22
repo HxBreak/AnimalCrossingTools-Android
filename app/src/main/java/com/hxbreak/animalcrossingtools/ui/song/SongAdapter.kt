@@ -5,6 +5,7 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -89,7 +90,8 @@ class SongAdapter(private val viewModel: SongViewModel) :
             fish_subtitle.setText(
                 "${if (song.song.buyPrice != null) "$" else ""}${song.song.buyPrice ?: "非卖品"}"
             )
-
+            ViewCompat.setTransitionName(fish_image, song.song.imageTransitionName())
+            ViewCompat.setTransitionName(fish_title, song.song.titleTransitionName())
             itemView.setOnClickListener {
                 if (viewModel.editMode.value!!) {
                     checkBox.performClick()

@@ -29,9 +29,7 @@ class MainActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         updateForTheme(viewModel.currentTheme)
         viewModel.theme.observe(this, Observer(::updateForTheme))
-        viewModel.connection.nowPlaying.observe(this, Observer {
-            Toast.makeText(this, "$it", Toast.LENGTH_SHORT).show()
-        })
+        viewModel.connection.nowPlaying.observe(this, Observer {})
         setContentView(R.layout.activity_main)
         volumeControlStream = AudioManager.STREAM_MUSIC
     }
