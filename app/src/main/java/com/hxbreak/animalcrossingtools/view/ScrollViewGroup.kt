@@ -1,6 +1,9 @@
 package com.hxbreak.animalcrossingtools.view
 
 import android.content.Context
+import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -126,6 +129,20 @@ class ScrollViewGroup @JvmOverloads constructor(
                 )
             }
         }
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val parcelable = super.onSaveInstanceState()
+        val bundle = Bundle()
+        bundle.putParcelable("parentData", parcelable)
+        bundle.putInt("offset", mScroller.finalY)
+        return bundle
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        val bundle = state as Bundle
+        mScroller.finalY = bundle.getInt("offset")
+        super.onRestoreInstanceState(bundle.getParcelable("parentData"))
     }
 
     override fun onNestedScroll(

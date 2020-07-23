@@ -2,7 +2,9 @@ package com.hxbreak.animalcrossingtools.data.source.entity;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SongName {
+import java.io.Serializable;
+
+public class SongName implements Serializable {
 
     @SerializedName("name-USen")
     private String nameUSen;

@@ -12,18 +12,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestinationBuilder
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.Hold
+import com.google.android.material.transition.MaterialSharedAxis
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_song.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -44,7 +50,12 @@ class SongFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        postponeEnterTransition()
+        Timber.e("onCreate")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.e("onDestroy")
     }
 
     var adapter: SongAdapter? = null
@@ -63,6 +74,7 @@ class SongFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
         Timber.e("onViewCreated")
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener {
@@ -73,11 +85,8 @@ class SongFragment : DaggerFragment() {
             }
         }
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         adapter = SongAdapter(viewModel)
+        postponeEnterTransition()
         toolbar.title = ""
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -88,7 +97,7 @@ class SongFragment : DaggerFragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         viewModel.items.observe(viewLifecycleOwner, Observer {
             adapter?.submitList(it)
-            startPostponedEnterTransition()
+            Timber.e("submitList")
         })
         viewModel.loading.observe(viewLifecycleOwner, Observer {
             refresh_layout.isRefreshing = it == true
@@ -96,7 +105,10 @@ class SongFragment : DaggerFragment() {
         refresh_layout.setOnRefreshListener {
             viewModel.refresh.value = true
         }
-
+        recycler_view.post {
+            Timber.e("RecyclerView")
+            startPostponedEnterTransition()
+        }
         val background =
             context?.resources?.getDrawable(R.drawable.toolbar_color_animation) as TransitionDrawable
         toolbar.background = background
@@ -202,6 +214,7 @@ class SongFragment : DaggerFragment() {
             it.let {
                 it.get()?.let {
                     val extras = FragmentNavigatorExtras(
+                        it.first.retrieve("root") to "container",
                         it.first.retrieve("image") to it.second.imageTransitionName(),
                         it.first.retrieve("title") to it.second.titleTransitionName()
                     )

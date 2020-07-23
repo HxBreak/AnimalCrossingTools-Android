@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator"
     tools:context=".ui.fish.FishFragment"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -13,6 +14,7 @@
         android:layout_height="match_parent">
 
         <com.hxbreak.animalcrossingtools.view.ScrollViewGroup
+            android:id="@+id/scrollContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 

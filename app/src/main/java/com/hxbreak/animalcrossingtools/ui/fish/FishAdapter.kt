@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.view.ViewUtils
 import kotlinx.android.extensions.LayoutContainer
@@ -79,10 +80,7 @@ class FishAdapter(private val viewModel: FishViewModel) :
                 else
                     viewModel.fishOnClick(fishEntity.fish.fish.id)
             }
-
-            Glide.with(fish_image).load(fishEntity.fish.fish.icon_uri)
-                .placeholder(R.drawable.ic_fish)
-                .into(fish_image)
+            GlideApp.with(fish_image).load(fishEntity.fish.fish.icon_uri).into(fish_image)
             donated_icon.visibility =
                 if (fishEntity.fish.saved?.donated == true) View.VISIBLE else View.GONE
             bookmark_icon.visibility =

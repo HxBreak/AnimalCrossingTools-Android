@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.view.ViewUtils
@@ -18,6 +19,7 @@ import kotlinx.android.synthetic.main.fragment_fish.*
 import kotlinx.android.synthetic.main.fragment_music_play.*
 import kotlinx.android.synthetic.main.fragment_music_play.title
 import kotlinx.android.synthetic.main.item_fish.*
+import timber.log.Timber
 import java.lang.RuntimeException
 import java.util.*
 
@@ -76,7 +78,7 @@ class SongAdapter(private val viewModel: SongViewModel) :
                 viewModel.toggleSong(song.song.id)
             }
             itemView.isClickable = true
-            Glide.with(fish_image).load("${song.song.imageUrl}")
+            GlideApp.with(fish_image).load("${song.song.imageUrl}")
                 .into(fish_image)
             donated_icon.visibility = View.GONE
             bookmark_icon.visibility =
@@ -86,12 +88,13 @@ class SongAdapter(private val viewModel: SongViewModel) :
 //                i.oct, i.nov, i.dec)
 //            val isActive = activeMonthes.getOrElse(currentMonth){false}
 //            fish_title.setTextColor(if (isActive) view.context.resources.getColor(R.color.colorAccent) else Color.BLACK)
-            fish_title.setText("${song.song.name.nameCNzh} - ${song.song.name.nameCNzh}")
+            fish_title.setText("${song.song.name.nameCNzh}")
             fish_subtitle.setText(
                 "${if (song.song.buyPrice != null) "$" else ""}${song.song.buyPrice ?: "非卖品"}"
             )
             ViewCompat.setTransitionName(fish_image, song.song.imageTransitionName())
             ViewCompat.setTransitionName(fish_title, song.song.titleTransitionName())
+            ViewCompat.setTransitionName(itemView, song.song.fileName)
             itemView.setOnClickListener {
                 if (viewModel.editMode.value!!) {
                     checkBox.performClick()
@@ -100,6 +103,7 @@ class SongAdapter(private val viewModel: SongViewModel) :
                         override fun retrieve(name: String) = when (name) {
                             "image" -> fish_image
                             "title" -> fish_title
+                            "root" -> itemView
                             else -> throw RuntimeException()
                         }
 

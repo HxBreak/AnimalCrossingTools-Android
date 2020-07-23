@@ -94,6 +94,7 @@ class MusicPlaybackPreparer(
         val music = ProgressiveMediaSource.Factory(dataSourceFactory)
             .setTag(tag?.fullDescription)
             .createMediaSource(uri)
+
         exoPlayer.prepare(music)
         exoPlayer.playWhenReady = playWhenReady
     }
