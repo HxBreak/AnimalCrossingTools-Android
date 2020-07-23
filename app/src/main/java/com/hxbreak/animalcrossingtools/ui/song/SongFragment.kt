@@ -214,7 +214,8 @@ class SongFragment : DaggerFragment() {
             it.let {
                 it.get()?.let {
                     val extras = FragmentNavigatorExtras(
-                        it.first.retrieve("root") to "container",
+                        it.first.retrieve("root") to "container"
+                        ,
                         it.first.retrieve("image") to it.second.imageTransitionName(),
                         it.first.retrieve("title") to it.second.titleTransitionName()
                     )

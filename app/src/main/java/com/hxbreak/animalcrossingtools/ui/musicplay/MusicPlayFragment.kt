@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.transition.*
 import com.bumptech.glide.Glide
+import com.example.android.uamp.media.extensions.currentPlayBackPosition
 import com.example.android.uamp.media.extensions.fullDescription
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialArcMotion
@@ -39,6 +40,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.floor
 
 
 class MusicPlayFragment : DaggerFragment() {
@@ -75,7 +77,15 @@ class MusicPlayFragment : DaggerFragment() {
         viewModel.connection.nowPlaying.observe(viewLifecycleOwner, Observer {
             GlideApp.with(imageView).load(it.fullDescription.iconUri).into(imageView)
             textView6.text = it.fullDescription.title
-            textView7.text = it.fullDescription.subtitle
+
+            startPostponedEnterTransition()
+        })
+        viewModel.connection.playbackState.observe(viewLifecycleOwner, Observer {
+            Timber.e("$it")
+            seekBar.max = floor(it.position / 1E3).toInt()
+            seekBar.progress = floor(it.currentPlayBackPosition / 1E3).toInt()
+            seekBar.secondaryProgress = floor(it.bufferedPosition / 1E3).toInt()
+
         })
         val changeImage = ChangeImageTransform()
         changeImage.addTarget(imageView)
@@ -83,7 +93,6 @@ class MusicPlayFragment : DaggerFragment() {
         val changeBounds = ChangeBounds()
         changeBounds.addTarget(textView6)
         transitionSet.addTransition(changeBounds)
-//        startPostponedEnterTransition()
     }
 
     private val transitionSet = TransitionSet()
@@ -92,95 +101,15 @@ class MusicPlayFragment : DaggerFragment() {
 
         val transform = MaterialContainerTransform()
         transform.scrimColor = Color.TRANSPARENT
-        transform.duration = 300
+//        transform.duration = 300
 //        transform.addTarget(R.id.transition_container)
         transform.setPathMotion(MaterialArcMotion())
-//        transitionSet.addTransition(transform)
         val move =
             TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
-        sharedElementEnterTransition = transform
-//        postponeEnterTransition()
-        setEnterSharedElementCallback(object : SharedElementCallback() {
-            override fun onSharedElementStart(
-                sharedElementNames: MutableList<String>?,
-                sharedElements: MutableList<View>?,
-                sharedElementSnapshots: MutableList<View>?
-            ) {
-                super.onSharedElementStart(
-                    sharedElementNames,
-                    sharedElements,
-                    sharedElementSnapshots
-                )
-                Timber.e("onSharedElementStart")
-            }
-
-            override fun onSharedElementEnd(
-                sharedElementNames: MutableList<String>?,
-                sharedElements: MutableList<View>?,
-                sharedElementSnapshots: MutableList<View>?
-            ) {
-                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots)
-                Timber.e("onSharedElementEnd")
-            }
-        })
-
-        setExitSharedElementCallback(object : SharedElementCallback() {
-            override fun onRejectSharedElements(rejectedSharedElements: MutableList<View>?) {
-                super.onRejectSharedElements(rejectedSharedElements)
-                Timber.e("onRejectSharedElements")
-            }
-
-            override fun onSharedElementEnd(
-                sharedElementNames: MutableList<String>?,
-                sharedElements: MutableList<View>?,
-                sharedElementSnapshots: MutableList<View>?
-            ) {
-                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots)
-            }
-
-            override fun onCaptureSharedElementSnapshot(
-                sharedElement: View?,
-                viewToGlobalMatrix: Matrix?,
-                screenBounds: RectF?
-            ): Parcelable {
-                return super.onCaptureSharedElementSnapshot(
-                    sharedElement,
-                    viewToGlobalMatrix,
-                    screenBounds
-                )
-            }
-
-            override fun onSharedElementsArrived(
-                sharedElementNames: MutableList<String>?,
-                sharedElements: MutableList<View>?,
-                listener: OnSharedElementsReadyListener?
-            ) {
-                super.onSharedElementsArrived(sharedElementNames, sharedElements, listener)
-            }
-
-            override fun onMapSharedElements(
-                names: MutableList<String>?,
-                sharedElements: MutableMap<String, View>?
-            ) {
-                super.onMapSharedElements(names, sharedElements)
-            }
-
-            override fun onCreateSnapshotView(context: Context?, snapshot: Parcelable?): View {
-                return super.onCreateSnapshotView(context, snapshot)
-            }
-
-            override fun onSharedElementStart(
-                sharedElementNames: MutableList<String>?,
-                sharedElements: MutableList<View>?,
-                sharedElementSnapshots: MutableList<View>?
-            ) {
-                super.onSharedElementStart(
-                    sharedElementNames,
-                    sharedElements,
-                    sharedElementSnapshots
-                )
-            }
-        })
+        transitionSet.duration = 300
+        transitionSet.addTransition(transform)
+        sharedElementEnterTransition = transitionSet
+        postponeEnterTransition()
     }
 
     override fun onDestroy() {
