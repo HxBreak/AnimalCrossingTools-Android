@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -78,8 +79,8 @@ class SongAdapter(private val viewModel: SongViewModel) :
                 viewModel.toggleSong(song.song.id)
             }
             itemView.isClickable = true
-            GlideApp.with(fish_image).load("${song.song.imageUrl}")
-                .into(fish_image)
+            GlideApp.with(fish_image).clear(fish_image)
+            GlideApp.with(fish_image).load("${song.song.imageUrl}").into(fish_image)
             donated_icon.visibility = View.GONE
             bookmark_icon.visibility =
                 if (song.songSaved?.owned == true) View.VISIBLE else View.GONE

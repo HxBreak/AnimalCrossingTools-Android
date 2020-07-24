@@ -7,10 +7,12 @@ import android.graphics.RectF
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v4.media.session.PlaybackStateCompat
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
@@ -21,6 +23,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.transition.*
 import com.bumptech.glide.Glide
 import com.example.android.uamp.media.extensions.currentPlayBackPosition
+import com.example.android.uamp.media.extensions.duration
 import com.example.android.uamp.media.extensions.fullDescription
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialArcMotion
@@ -36,6 +39,7 @@ import kotlinx.android.synthetic.main.fragment_fish.*
 import kotlinx.android.synthetic.main.fragment_music_play.*
 import kotlinx.android.synthetic.main.fragment_music_play.toolbar
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -80,12 +84,23 @@ class MusicPlayFragment : DaggerFragment() {
 
             startPostponedEnterTransition()
         })
-        viewModel.connection.playbackState.observe(viewLifecycleOwner, Observer {
-            Timber.e("$it")
-            seekBar.max = floor(it.position / 1E3).toInt()
-            seekBar.progress = floor(it.currentPlayBackPosition / 1E3).toInt()
-            seekBar.secondaryProgress = floor(it.bufferedPosition / 1E3).toInt()
+        viewModel.current.observe(viewLifecycleOwner, Observer {
+            seekBar.progress = it
+        })
+        viewModel.playerState.observe(viewLifecycleOwner, Observer {
+            it.first?.let {
+                seekBar.max = it.duration.toInt()
+            }
+        })
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser && seekBar?.max != 0) {
+                    viewModel.connection.transportControls.seekTo(progress.toLong())
+                }
+            }
 
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
         val changeImage = ChangeImageTransform()
         changeImage.addTarget(imageView)
@@ -101,11 +116,7 @@ class MusicPlayFragment : DaggerFragment() {
 
         val transform = MaterialContainerTransform()
         transform.scrimColor = Color.TRANSPARENT
-//        transform.duration = 300
-//        transform.addTarget(R.id.transition_container)
         transform.setPathMotion(MaterialArcMotion())
-        val move =
-            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
         transitionSet.duration = 300
         transitionSet.addTransition(transform)
         sharedElementEnterTransition = transitionSet

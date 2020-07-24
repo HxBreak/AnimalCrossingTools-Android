@@ -1,13 +1,12 @@
 package com.hxbreak.animalcrossingtools
 
+import android.util.Log
 import androidx.annotation.MainThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.LiveDataScope
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import timber.log.Timber
 import java.lang.IllegalArgumentException
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.CoroutineContext
@@ -114,11 +113,22 @@ internal class CoroutineLiveData<R, X, Y>(
 
     override fun onActive() {
         super.onActive()
+        blockRunner?.reactive()
     }
 
     override fun onInactive() {
         super.onInactive()
-        blockRunner?.cancel()
+        blockRunner?.inactive()
+    }
+
+    override fun removeObservers(owner: LifecycleOwner) {
+        super.removeObservers(owner)
+        Timber.e("removeObservers")
+    }
+
+    override fun removeObserver(observer: Observer<in R>) {
+        super.removeObserver(observer)
+        Timber.e("removeObserverForever")
     }
 }
 
@@ -152,7 +162,9 @@ interface BlockRunnerInterface<R, X, Y> {
 
     fun maybeRun(x: X?, y: Y?): Job
 
-    fun cancel();
+    fun inactive();
+
+    fun reactive();
 }
 
 /**
@@ -187,10 +199,13 @@ internal class BlockRunner<R, X, Y>(
         return job
     }
 
+    override fun reactive() {
+        cancellationJob = null
+    }
+
     @MainThread
-    override fun cancel() {
+    override fun inactive() {
         if (cancellationJob != null) {
-            //todo bug fix -- add maybeCancel
             error("Cancel call cannot happen without a maybeRun")
         }
         cancellationJob = scope.launch(Dispatchers.Main.immediate) {
@@ -244,14 +259,18 @@ internal class CancelAndJoinBlockRunner<R, X, Y>(
         }
     }
 
+    override fun reactive() {
+        cancellationJob = null
+    }
+
     @MainThread
-    override fun cancel() {
+    override fun inactive() {
         if (cancellationJob != null) {
             error("Cancel call cannot happen without a maybeRun")
         }
         cancellationJob = scope.launch(Dispatchers.Main.immediate) {
             delay(timeoutInMs)
-            if (!liveData.hasActiveObservers()) {
+            if (!liveData.hasObservers()) {
                 // one last check on active observers to avoid any race condition between starting
                 // a running coroutine and cancelation
                 activeTask.get()?.cancel()

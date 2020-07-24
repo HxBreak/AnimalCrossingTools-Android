@@ -69,6 +69,7 @@ class SongFragment : DaggerFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        adapter = null
         (requireActivity() as AppCompatActivity).setSupportActionBar(null)
     }
 
