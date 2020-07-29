@@ -122,7 +122,6 @@ open class MusicService : MediaBrowserServiceCompat() {
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         result.detach()
-//        result.sendResult(mutableListOf())
     }
 
     override fun onGetRoot(

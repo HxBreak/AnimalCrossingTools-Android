@@ -50,12 +50,10 @@ class SongFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        Timber.e("onCreate")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Timber.e("onDestroy")
     }
 
     var adapter: SongAdapter? = null
@@ -76,7 +74,6 @@ class SongFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
-        Timber.e("onViewCreated")
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener {
             if (viewModel.editMode.value == true) {
@@ -98,7 +95,6 @@ class SongFragment : DaggerFragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         viewModel.items.observe(viewLifecycleOwner, Observer {
             adapter?.submitList(it)
-            Timber.e("submitList")
         })
         viewModel.loading.observe(viewLifecycleOwner, Observer {
             refresh_layout.isRefreshing = it == true
@@ -107,7 +103,6 @@ class SongFragment : DaggerFragment() {
             viewModel.refresh.value = true
         }
         recycler_view.post {
-            Timber.e("RecyclerView")
             startPostponedEnterTransition()
         }
         val background =

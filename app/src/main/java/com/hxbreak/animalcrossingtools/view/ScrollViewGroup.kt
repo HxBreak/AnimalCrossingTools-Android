@@ -2,16 +2,12 @@ package com.hxbreak.animalcrossingtools.view
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Scroller
 import androidx.core.view.*
-import timber.log.Timber
-import kotlin.math.abs
 
 
 class ScrollViewGroup @JvmOverloads constructor(
@@ -22,6 +18,7 @@ class ScrollViewGroup @JvmOverloads constructor(
     private val mScrollChildHelper = NestedScrollingChildHelper(this)
     private val mScroller = Scroller(context)
     private lateinit var mPinnedView: View
+    private var mScrollView: View? = null
 
     init {
         mScrollChildHelper.isNestedScrollingEnabled = true
@@ -74,6 +71,8 @@ class ScrollViewGroup @JvmOverloads constructor(
             val view = get(i)
             if (view.tag is String && "pin" == view.tag) {
                 mPinnedView = view
+            } else if (view is ScrollingView) {
+                mScrollView = view;
             }
         }
     }
@@ -140,6 +139,14 @@ class ScrollViewGroup @JvmOverloads constructor(
         val bundle = state as Bundle
         mScroller.finalY = bundle.getInt("offset")
         super.onRestoreInstanceState(bundle.getParcelable("parentData"))
+    }
+
+    override fun canScrollVertically(direction: Int): Boolean {
+        mScrollView?.let {
+            return it.canScrollVertically(direction)
+        }
+        return super.canScrollVertically(direction)
+
     }
 
     override fun onNestedScroll(

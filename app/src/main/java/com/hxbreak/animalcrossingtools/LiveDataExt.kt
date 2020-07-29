@@ -123,12 +123,10 @@ internal class CoroutineLiveData<R, X, Y>(
 
     override fun removeObservers(owner: LifecycleOwner) {
         super.removeObservers(owner)
-        Timber.e("removeObservers")
     }
 
     override fun removeObserver(observer: Observer<in R>) {
         super.removeObserver(observer)
-        Timber.e("removeObserverForever")
     }
 }
 
@@ -211,8 +209,6 @@ internal class BlockRunner<R, X, Y>(
         cancellationJob = scope.launch(Dispatchers.Main.immediate) {
             delay(timeoutInMs)
             if (!liveData.hasActiveObservers()) {
-                // one last check on active observers to avoid any race condition between starting
-                // a running coroutine and cancelation
                 runningJob?.cancel()
                 runningJob = null
                 activeTask.get()?.cancel()
@@ -270,9 +266,7 @@ internal class CancelAndJoinBlockRunner<R, X, Y>(
         }
         cancellationJob = scope.launch(Dispatchers.Main.immediate) {
             delay(timeoutInMs)
-            if (!liveData.hasObservers()) {
-                // one last check on active observers to avoid any race condition between starting
-                // a running coroutine and cancelation
+            if (!liveData.hasActiveObservers()) {
                 activeTask.get()?.cancel()
             }
         }
