@@ -18,11 +18,17 @@ android {
         testInstrumentationRunner "com.hxbreak.animalcrossingtools.CustomTestRunner"
 //        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-//        externalNativeBuild {
-//            cmake {
-//                cppFlags "-std=c++17"
-//            }
-//        }
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++17"
+                arguments "-DCMAKE_VERBOSE_MAKEFILE=ON"
+//                abiFilters 'arm64-v8a', 'armeabi-v7a'
+            }
+        }
+        ndk{
+//            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
+        }
+
         multiDexEnabled = true
     }
 
@@ -56,19 +62,20 @@ android {
         jvmTarget = "1.8"
 //        freeCompilerArgs = ["-XXLanguage:+NewInference"]
     }
-//
-//    externalNativeBuild {
-//        cmake {
-//            path "src/main/cpp/CMakeLists.txt"
-//            version "3.10.2"
-//        }
-//    }
+
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
+    }
 
     sourceSets {
         main {
             java {
                 srcDir "src/main/java"
             }
+//            jniLibs.srcDirs = ["src/main/jni"]
         }
     }
 
@@ -175,6 +182,5 @@ dependencies {
     implementation "androidx.paging:paging-runtime:$paging_version"
     def exoplayer_version = "2.11.7"
     implementation "com.google.android.exoplayer:exoplayer:$exoplayer_version"
-
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
 }
