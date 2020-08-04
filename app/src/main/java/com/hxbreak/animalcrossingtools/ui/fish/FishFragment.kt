@@ -147,8 +147,8 @@ class FishFragment : DaggerFragment() {
         adapter = FishAdapter(viewModel)
         recycler_view.itemAnimator = DefaultItemAnimator()
         recycler_view.adapter = adapter
-        val layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        recycler_view.layoutManager = layoutManager
+//        val layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+//        recycler_view.layoutManager = layoutManager
 
         edit_mode.setOnClickListener {
             viewModel.editMode.value = !viewModel.editMode.value!!
@@ -198,6 +198,7 @@ class FishFragment : DaggerFragment() {
             /**
              * Animate All ViewHolder In Screen
              */
+            val layoutManager = recycler_view.layoutManager as LinearLayoutManager
             val start = layoutManager.findFirstVisibleItemPosition()
             val end = layoutManager.findLastVisibleItemPosition()
             for (i in 0..recycler_view.childCount) {

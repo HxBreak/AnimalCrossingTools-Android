@@ -7,27 +7,23 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.Log
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import androidx.core.graphics.withTranslation
-import androidx.core.text.PrecomputedTextCompat
-import androidx.core.view.ViewConfigurationCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import timber.log.Timber
-import kotlin.math.absoluteValue
+import com.hxbreak.animalcrossingtools.ui.fish.FishAdapter
+import com.hxbreak.animalcrossingtools.view.canvas.FastScrollPopup
 import kotlin.math.max
 
 class IndexedRecyclerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
-    private val mTouchSlop: Int
-
-    init {
-        mTouchSlop = ViewConfiguration.get(context).scaledTouchSlop
-    }
+    private val mTouchSlop: Int = ViewConfiguration.get(context).scaledTouchSlop
+    private var currentSelectedIndex: Int? = null
+    private var currentYPosition: Int? = null
 
     private val fontSize = FontUtils.sp2px(context, 14f)
     private val textPaint: TextPaint = TextPaint()
@@ -36,13 +32,21 @@ class IndexedRecyclerView @JvmOverloads constructor(
             color = Color.WHITE
         }
 
+    private val selectedTextPaint = TextPaint()
+        .apply {
+            textSize = fontSize.toFloat()
+            color = Color.RED
+        }
+
     private val boxPaint = Paint().apply {
         style = Paint.Style.STROKE
         strokeWidth = 1f
         color = Color.RED
     }
 
-    private val map = ('A'..'Z').mapIndexed { index: Int, c: Char ->
+    private val list = ('A'..'Z').toList()
+
+    private val map = list.mapIndexed { index: Int, c: Char ->
         val layout = createStaticLayout(
             String.format("%c", c),
             textPaint,
@@ -54,14 +58,29 @@ class IndexedRecyclerView @JvmOverloads constructor(
 
     private val blockHeight = map.values.sumBy { it.height }
 
-    private val boxWidth = map.values.map { it.wrapWidth() }.maxBy { it }
+    private val boxWidth =
+        map.values.map { it.wrapWidth() }.maxBy { it }!! + ViewUtils.dp2px(context, 8f)
+
+    private val indicator = FastScrollPopup(context.resources, this)
+
+    init {
+        layoutManager = object : LinearLayoutManager(context, RecyclerView.VERTICAL, false) {
+            override fun startSmoothScroll(smoothScroller: SmoothScroller?) {
+                smoothScroller?.let {
+                    val scroller = AlwaysAtStartScroller(context)
+                    scroller.targetPosition = smoothScroller.targetPosition
+                    super.startSmoothScroll(scroller)
+                }
+            }
+        }
+    }
 
     override fun onDrawForeground(canvas: Canvas?) {
         super.onDrawForeground(canvas)
         val yStart = (height - blockHeight) / 2
         canvas?.withTranslation(x = 0f, y = yStart.toFloat()) {
             map.forEach {
-                drawRect(Rect(1, 0, boxWidth!!, it.value.height), boxPaint)
+                drawRect(Rect(1, 0, boxWidth, it.value.height), boxPaint)
                 val bias = (boxWidth - it.value.wrapWidth()) / 2
                 canvas.withTranslation(x = bias.toFloat()) {
                     it.value.draw(this)
@@ -69,39 +88,63 @@ class IndexedRecyclerView @JvmOverloads constructor(
                 translate(0f, it.value.height.toFloat())
             }
         }
+        canvas?.drawText("$currentSelectedIndex $currentYPosition", 100f, 100f, textPaint)
     }
 
     override fun canScrollVertically(direction: Int): Boolean {
-        return true;
+        if (isDragging) return true
+        return super.canScrollVertically(direction);
     }
 
-    private var startX: Float? = null
-    private var startY: Float? = null
+    private var isDragging: Boolean = false
 
-
-    //    private var isIntercept = false
-//
-//    override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
-//        isIntercept = false
-//        e?.let {
-//            if (it.action == MotionEvent.ACTION_DOWN || it.action == MotionEvent.ACTION_MOVE){
-//                val rect = Rect(0, 0, boxWidth!!, blockHeight).apply {
-//                    offset(0, (height - blockHeight) / 2)
-//                }
-//                if(rect.contains(it.x.toInt(), it.y.toInt())){
-//                    requestDisallowInterceptTouchEvent(true)
-//                    isIntercept = true
-//                    return true
-//                }
-//            }
-//        }
-//        return super.onInterceptTouchEvent(e)
-//    }
-    override fun performClick(): Boolean {
-        return super.performClick()
+    override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
+        val result = super.onInterceptTouchEvent(e);
+        if (e?.action == MotionEvent.ACTION_DOWN) {
+            val rect = Rect(0, 0, boxWidth!!, blockHeight).apply {
+                offset(0, (height - blockHeight) / 2)
+            }
+            if (rect.contains(e.x.toInt(), e.y.toInt())) {
+                isDragging = true
+                calcCurrentSelect(e)
+                return true
+            }
+        }
+        return result
     }
 
-    var isDragging: Boolean = false
+    fun getScrollBarThumbHeight() = ViewUtils.dp2px(context, 32f)
+
+    fun getScrollBarWidth() = ViewUtils.dp2px(context, 32f)
+
+    private fun calcCurrentSelect(e: MotionEvent) {
+        var current = (height - blockHeight) / 2
+        val first = map.values.firstOrNull {
+            val after = current + it.height
+            val result = e.y.toInt() in current..after
+            current = after
+            result
+        }
+        val index = if (first == null) null else map.values.indexOf(first)
+        currentYPosition = if (index != null) e.y.toInt() else null
+        if (index != currentSelectedIndex) {
+            currentSelectedIndex = index
+            onChangeIndex()
+        }
+    }
+
+    private fun onChangeIndex() {
+        postInvalidate()
+        if (currentSelectedIndex != null) {
+            val adapter = adapter
+            if (adapter is FishAdapter) {
+                val index = adapter.findFirstChildIndex(list[currentSelectedIndex!!])
+                if (index != -1) {
+                    smoothScrollToPosition(index)
+                }
+            }
+        }
+    }
 
     override fun onTouchEvent(e: MotionEvent?): Boolean {
         when (e?.action) {
@@ -111,14 +154,20 @@ class IndexedRecyclerView @JvmOverloads constructor(
                 }
                 if (rect.contains(e.x.toInt(), e.y.toInt())) {
                     isDragging = true
+                    calcCurrentSelect(e)
                     return true
                 }
             }
             MotionEvent.ACTION_MOVE -> {
-
+                if (isDragging) calcCurrentSelect(e)
             }
             MotionEvent.ACTION_UP -> {
-                isDragging = false
+                if (isDragging) {
+                    currentSelectedIndex = null
+                    isDragging = false
+                    postInvalidate()
+                    return true
+                }
             }
         }
         if (isDragging) {
@@ -127,13 +176,21 @@ class IndexedRecyclerView @JvmOverloads constructor(
         return super.onTouchEvent(e)
     }
 
-    //
-//    override fun onTouchEvent(e: MotionEvent?): Boolean {
-//        if (isIntercept){
-//            return true
-//        }
-//        return super.onTouchEvent(e)
-//    }
+    val observer = object : RecyclerView.AdapterDataObserver() {
+
+    }
+
+    /**
+     * register listener before setAdapter
+     */
+    override fun setAdapter(adapter: Adapter<*>?) {
+        val old = getAdapter()
+        old?.let {
+            old.unregisterAdapterDataObserver(observer)
+        }
+        adapter?.registerAdapterDataObserver(observer)
+        super.setAdapter(adapter)
+    }
 
     private fun createStaticLayout(
         source: CharSequence,
@@ -158,5 +215,12 @@ class IndexedRecyclerView @JvmOverloads constructor(
             lastValue = max(getLineWidth(i).toInt(), lastValue)
         }
         return lastValue
+    }
+
+    internal inner class AlwaysAtStartScroller(val context: Context) :
+        LinearSmoothScroller(context) {
+        override fun getVerticalSnapPreference(): Int {
+            return SNAP_TO_START
+        }
     }
 }

@@ -18,7 +18,7 @@ open class App : DaggerApplication() {
 
     override fun onCreate() {
         super.onCreate()
-        System.loadLibrary("hook")
+//        System.loadLibrary("hook")
         Timber.plant(Timber.DebugTree())
     }
 

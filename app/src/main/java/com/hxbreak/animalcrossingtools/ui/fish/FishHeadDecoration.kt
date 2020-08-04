@@ -23,17 +23,17 @@ class FishHeadDecoration(
     val width: Int
 ) : RecyclerView.ItemDecoration() {
 
-    val decorHeight = ViewUtils.dp2px(context, 24f)
+    private val decorHeight = ViewUtils.dp2px(context, 24f)
 
-    val mTextSize = ViewUtils.dp2px(context, 18f)
+    private val mTextSize = ViewUtils.dp2px(context, 18f)
 
-    val paint = TextPaint(ANTI_ALIAS_FLAG).apply {
+    private val paint = TextPaint(ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE
         bgColor = Color.BLACK
         textSize = mTextSize.toFloat()
     }
 
-    val nameSlot = fish.mapIndexed { index: Int, fishEntity: FishEntity ->
+    private val nameSlot = fish.mapIndexed { index: Int, fishEntity: FishEntity ->
         index to CharUtil.toCategory(CharUtil.headPinyin(fishEntity.name.nameCNzh)).toUpperCase()
     }.distinctBy { it.second }
         .map {

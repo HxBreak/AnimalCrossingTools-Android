@@ -24,6 +24,8 @@ void init() __attribute__((constructor));
 //static const MethodInfo* GetMethodFromName (TypeInfo *klass, const char* name, int argsCount);
 typedef void *(*Il2CppGetMethodFromName)(void *klass, const char *name, int args_count);
 
+typedef void *(*ClassFunction)(void *klass);
+
 void *old_address;
 
 void *hooked(void *klass, const char *name, int args_count) {

@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
+import com.hxbreak.animalcrossingtools.character.CharUtil
+import com.hxbreak.animalcrossingtools.data.source.entity.FishEntity
 import com.hxbreak.animalcrossingtools.view.ViewUtils
 import kotlinx.android.extensions.LayoutContainer
 
@@ -33,6 +35,25 @@ class FishAdapter(private val viewModel: FishViewModel) :
         if (holder is ViewHolder) {
             holder.bindData(getItem(position), position, editMode)
         }
+    }
+
+    var fish: List<Pair<String, FishEntity>>? = null
+
+    override fun onCurrentListChanged(
+        previousList: MutableList<SelectableFishEntity>,
+        currentList: MutableList<SelectableFishEntity>
+    ) {
+        super.onCurrentListChanged(previousList, currentList)
+        fish = currentList.map { it.fish.fish }
+            .map { CharUtil.toCategory(CharUtil.headPinyin(it.name.nameCNzh)).toUpperCase() to it }
+    }
+
+
+    fun findFirstChildIndex(char: Char): Int {
+        fish?.let {
+            return it.indexOfFirst { it.first == char.toString() }
+        }
+        return -1
     }
 
     class ViewHolder private constructor(

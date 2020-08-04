@@ -1,6 +1,7 @@
 package com.hxbreak.animalcrossingtools.view
 
 import android.content.Context
+import android.content.res.Resources
 
 object ViewUtils {
 
@@ -9,10 +10,15 @@ object ViewUtils {
         return (px / scale + .5).toInt()
     }
 
-    fun dp2px(context: Context, dp: Float): Int {
-        val scale = context.resources.displayMetrics.density
+    inline fun dp2px(context: Context, dp: Float): Int {
+        return dp2px(context.resources, dp)
+    }
+
+    fun dp2px(resources: Resources, dp: Float): Int {
+        val scale = resources.displayMetrics.density
         return (dp * scale + .5).toInt()
     }
+
 }
 
 object FontUtils {
