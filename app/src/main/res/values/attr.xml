@@ -9,4 +9,12 @@
         <attr name="head" format="reference" />
         <attr name="body" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="IndexedRecyclerView">
+        <attr name="indicatorBgColor" format="reference|color" />
+        <attr name="indicatorTextSize" format="reference|dimension" />
+        <attr name="indicatorTextColor" format="reference|color" />
+        <attr name="alphabetTextSize" format="reference|dimension" />
+        <attr name="alphabetTextColor" format="reference|color" />
+    </declare-styleable>
 </resources>

@@ -41,6 +41,10 @@ class FishHeadDecoration(
         }
         .toMap()
 
+//    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+//        super.onDrawOver(c, parent, state)
+//    }
+
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDraw(c, parent, state)
         if (nameSlot.isEmpty() || parent.isEmpty()) return
@@ -121,7 +125,7 @@ class FishHeadDecoration(
         }
         c.withTranslation(y = top.toFloat()) {
             drawRect(Rect(0, 0, width, header.height), Paint().apply {
-                color = Color.GRAY
+                color = Color.parseColor("#03DAC5")
             })
             header.draw(c)
         }
