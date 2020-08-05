@@ -13,6 +13,8 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import androidx.core.graphics.withTranslation
+import androidx.dynamicanimation.animation.FloatValueHolder
+import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -155,13 +157,28 @@ class IndexedRecyclerView @JvmOverloads constructor(
         }
     }
 
+    var lastY = -100f
+
+    var animation : SpringAnimation? = null
+
     private fun onChangeIndex() {
         if (currentSelectedIndex != null) {
             val list = pairs.take(currentSelectedIndex!! + 1)
             val half = list.last().second.height / 2
             val bestStart = list.sumBy { it.second.height } - half + indexStart()
             indicator.setSectionName("${list[currentSelectedIndex!!].first}")
-            indicator.updateFastScrollerBounds(this, bestStart)
+
+            animation?.cancel()
+            animation = SpringAnimation(FloatValueHolder(lastY))
+                .addUpdateListener { animation, value, velocity ->
+                    lastY = value
+                    indicator.updateFastScrollerBounds(this, value.toInt())
+                    invalidate()
+                }.apply {
+                    animateToFinalPosition(bestStart.toFloat())
+                }
+
+//            indicator.updateFastScrollerBounds(this, bestStart)
         } else {
             indicator.setSectionName("")
         }

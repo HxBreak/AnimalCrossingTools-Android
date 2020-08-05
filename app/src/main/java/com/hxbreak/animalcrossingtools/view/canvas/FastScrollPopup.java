@@ -155,7 +155,7 @@ public class FastScrollPopup {
             return new float[]{mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius};
         }
 
-        if (true) {
+        if (false) {
             return new float[]{mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, 0, 0};
         } else {
             return new float[]{mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, 0, 0, mCornerRadius, mCornerRadius};
@@ -225,7 +225,7 @@ public class FastScrollPopup {
                 mBgBounds.right = mBgBounds.left + bgWidth;
                 mBgBounds.top = (recyclerView.getHeight() - bgHeight) / 2;
             } else {
-                if (true) {
+                if (false) {
                     mBgBounds.left = (2 * recyclerView.getScrollBarWidth());
                     mBgBounds.right = mBgBounds.left + bgWidth;
                 } else {
