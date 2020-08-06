@@ -14,8 +14,10 @@ import com.hxbreak.animalcrossingtools.data.source.entity.Song
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.SongSaved
+import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.entity.SongMix
 import com.hxbreak.animalcrossingtools.fragment.Event
+import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import com.hxbreak.animalcrossingtools.livedata.CombinedLiveData
 import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
 import kotlinx.android.synthetic.main.item_fish.*
@@ -27,7 +29,8 @@ import javax.inject.Inject
 
 class SongViewModel @Inject constructor(
     private val repository: DataRepository,
-    private val connection: MusicServiceConnection
+    private val connection: MusicServiceConnection,
+    private val preferenceStorage: PreferenceStorage
 ) : ViewModel() {
 
     val refresh = MutableLiveData(false)
@@ -36,6 +39,7 @@ class SongViewModel @Inject constructor(
     val erro = MutableLiveData<Event<Exception>>()
     val selected = MutableLiveData<MutableList<Int>>()
     val lunchNowPlayingEvent = MutableLiveData<Event<WeakReference<Pair<TransitionView, Song>>>>()
+    val locale = preferenceStorage.selectedLocale
 
     val cds = refresh.switchMap {
         loading.value = true
@@ -44,6 +48,7 @@ class SongViewModel @Inject constructor(
                 liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
                     val saved = repository.getAllSavedSongs()
                     val ret = it.map {
+                        it.localName = it.name.toLocaleName(locale)
                         SongMixSelectable(
                             it,
                             saved.firstOrNull { s -> s.id == it.id },
@@ -169,7 +174,7 @@ class SongViewModel @Inject constructor(
     fun playSong(song: Song, transitionView: TransitionView) {
         val metadata = MediaMetadataCompat.Builder().apply {
             mediaUri = song.musicUrl
-            displayTitle = song.name.nameCNzh
+            displayTitle = "${song.localName}"
             displaySubtitle = "K.K."
             title = song.fileName
             albumArtUri = song.imageUrl

@@ -18,7 +18,8 @@ data class Song(
     @SerializedName("image_uri")
     val imageUrl: String?,
     @SerializedName("music_uri")
-    val musicUrl: String?
+    val musicUrl: String?,
+    var localName: String?
 ) : Serializable
 
 open class SongMix(

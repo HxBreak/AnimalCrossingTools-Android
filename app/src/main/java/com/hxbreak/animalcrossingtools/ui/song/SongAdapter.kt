@@ -80,7 +80,7 @@ class SongAdapter(private val viewModel: SongViewModel) :
 //                i.oct, i.nov, i.dec)
 //            val isActive = activeMonthes.getOrElse(currentMonth){false}
 //            fish_title.setTextColor(if (isActive) view.context.resources.getColor(R.color.colorAccent) else Color.BLACK)
-            fish_title.setText("${song.song.name.nameCNzh}")
+            fish_title.setText("${song.song.localName}")
             fish_subtitle.setText(
                 "${if (song.song.buyPrice != null) "$" else ""}${song.song.buyPrice ?: "非卖品"}"
             )

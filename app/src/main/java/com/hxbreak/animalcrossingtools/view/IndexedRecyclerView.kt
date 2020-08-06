@@ -118,21 +118,29 @@ class IndexedRecyclerView @JvmOverloads constructor(
 
     private fun indexStart() = (height - blockHeight) / 2
 
+    var mEnableAlphabet = true
+        set(value) {
+        field = value
+        invalidate()
+    }
+
     override fun draw(c: Canvas?) {
         super.draw(c)
-        val yStart = indexStart()
-        indicator.draw(c)
+        if (mEnableAlphabet){
+            val yStart = indexStart()
+            indicator.draw(c)
 
-        c?.withTranslation(x = (width - boxWidth).toFloat(), y = yStart.toFloat()) {
-            pairs.forEachIndexed { index, pair ->
+            c?.withTranslation(x = (width - boxWidth).toFloat(), y = yStart.toFloat()) {
+                pairs.forEachIndexed { index, pair ->
 //                drawRect(Rect(1, 0, boxWidth, pair.second.height), boxPaint)
-                val bias = (boxWidth - pair.second.wrapWidth()) / 2
-                c.withTranslation(x = bias.toFloat()) {
-                    (if (index == currentSelectedIndex) heightLightList[index] else pair).second.draw(
-                        this
-                    )
+                    val bias = (boxWidth - pair.second.wrapWidth()) / 2
+                    c.withTranslation(x = bias.toFloat()) {
+                        (if (index == currentSelectedIndex) heightLightList[index] else pair).second.draw(
+                            this
+                        )
+                    }
+                    translate(0f, pair.second.height.toFloat())
                 }
-                translate(0f, pair.second.height.toFloat())
             }
         }
     }
@@ -146,7 +154,7 @@ class IndexedRecyclerView @JvmOverloads constructor(
 
     override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
         val result = super.onInterceptTouchEvent(e);
-        if (e?.action == MotionEvent.ACTION_DOWN) {
+        if (e?.action == MotionEvent.ACTION_DOWN && mEnableAlphabet) {
             val rect = getAlphabetRect()
             if (rect.contains(e.x.toInt(), e.y.toInt())) {
                 isDragging = true
@@ -249,30 +257,32 @@ class IndexedRecyclerView @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(e: MotionEvent?): Boolean {
-        when (e?.action) {
-            MotionEvent.ACTION_DOWN -> {
-                val rect = getAlphabetRect()
-                if (rect.contains(e.x.toInt(), e.y.toInt())) {
-                    isDragging = true
-                    calcCurrentSelect(e)
-                    return true
+        if (mEnableAlphabet){
+            when (e?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    val rect = getAlphabetRect()
+                    if (rect.contains(e.x.toInt(), e.y.toInt())) {
+                        isDragging = true
+                        calcCurrentSelect(e)
+                        return true
+                    }
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (isDragging) calcCurrentSelect(e)
+                }
+                MotionEvent.ACTION_UP -> {
+                    if (isDragging) {
+                        currentSelectedIndex = null
+                        onChangeIndex()
+                        isDragging = false
+                        postInvalidate()
+                        return true
+                    }
                 }
             }
-            MotionEvent.ACTION_MOVE -> {
-                if (isDragging) calcCurrentSelect(e)
+            if (isDragging) {
+                return true
             }
-            MotionEvent.ACTION_UP -> {
-                if (isDragging) {
-                    currentSelectedIndex = null
-                    onChangeIndex()
-                    isDragging = false
-                    postInvalidate()
-                    return true
-                }
-            }
-        }
-        if (isDragging) {
-            return true
         }
         return super.onTouchEvent(e)
     }

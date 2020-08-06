@@ -66,6 +66,7 @@ class FishFragment : DaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         arrayOf(bookmark, donated).forEach { it.alpha = 0f }
+        val enableIndicator = viewModel.locale.language == "zh"
         toolbar.title = null
         title.text = "Fish"
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -81,13 +82,15 @@ class FishFragment : DaggerFragment() {
                     }
                 }
                 if (it != null) {
-                    addItemDecoration(
-                        FishHeadDecoration(
-                            requireContext(),
-                            it.map { it.fish.fish },
-                            recycler_view.width
+                    if (enableIndicator){
+                        addItemDecoration(
+                            FishHeadDecoration(
+                                requireContext(),
+                                it.map { it.fish.fish },
+                                recycler_view.width
+                            )
                         )
-                    )
+                    }
                 }
             }
         })
@@ -147,8 +150,7 @@ class FishFragment : DaggerFragment() {
         adapter = FishAdapter(viewModel)
         recycler_view.itemAnimator = DefaultItemAnimator()
         recycler_view.adapter = adapter
-//        val layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-//        recycler_view.layoutManager = layoutManager
+        recycler_view.mEnableAlphabet = enableIndicator
 
         edit_mode.setOnClickListener {
             viewModel.editMode.value = !viewModel.editMode.value!!
