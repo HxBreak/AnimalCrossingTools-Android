@@ -21,9 +21,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.hxbreak.animalcrossingtools.R
-import com.hxbreak.animalcrossingtools.ui.fish.FishAdapter
+import com.hxbreak.animalcrossingtools.utils.FontUtils
+import com.hxbreak.animalcrossingtools.utils.ViewUtils
 import com.hxbreak.animalcrossingtools.view.canvas.FastScrollPopup
-import timber.log.Timber
 import kotlin.math.max
 
 class IndexedRecyclerView @JvmOverloads constructor(

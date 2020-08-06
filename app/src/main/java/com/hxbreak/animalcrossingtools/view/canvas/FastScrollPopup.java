@@ -30,7 +30,7 @@ import android.text.TextUtils;
 import androidx.annotation.Keep;
 
 import com.hxbreak.animalcrossingtools.view.IndexedRecyclerView;
-import com.hxbreak.animalcrossingtools.view.ViewUtils;
+import com.hxbreak.animalcrossingtools.utils.ViewUtils;
 
 public class FastScrollPopup {
 

@@ -1,17 +1,21 @@
 package com.hxbreak.animalcrossingtools.ui.settings
 
 import android.os.Bundle
+import android.os.LocaleList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.viewModels
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
+import com.hxbreak.animalcrossingtools.i18n.ResourceLanguageSettingDialogFragment
 import com.hxbreak.animalcrossingtools.theme.Theme
 import com.hxbreak.animalcrossingtools.theme.ThemeSettingDialogFragment
 import dagger.android.support.DaggerFragment
 
 import kotlinx.android.synthetic.main.fragment_settings.*
+import java.util.*
 import javax.inject.Inject
 
 class SettingsFragment : DaggerFragment() {
@@ -39,8 +43,11 @@ class SettingsFragment : DaggerFragment() {
             ThemeSettingDialogFragment.newInstance()
                 .show(childFragmentManager, null)
         }
-        settings_time_zone.setOnClickListener {
-            viewModel.preferenceStorage.selectedTheme = Theme.DARK.storageKey
+
+        settings_choose_resource_language.setOnClickListener {
+            ResourceLanguageSettingDialogFragment.newInstance()
+                .show(childFragmentManager, null)
         }
+
     }
 }

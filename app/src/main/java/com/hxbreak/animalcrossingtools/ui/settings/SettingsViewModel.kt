@@ -9,14 +9,32 @@ import androidx.lifecycle.map
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.theme.Theme
 import com.hxbreak.animalcrossingtools.theme.themeFromStorageKey
+import java.util.*
 import javax.inject.Inject
 
 class SettingsViewModel @Inject constructor(val preferenceStorage: PreferenceStorage) :
     ViewModel() {
     val availableThemes: MutableLiveData<List<Theme>> = MutableLiveData()
+    val availableResourceLanguage: MutableLiveData<List<Locale>> = MutableLiveData()
 
     private val themeResult = MutableLiveData<Theme?>()
     val theme: LiveData<Theme>
+    val supportedLanguageRange = setOf(
+        "US" to "en",
+        "EU" to "en",
+        "EU" to "de",
+        "EU" to "es",
+        "US" to "es",
+        "EU" to "fr",
+        "US" to "fr",
+        "EU" to "it",
+        "EU" to "nl",
+        "CN" to "zh",
+        "TW" to "zh",
+        "JP" to "ja",
+        "KR" to "ko",
+        "EU" to "ru"
+    ).map { Locale(it.second, it.first) }
 
     init {
         preferenceStorage.selectedTheme?.let { key ->
@@ -36,10 +54,16 @@ class SettingsViewModel @Inject constructor(val preferenceStorage: PreferenceSto
                 listOf(Theme.LIGHT, Theme.DARK, Theme.BATTERY_SAVER)
             }
         }
+
+        availableResourceLanguage.value = supportedLanguageRange
         theme = themeResult.map { it ?: Theme.SYSTEM }
     }
 
     fun setTheme(it: Theme) {
         preferenceStorage.selectedTheme = it.storageKey
+    }
+
+    fun setLanguage(lang: Locale) {
+        preferenceStorage.selectedLocale = lang
     }
 }

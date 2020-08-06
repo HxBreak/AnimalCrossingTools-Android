@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.hxbreak.animalcrossingtools.R
-import com.hxbreak.animalcrossingtools.view.ViewUtils
+import com.hxbreak.animalcrossingtools.utils.ViewUtils
 import com.example.tracker_proto.NetworkUtils
 import com.hxbreak.tracker_proto.data.ConnectedClient
 import kotlinx.android.extensions.LayoutContainer

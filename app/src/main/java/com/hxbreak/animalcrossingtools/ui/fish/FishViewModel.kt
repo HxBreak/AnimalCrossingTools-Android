@@ -6,8 +6,10 @@ import com.hxbreak.animalcrossingtools.character.CharUtil
 import com.hxbreak.animalcrossingtools.combinedLiveData
 import com.hxbreak.animalcrossingtools.data.FishSaved
 import com.hxbreak.animalcrossingtools.data.Result
+import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
+import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import kotlinx.coroutines.*
 import java.lang.IllegalStateException
 import java.util.*
@@ -16,8 +18,11 @@ import javax.inject.Inject
 data class SelectableFishEntity(var selected: Boolean, val fish: FishEntityMix)
 
 class FishViewModel @Inject constructor(
-    private val repository: DataRepository
+    private val repository: DataRepository,
+    val preferenceStorage: PreferenceStorage
 ) : ViewModel() {
+
+    val locale = preferenceStorage.selectedLocale
 
     val refresh = MutableLiveData(false)
     val loading = MutableLiveData(false)
@@ -28,11 +33,15 @@ class FishViewModel @Inject constructor(
         loading.value = true
         liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
             val result = repository.fishSource().allFish()
-            isDataLoadingError.postValue(result !is Result.Success)
             loading.postValue(false)
 
             when (result) {
-                is Result.Success -> emit(result.data)
+                is Result.Success -> {
+                    result.data.forEach {
+                        it.fish.localeName = it.fish.name.toLocaleName(locale)
+                    }
+                    emit(result.data)
+                }
                 is Result.Error -> handleError(result.exception) {
                     refresh.postValue(forceUpdate)
                 }
@@ -79,12 +88,6 @@ class FishViewModel @Inject constructor(
             }
         }
 
-
-    fun func(x: Boolean, y: Boolean) = x
-
-    /**
-     * after
-     */
     val selectedFish: LiveData<List<FishEntityMix>> = combinedLiveData(context = Dispatchers.IO,
         x = itemsWithLocalData, y = selected,
         runCheck = { x: Boolean, _: Boolean -> x }) { items, sel ->
@@ -143,8 +146,6 @@ class FishViewModel @Inject constructor(
         }
         "$actives/${it.size}"
     }
-
-    val isDataLoadingError = MutableLiveData(false)
 
     init {
         loadFish()

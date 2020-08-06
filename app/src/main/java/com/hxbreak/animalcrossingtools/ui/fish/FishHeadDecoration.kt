@@ -15,7 +15,7 @@ import androidx.core.view.isEmpty
 import androidx.recyclerview.widget.RecyclerView
 import com.hxbreak.animalcrossingtools.character.CharUtil
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntity
-import com.hxbreak.animalcrossingtools.view.ViewUtils
+import com.hxbreak.animalcrossingtools.utils.ViewUtils
 
 class FishHeadDecoration(
     val context: Context,

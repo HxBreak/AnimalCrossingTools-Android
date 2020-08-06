@@ -5,6 +5,8 @@ import android.content.Context
 import android.provider.Settings
 import android.util.Log
 import androidx.room.Room
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.hxbreak.animalcrossingtools.data.CoroutinesCallAdapterFactory
 import com.hxbreak.animalcrossingtools.data.LiveDataCallAdapterFactory
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
@@ -67,12 +69,19 @@ object ApplicationModule {
         return ret
     }
 
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideGson(): Gson {
+        val builder = GsonBuilder()
+        return builder.create()
+    }
 
     @JvmStatic
     @Singleton
     @Provides
     @ApiV1
-    fun provideRetrofit(logger: HttpLoggingInterceptor): Retrofit {
+    fun provideRetrofit(logger: HttpLoggingInterceptor, gson: Gson): Retrofit {
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(logger)
             .readTimeout(10, TimeUnit.SECONDS)
@@ -82,7 +91,7 @@ object ApplicationModule {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl("https://acnhapi.com/v1/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .build()
     }
@@ -92,7 +101,7 @@ object ApplicationModule {
     @Singleton
     @Provides
     @ApiV2
-    fun provideRetrofitV2(logger: HttpLoggingInterceptor): Retrofit {
+    fun provideRetrofitV2(logger: HttpLoggingInterceptor, gson: Gson): Retrofit {
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(logger)
             .readTimeout(10, TimeUnit.SECONDS)
@@ -101,7 +110,7 @@ object ApplicationModule {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl("https://acnhapi.com/v1/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
 //            .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .addCallAdapterFactory(CoroutinesCallAdapterFactory())
             .build()

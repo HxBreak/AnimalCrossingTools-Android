@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.hxbreak.animalcrossingtools.theme.Theme
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.properties.ReadWriteProperty
@@ -18,6 +19,8 @@ interface PreferenceStorage {
     var selectedTheme: String?
 
     var observableSelectedTheme: LiveData<String>
+
+    var selectedLocale: Locale
 
 }
 
@@ -44,6 +47,10 @@ class SharedPreferenceStorage @Inject constructor(context: Context) : Preference
         prefs, PREF_DARK_MODE_ENABLED, Theme.SYSTEM.storageKey
     )
 
+    override var selectedLocale by LocalePreference(
+        prefs, PREF_RESOURCE_LANGUAGE, PREF_RESOURCE_REGION, Locale.getDefault()
+    )
+
     override var observableSelectedTheme: LiveData<String>
         get() {
             observableSelectedThemeResult.value = selectedTheme
@@ -54,6 +61,8 @@ class SharedPreferenceStorage @Inject constructor(context: Context) : Preference
     companion object {
         const val PREFS_NAME = "settings"
         const val PREF_DARK_MODE_ENABLED = "pref_dark_mode"
+        const val PREF_RESOURCE_LANGUAGE = "pref_resource_language"
+        const val PREF_RESOURCE_REGION = "pref_resource_region"
     }
 }
 
@@ -71,5 +80,31 @@ class StringPreference(
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: String?) {
         preferences.value.edit { putString(name, value) }
+    }
+}
+
+
+class LocalePreference(
+    private val preferences: Lazy<SharedPreferences>,
+    private val language: String,
+    private val region: String,
+    private val defaultValue: Locale
+) : ReadWriteProperty<Any, Locale> {
+
+    @WorkerThread
+    override fun getValue(thisRef: Any, property: KProperty<*>): Locale {
+        val lang = preferences.value.getString(language, null)
+        val reg = preferences.value.getString(region, null)
+        if (lang == null || reg == null) {
+            return defaultValue
+        }
+        return Locale(lang, reg)
+    }
+
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: Locale) {
+        preferences.value.edit {
+            putString(language, value.language)
+            putString(region, value.country)
+        }
     }
 }

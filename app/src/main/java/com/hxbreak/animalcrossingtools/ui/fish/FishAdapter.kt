@@ -7,13 +7,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.character.CharUtil
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntity
 import com.hxbreak.animalcrossingtools.view.IndexedRecyclerView
-import com.hxbreak.animalcrossingtools.view.ViewUtils
+import com.hxbreak.animalcrossingtools.utils.ViewUtils
 import kotlinx.android.extensions.LayoutContainer
 
 import kotlinx.android.synthetic.main.item_fish.*
@@ -63,8 +62,6 @@ class FishAdapter(private val viewModel: FishViewModel) :
         val view: View
     ) : RecyclerView.ViewHolder(view), LayoutContainer {
 
-        val calendar = Calendar.getInstance()
-
         override val containerView: View?
             get() = view
 
@@ -109,7 +106,7 @@ class FishAdapter(private val viewModel: FishViewModel) :
             bookmark_icon.visibility =
                 if (fishEntity.fish.saved?.owned == true) View.VISIBLE else View.GONE
             val i = fishEntity.fish
-            fish_title.setText("${fishEntity.fish.fish.name.nameCNzh}-\$${fishEntity.fish.fish.price}")
+            fish_title.setText("${fishEntity.fish.fish.localeName}-\$${fishEntity.fish.fish.price}")
             fish_subtitle.setText(
                 "${if (entity.availability.isIsAllDay) "All Day" else
                     fishEntity.fish.fish.availability.time}-${fishEntity.fish.fish.availability.location}"

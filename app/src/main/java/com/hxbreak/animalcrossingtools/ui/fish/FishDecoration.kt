@@ -3,21 +3,19 @@ package com.hxbreak.animalcrossingtools.ui.fish
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.graphics.Rect
 import android.os.Build
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
-import android.util.Log
 import android.view.View
 import androidx.core.graphics.withTranslation
 import androidx.core.view.isEmpty
 import androidx.recyclerview.widget.RecyclerView
 import com.hxbreak.animalcrossingtools.character.CharUtil
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntity
-import com.hxbreak.animalcrossingtools.view.ViewUtils
+import com.hxbreak.animalcrossingtools.utils.ViewUtils
 
 class FishDecoration(
     val context: Context,

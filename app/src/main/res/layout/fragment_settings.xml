@@ -52,8 +52,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"
-                android:text="Choose theme" />
+                android:text="Choose Theme" />
 
+            <TextView
+                style="@style/AppTheme.Widget.Settings.Button"
+                android:id="@+id/settings_choose_resource_language"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:text="Choose Language" />
             <!-- AppCompat/MaterialComponents layout inflators don't automatically handle
                  Switch widgets. See https://material.io/develop/android/components/switch/ -->
             <com.google.android.material.switchmaterial.SwitchMaterial

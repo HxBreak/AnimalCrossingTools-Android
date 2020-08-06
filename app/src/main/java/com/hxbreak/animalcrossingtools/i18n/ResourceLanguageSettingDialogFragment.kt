@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hxbreak.animalcrossingtools.theme
+package com.hxbreak.animalcrossingtools.i18n
 
 import android.app.Dialog
 import android.os.Bundle
@@ -22,20 +22,20 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.map
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.ui.settings.SettingsViewModel
 import dagger.android.support.DaggerAppCompatDialogFragment
-import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
-class ThemeSettingDialogFragment : DaggerAppCompatDialogFragment() {
+class ResourceLanguageSettingDialogFragment : DaggerAppCompatDialogFragment() {
 
     @Inject
     lateinit var viewModelFactory: DiViewModelFactory
 
-    private lateinit var listAdapter: ArrayAdapter<ThemeHolder>
+    private lateinit var listAdapter: ArrayAdapter<LanguageHolder>
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         listAdapter = ArrayAdapter(
@@ -44,11 +44,11 @@ class ThemeSettingDialogFragment : DaggerAppCompatDialogFragment() {
         )
 
         return MaterialAlertDialogBuilder(requireContext())
-            .setTitle("选择主题")
+            .setTitle("选择资源语言")
             .setSingleChoiceItems(listAdapter, 0) { dialog, position ->
                 dialog.dismiss()
-                listAdapter.getItem(position)?.theme?.let {
-                    viewModel.setTheme(it)
+                listAdapter.getItem(position)?.local?.let {
+                    viewModel.setLanguage(it)
                 }
             }
             .create()
@@ -59,35 +59,34 @@ class ThemeSettingDialogFragment : DaggerAppCompatDialogFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.availableThemes.observe(this, Observer { themes ->
+//        listAdapter.addAll(viewModel.supportedLanguageRange.map { LanguageHolder(it, getTitleForLocale(it)) })
+//        updateSelectedItem(viewModel.preferenceStorage.selectedLocale)
+        viewModel.availableResourceLanguage.observe(this, Observer { languages ->
             listAdapter.clear()
-            listAdapter.addAll(themes.map { theme -> ThemeHolder(theme, getTitleForTheme(theme)) })
-
-            updateSelectedItem(viewModel.theme.value)
+            listAdapter.addAll(languages.map { language ->
+                LanguageHolder(
+                    language,
+                    getTitleForLocale(language)
+                )
+            })
+            updateSelectedItem(viewModel.preferenceStorage.selectedLocale)
         })
-
-        viewModel.theme.observe(this, Observer(::updateSelectedItem))
     }
 
-    private fun updateSelectedItem(selected: Theme?) {
+    private fun updateSelectedItem(selected: Locale?) {
         val selectedPosition = (0 until listAdapter.count).indexOfFirst { index ->
-            listAdapter.getItem(index)?.theme == selected
+            listAdapter.getItem(index)?.local == selected
         }
         (dialog as AlertDialog).listView.setItemChecked(selectedPosition, true)
     }
 
-    private fun getTitleForTheme(theme: Theme) = when (theme) {
-        Theme.LIGHT -> getString(R.string.settings_theme_light)
-        Theme.DARK -> getString(R.string.settings_theme_dark)
-        Theme.SYSTEM -> getString(R.string.settings_theme_system)
-        Theme.BATTERY_SAVER -> getString(R.string.settings_theme_battery)
-    }
+    private fun getTitleForLocale(locale: Locale) = locale.getDisplayName(locale)
 
     companion object {
-        fun newInstance() = ThemeSettingDialogFragment()
+        fun newInstance() = ResourceLanguageSettingDialogFragment()
     }
 
-    private data class ThemeHolder(val theme: Theme, val title: String) {
+    private data class LanguageHolder(val local: Locale, val title: String) {
         override fun toString(): String = title
     }
 }

@@ -12,6 +12,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.OverScroller
+import com.hxbreak.animalcrossingtools.utils.ViewUtils
 import kotlin.math.max
 
 class FlowerMap @JvmOverloads constructor(

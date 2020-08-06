@@ -1,28 +1,19 @@
 package com.hxbreak.animalcrossingtools.ui.song
 
 import android.animation.ObjectAnimator
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
-import com.hxbreak.animalcrossingtools.fragment.Event
-import com.hxbreak.animalcrossingtools.view.ViewUtils
+import com.hxbreak.animalcrossingtools.utils.ViewUtils
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.fragment_fish.*
-import kotlinx.android.synthetic.main.fragment_music_play.*
-import kotlinx.android.synthetic.main.fragment_music_play.title
 import kotlinx.android.synthetic.main.item_fish.*
-import timber.log.Timber
 import java.lang.RuntimeException
-import java.util.*
 
 class SongAdapter(private val viewModel: SongViewModel) :
     ListAdapter<SongMixSelectable, RecyclerView.ViewHolder>(FishDiff()) {

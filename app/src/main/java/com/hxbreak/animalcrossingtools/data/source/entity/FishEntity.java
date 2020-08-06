@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.data.source.entity;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -21,6 +22,17 @@ public class FishEntity {
     private String museumphrase;
     private String image_uri;
     private String icon_uri;
+
+    @Expose(deserialize = false, serialize = false)
+    private String localeName;
+
+    public String getLocaleName() {
+        return localeName;
+    }
+
+    public void setLocaleName(String localeName) {
+        this.localeName = localeName;
+    }
 
     public int getId() {
         return id;

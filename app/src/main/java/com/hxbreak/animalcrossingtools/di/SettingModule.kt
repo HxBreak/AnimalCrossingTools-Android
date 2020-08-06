@@ -1,6 +1,7 @@
 package com.hxbreak.animalcrossingtools.di
 
 import androidx.lifecycle.ViewModel
+import com.hxbreak.animalcrossingtools.i18n.ResourceLanguageSettingDialogFragment
 import com.hxbreak.animalcrossingtools.theme.ThemeSettingDialogFragment
 import com.hxbreak.animalcrossingtools.ui.settings.SettingsFragment
 import com.hxbreak.animalcrossingtools.ui.settings.SettingsViewModel
@@ -23,6 +24,12 @@ abstract class SettingModule {
         modules = [ViewModelBuilder::class]
     )
     internal abstract fun settingsDialogFragment(): ThemeSettingDialogFragment
+
+
+    @ContributesAndroidInjector(
+        modules = [ViewModelBuilder::class]
+    )
+    internal abstract fun languageDialogFragment(): ResourceLanguageSettingDialogFragment
 
     @Binds
     @IntoMap
