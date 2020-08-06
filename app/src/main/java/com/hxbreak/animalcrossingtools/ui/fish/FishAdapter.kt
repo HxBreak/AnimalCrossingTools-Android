@@ -12,6 +12,7 @@ import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.character.CharUtil
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntity
+import com.hxbreak.animalcrossingtools.view.IndexedRecyclerView
 import com.hxbreak.animalcrossingtools.view.ViewUtils
 import kotlinx.android.extensions.LayoutContainer
 
@@ -19,7 +20,8 @@ import kotlinx.android.synthetic.main.item_fish.*
 import java.util.*
 
 class FishAdapter(private val viewModel: FishViewModel) :
-    ListAdapter<SelectableFishEntity, RecyclerView.ViewHolder>(FishDiff()) {
+    ListAdapter<SelectableFishEntity, RecyclerView.ViewHolder>(FishDiff()),
+    IndexedRecyclerView.IndexableAdpater {
     var editMode = false
         set(value) {
             if (field != value) {
@@ -49,9 +51,9 @@ class FishAdapter(private val viewModel: FishViewModel) :
     }
 
 
-    fun findFirstChildIndex(char: Char): Int {
+    override fun findFirstChildIndex(s: String): Int {
         fish?.let {
-            return it.indexOfFirst { it.first == char.toString() }
+            return it.indexOfFirst { it.first == s }
         }
         return -1
     }

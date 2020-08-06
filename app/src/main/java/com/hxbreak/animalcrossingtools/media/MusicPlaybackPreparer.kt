@@ -28,6 +28,7 @@ import com.google.android.exoplayer2.ControlDispatcher
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
+import com.google.android.exoplayer2.source.LoopingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import timber.log.Timber
@@ -95,7 +96,7 @@ class MusicPlaybackPreparer(
             .setTag(tag?.fullDescription)
             .createMediaSource(uri)
 
-        exoPlayer.prepare(music)
+        exoPlayer.prepare(LoopingMediaSource(music))
         exoPlayer.playWhenReady = playWhenReady
     }
 

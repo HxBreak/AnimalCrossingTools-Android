@@ -1,4 +1,4 @@
 rootProject.name='AnimalCrossingTools'
-include ':app', ':recyclerview-fastscroll'
+include ':app'
 include ':tracker_proto'
 include ':ratingbar'

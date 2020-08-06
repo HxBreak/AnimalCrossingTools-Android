@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.view
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -12,6 +13,7 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewConfiguration
+import androidx.core.animation.doOnEnd
 import androidx.core.graphics.withTranslation
 import androidx.dynamicanimation.animation.FloatValueHolder
 import androidx.dynamicanimation.animation.SpringAnimation
@@ -22,7 +24,6 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.ui.fish.FishAdapter
 import com.hxbreak.animalcrossingtools.view.canvas.FastScrollPopup
 import timber.log.Timber
-import java.lang.IllegalStateException
 import kotlin.math.max
 
 class IndexedRecyclerView @JvmOverloads constructor(
@@ -38,10 +39,13 @@ class IndexedRecyclerView @JvmOverloads constructor(
     private val list = ('A'..'Z').toList()
 
     private val pairs: List<Pair<Char, StaticLayout>>
+    private val heightLightList: List<Pair<Char, StaticLayout>>
     private val blockHeight: Int
     private val boxWidth: Int
 
     private val indicator: FastScrollPopup
+
+    private val heightLightTextPaint: TextPaint
 
     init {
         layoutManager = object : LinearLayoutManager(context, RecyclerView.VERTICAL, false) {
@@ -69,7 +73,7 @@ class IndexedRecyclerView @JvmOverloads constructor(
 
         typedValue.recycle()
         fontSize = alphabetTextColor
-        textPaint = TextPaint().apply {
+        textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             textSize = alphabetTextSize.toFloat()
             color = alphabetTextColor
         }
@@ -89,6 +93,20 @@ class IndexedRecyclerView @JvmOverloads constructor(
             setBgColor(indicatorBgColor)
             setTextColor(indicatorTextColor)
         }
+
+        heightLightTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            textSize = alphabetTextSize.toFloat()
+            color = indicatorBgColor
+        }
+        heightLightList = list.map {
+            val layout = createStaticLayout(
+                String.format("%c", it),
+                heightLightTextPaint,
+                Layout.Alignment.ALIGN_NORMAL,
+                true
+            )
+            it to layout
+        }
     }
 
     private val boxPaint = Paint().apply {
@@ -100,19 +118,21 @@ class IndexedRecyclerView @JvmOverloads constructor(
 
     private fun indexStart() = (height - blockHeight) / 2
 
-    override fun onDrawForeground(canvas: Canvas?) {
-        super.onDrawForeground(canvas)
+    override fun draw(c: Canvas?) {
+        super.draw(c)
         val yStart = indexStart()
-        indicator.draw(canvas)
+        indicator.draw(c)
 
-        canvas?.withTranslation(x = (width - boxWidth).toFloat(), y = yStart.toFloat()) {
-            pairs.forEach {
-//                drawRect(Rect(1, 0, boxWidth, it.second.height), boxPaint)
-                val bias = (boxWidth - it.second.wrapWidth()) / 2
-                canvas.withTranslation(x = bias.toFloat()) {
-                    it.second.draw(this)
+        c?.withTranslation(x = (width - boxWidth).toFloat(), y = yStart.toFloat()) {
+            pairs.forEachIndexed { index, pair ->
+//                drawRect(Rect(1, 0, boxWidth, pair.second.height), boxPaint)
+                val bias = (boxWidth - pair.second.wrapWidth()) / 2
+                c.withTranslation(x = bias.toFloat()) {
+                    (if (index == currentSelectedIndex) heightLightList[index] else pair).second.draw(
+                        this
+                    )
                 }
-                translate(0f, it.second.height.toFloat())
+                translate(0f, pair.second.height.toFloat())
             }
         }
     }
@@ -157,12 +177,28 @@ class IndexedRecyclerView @JvmOverloads constructor(
         }
     }
 
-    var lastY = -100f
+    private var lastY = 0f
 
-    var animation : SpringAnimation? = null
+    /**
+     * 指示器进入动画
+     */
+    var animation: SpringAnimation? = null
+
+    /**
+     * 隐藏显示动画
+     */
+    var visibleAnimation: ObjectAnimator? = null
 
     private fun onChangeIndex() {
         if (currentSelectedIndex != null) {
+            visibleAnimation?.cancel()
+            visibleAnimation = ObjectAnimator.ofFloat(indicator, "alpha", 1f).apply {
+                duration = 200
+                doOnEnd {
+                    visibleAnimation = null
+                }
+            }
+            visibleAnimation?.start()
             val list = pairs.take(currentSelectedIndex!! + 1)
             val half = list.last().second.height / 2
             val bestStart = list.sumBy { it.second.height } - half + indexStart()
@@ -174,18 +210,32 @@ class IndexedRecyclerView @JvmOverloads constructor(
                     lastY = value
                     indicator.updateFastScrollerBounds(this, value.toInt())
                     invalidate()
-                }.apply {
+                }
+                .addEndListener { anim, canceled, value, velocity ->
+                    animation = null
+                    if (visibleAnimation?.isStarted == false) {
+                        visibleAnimation?.start()
+                    }
+                }
+                .apply {
                     animateToFinalPosition(bestStart.toFloat())
                 }
-
-//            indicator.updateFastScrollerBounds(this, bestStart)
         } else {
-            indicator.setSectionName("")
+            visibleAnimation?.cancel()
+            visibleAnimation = ObjectAnimator.ofFloat(indicator, "alpha", 0f).apply {
+                duration = 150
+                doOnEnd {
+                    visibleAnimation = null
+                }
+            }
+            if (animation == null) {
+                visibleAnimation!!.start()
+            }
         }
         if (currentSelectedIndex != null) {
             val adapter = adapter
-            if (adapter is FishAdapter) {
-                val index = adapter.findFirstChildIndex(list[currentSelectedIndex!!])
+            if (adapter is IndexableAdpater) {
+                val index = adapter.findFirstChildIndex(list[currentSelectedIndex!!].toString())
                 if (index != -1) {
                     smoothScrollToPosition(index)
                 }
@@ -273,5 +323,9 @@ class IndexedRecyclerView @JvmOverloads constructor(
         override fun getVerticalSnapPreference(): Int {
             return SNAP_TO_START
         }
+    }
+
+    interface IndexableAdpater {
+        fun findFirstChildIndex(s: String): Int
     }
 }

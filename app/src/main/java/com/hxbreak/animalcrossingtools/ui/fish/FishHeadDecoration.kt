@@ -41,12 +41,8 @@ class FishHeadDecoration(
         }
         .toMap()
 
-//    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-//        super.onDrawOver(c, parent, state)
-//    }
-
-    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        super.onDraw(c, parent, state)
+    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        super.onDrawOver(c, parent, state)
         if (nameSlot.isEmpty() || parent.isEmpty()) return
         val layoutManager = parent.layoutManager ?: return
         val parentPadding = parent.paddingTop
