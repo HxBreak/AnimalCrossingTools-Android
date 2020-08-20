@@ -11,11 +11,12 @@ import com.bumptech.glide.Glide
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
+import com.hxbreak.animalcrossingtools.ui.EditableAppbarFragment
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_main.*
 import javax.inject.Inject
 
-class MainFragment : DaggerFragment() {
+class MainFragment : EditableAppbarFragment() {
 
     @Inject
     lateinit var viewModelFactory: DiViewModelFactory

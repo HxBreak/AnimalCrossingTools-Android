@@ -75,7 +75,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -93,6 +93,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:textColor="?attr/titleTextColor"
                 android:gravity="start|center_vertical"
+                android:id="@id/title"
                 android:text="@string/app_name"
                 android:textAppearance="?attr/titleTextAppearance" />
 

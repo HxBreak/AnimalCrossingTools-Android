@@ -26,6 +26,7 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
+import com.hxbreak.animalcrossingtools.ui.EditableAppbarFragment
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_song.*
 import kotlinx.coroutines.delay
@@ -33,7 +34,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class SongFragment : DaggerFragment() {
+class SongFragment : EditableAppbarFragment() {
 
     @Inject
     lateinit var viewModelFactory: DiViewModelFactory
