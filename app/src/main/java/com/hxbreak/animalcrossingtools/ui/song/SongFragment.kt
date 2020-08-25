@@ -26,6 +26,7 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
+import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import com.hxbreak.animalcrossingtools.ui.EditableAppbarFragment
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_song.*
@@ -34,7 +35,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class SongFragment : EditableAppbarFragment() {
+class SongFragment : EditBackAbleAppbarFragment() {
 
     @Inject
     lateinit var viewModelFactory: DiViewModelFactory
@@ -106,16 +107,17 @@ class SongFragment : EditableAppbarFragment() {
         recycler_view.post {
             startPostponedEnterTransition()
         }
-        val background =
-            context?.resources?.getDrawable(R.drawable.toolbar_color_animation) as TransitionDrawable
-        toolbar.background = background
+//        val background =
+//            context?.resources?.getDrawable(R.drawable.toolbar_color_animation) as TransitionDrawable
+//        toolbar.background = background
         edit_mode.setOnClickListener {
             viewModel.editMode.value = !viewModel.editMode.value!!
             animateToolbarIcons(viewModel.editMode.value!!)
+            uiSelectMode = viewModel.editMode.value!!
             if (viewModel.editMode.value == true) {
-                background.startTransition(200)
+//                background.startTransition(200)
             } else {
-                background.reverseTransition(200)
+//                background.reverseTransition(200)
                 viewModel.clearSelected()
             }
         }
