@@ -3,4 +3,5 @@
     <item name="toolbar" type="id"/>
     <item name="appbar" type="id"/>
     <item name="title" type="id"/>
+    <item name="next_title" type="id"/>
 </resources>

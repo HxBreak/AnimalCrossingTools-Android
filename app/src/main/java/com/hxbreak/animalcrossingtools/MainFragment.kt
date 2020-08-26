@@ -57,6 +57,7 @@ class MainFragment : EditableAppbarFragment() {
         rating.setOnRatingListener { v, RatingScore ->
             Toast.makeText(requireContext(), "$RatingScore", Toast.LENGTH_SHORT).show()
         }
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
     }
 
     override fun onDestroyView() {
@@ -66,7 +67,6 @@ class MainFragment : EditableAppbarFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
     }
 
     override fun onResume() {

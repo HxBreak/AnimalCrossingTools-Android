@@ -1,38 +1,22 @@
 package com.hxbreak.animalcrossingtools.ui.song
 
 import android.animation.ObjectAnimator
-import android.graphics.drawable.TransitionDrawable
-import android.os.Build
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.view.*
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestinationBuilder
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.transition.Hold
-import com.google.android.material.transition.MaterialSharedAxis
-import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
-import com.hxbreak.animalcrossingtools.ui.EditableAppbarFragment
-import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_song.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class SongFragment : EditBackAbleAppbarFragment() {
@@ -54,44 +38,28 @@ class SongFragment : EditBackAbleAppbarFragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     var adapter: SongAdapter? = null
 
-    private val onBackPressedCallback = object : OnBackPressedCallback(false) {
-        override fun handleOnBackPressed() {
-            isEnabled = false
-            edit_mode.callOnClick()
-        }
+    override fun onUiSelectChanged(value: Boolean) {
+        super.onUiSelectChanged(value)
+        viewModel.editMode.value = value
+        animateToolbarIcons(viewModel.editMode.value!!)
+        if (edit_mode.isSelected != value){ edit_mode.morph() }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         adapter = null
-        (requireActivity() as AppCompatActivity).setSupportActionBar(null)
     }
+
+    override fun configSupportActionBar() = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
-        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
-        toolbar.setNavigationOnClickListener {
-            if (viewModel.editMode.value == true) {
-                requireActivity().onBackPressedDispatcher.onBackPressed()
-            } else {
-                findNavController().navigateUp()
-            }
-        }
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
         adapter = SongAdapter(viewModel)
         postponeEnterTransition()
-        toolbar.title = ""
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            onBackPressedCallback
-        )
+        requireToolbar().title = ""
         recycler_view.adapter = adapter
         recycler_view.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -107,23 +75,15 @@ class SongFragment : EditBackAbleAppbarFragment() {
         recycler_view.post {
             startPostponedEnterTransition()
         }
-//        val background =
-//            context?.resources?.getDrawable(R.drawable.toolbar_color_animation) as TransitionDrawable
-//        toolbar.background = background
         edit_mode.setOnClickListener {
             viewModel.editMode.value = !viewModel.editMode.value!!
-            animateToolbarIcons(viewModel.editMode.value!!)
             uiSelectMode = viewModel.editMode.value!!
-            if (viewModel.editMode.value == true) {
-//                background.startTransition(200)
-            } else {
-//                background.reverseTransition(200)
+            if (viewModel.editMode.value == false) {
                 viewModel.clearSelected()
             }
         }
         viewModel.editMode.observe(viewLifecycleOwner, Observer {
             adapter?.editMode = it
-            onBackPressedCallback.isEnabled = it
             /**
              * Animate All ViewHolder In Screen
              */
@@ -164,19 +124,19 @@ class SongFragment : EditBackAbleAppbarFragment() {
         })
 
         viewModel.selected.observe(viewLifecycleOwner, Observer {
-            title.let { title ->
-                val toolbarHeight = toolbar.measuredHeight.toFloat()
-                val titleWidth = title.measuredWidth.toFloat()
+            toolbarTitle.let { title ->
+                val toolbarHeight = requireToolbar().measuredHeight.toFloat()
+                val titleWidth = requireToolbarTitle().measuredWidth.toFloat()
                 val newTitle = if (it.isNullOrEmpty()) "CD" else "${it.size} 张被选中"
-                if (title.text == newTitle) {
+                if (requireToolbarTitle().text == newTitle) {
                     return@Observer
                 }
                 ObjectAnimator.ofFloat(title, "translationY", 0F, toolbarHeight).apply {
                     duration = 200
                     addListener(
                         onEnd = {
-                            title.text = newTitle
-                            title.translationY = 0F
+                            requireToolbarTitle().text = newTitle
+                            requireToolbarTitle().translationY = 0F
                             animation_title.visibility = View.GONE
                         }
                     )
