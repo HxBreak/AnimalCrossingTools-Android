@@ -27,8 +27,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/fish_category_image"
+                    android:padding="2dp"
+                    app:shapeAppearance="@style/AppTheme.Widget.RoundedImageView"
+                    app:strokeColor="@android:color/darker_gray"
+                    app:strokeWidth="2dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp" />
 

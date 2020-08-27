@@ -31,7 +31,7 @@
 
     <style name="AppTheme.Widget.Toolbar.Title" parent="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary">
         <item name="titleTextColor">?attr/colorOnPrimary</item>
-        <item name="subtitleTextColor">@color/material_on_primary_emphasis_medium</item>
+        <item name="subtitleTextColor">@color/material_on_primary_emphasis_medium</item>cor
         <item name="titleTextAppearance">@style/TextAppearance.Widget.AppCompat.Toolbar.Title</item>
         <item name="subtitleTextAppearance">
             @style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle
@@ -65,4 +65,8 @@
         <item name="switchTextAppearance">?attr/textAppearanceBody2</item>
     </style>
 
+    <style name="AppTheme.Widget.RoundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
