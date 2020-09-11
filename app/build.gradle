@@ -80,6 +80,10 @@ android {
         }
     }
 
+    lintOptions {
+        disable "EnsureInitializerMetadata"
+    }
+
 }
 
 dependencies {
