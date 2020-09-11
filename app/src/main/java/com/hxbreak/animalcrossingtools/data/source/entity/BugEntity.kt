@@ -9,7 +9,8 @@ data class BugEntity(
     val fileName: String?,
     val name: LocalizationName,
     @SerializedName("price-flick")
-    private var priceFlick: Int,
+    val priceFlick: Int,
+    val price: Int,
     @SerializedName("catch-phrase")
     private val catchphrase: String? = null,
 
@@ -22,6 +23,7 @@ data class BugEntity(
     val iconUri: String,
     @SerializedName("museum-desc")
     val museumDesc: String,
+    val availability: ItemAvailability,
 )
 
 open class BugEntityMix(val entity: BugEntity, val saved: BugSaved?)

@@ -40,7 +40,8 @@ class BugViewBinder(val viewModel: BugsViewModel) : SelectionItemViewDelegate<Bu
             donated_icon.visibility = if (bug.saved?.donated == true) View.VISIBLE else View.GONE
             found_icon.visibility = if (bug.saved?.owned == true) View.VISIBLE else View.GONE
             GlideApp.with(image).load(bug.entity.imageUri).into(image)
-            title.text = bug.entity.name.toLocaleName(viewModel.locale)
+            title.text = "${bug.entity.name.toLocaleName(viewModel.locale)}-\$${bug.entity.price}"
+            subtitle.text = "${if (bug.entity.availability.isAllDay) "All Day" else bug.entity.availability.time}-${bug.entity.availability.location}"
         }
     }
 }
