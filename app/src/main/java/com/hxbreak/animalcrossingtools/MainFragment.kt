@@ -67,6 +67,7 @@ class MainFragment : EditableAppbarFragment() {
         requireAdapter().submitList(listOf(
             NavigationMenu("Fish", R.id.action_mainFragment_to_fishFragment),
             NavigationMenu("Bugs", R.id.action_mainFragment_to_bugsFragment),
+            NavigationMenu("SeaCreature", R.id.action_mainFragment_to_seaCreatureFragment),
             NavigationMenu("Song", R.id.action_mainFragment_to_songFragment),
             NavigationMenu("Villager", R.id.action_mainFragment_to_villagerFragment),
             NavigationMenu("Art", R.id.action_mainFragment_to_artFragment),

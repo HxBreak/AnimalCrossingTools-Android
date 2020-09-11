@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_mainFragment_to_bugsFragment"
             app:destination="@id/bugsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_seaCreatureFragment"
+            app:destination="@id/seaCreatureFragment" />
 
     </fragment>
     <fragment
@@ -99,6 +102,10 @@
         android:id="@+id/bugsFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.bugs.BugsFragment"
         android:label="BugsFragment" />
+    <fragment
+        android:id="@+id/seaCreatureFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.seacreature.SeaCreatureFragment"
+        android:label="SeaCreatureFragment" />
     <!--    app:enterAnim="@anim/slide_in_right"-->
 <!--    app:exitAnim="@anim/slide_out_left"-->
 <!--    app:popEnterAnim="@anim/slide_in_left"-->

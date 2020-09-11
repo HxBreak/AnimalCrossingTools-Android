@@ -20,6 +20,14 @@ data class BugSaved @JvmOverloads constructor(
     @ColumnInfo(name = "quantity") var quantity: Int = 0
 )
 
+@Entity(tableName = "seacreature")
+data class SeaCreatureSaved @JvmOverloads constructor(
+    @PrimaryKey @ColumnInfo(name = "id") var id: Int = 0,
+    @ColumnInfo(name = "owned") var owned: Boolean = false,
+    @ColumnInfo(name = "donated") var donated: Boolean = false,
+    @ColumnInfo(name = "quantity") var quantity: Int = 0
+)
+
 @Entity(tableName = "song")
 data class SongSaved @JvmOverloads constructor(
     @PrimaryKey @ColumnInfo(name = "id") var id: Int = 0,
