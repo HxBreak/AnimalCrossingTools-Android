@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.viewModels
+import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.i18n.ResourceLanguageSettingDialogFragment
@@ -20,11 +21,18 @@ import javax.inject.Inject
 
 class SettingsFragment : DaggerFragment() {
 
-
     @Inject
     lateinit var viewModelFactory: DiViewModelFactory
 
-    private val viewModel by viewModels<SettingsViewModel> { viewModelFactory }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val forward = MaterialSharedAxis(MaterialSharedAxis.X, true)
+        enterTransition = forward
+
+        val backward = MaterialSharedAxis(MaterialSharedAxis.X, false)
+        returnTransition = backward
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

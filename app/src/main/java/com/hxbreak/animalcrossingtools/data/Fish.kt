@@ -12,6 +12,14 @@ data class FishSaved @JvmOverloads constructor(
     @ColumnInfo(name = "quantity") var quantity: Int = 0
 )
 
+@Entity(tableName = "bug")
+data class BugSaved @JvmOverloads constructor(
+    @PrimaryKey @ColumnInfo(name = "id") var id: Int = 0,
+    @ColumnInfo(name = "owned") var owned: Boolean = false,
+    @ColumnInfo(name = "donated") var donated: Boolean = false,
+    @ColumnInfo(name = "quantity") var quantity: Int = 0
+)
+
 @Entity(tableName = "song")
 data class SongSaved @JvmOverloads constructor(
     @PrimaryKey @ColumnInfo(name = "id") var id: Int = 0,
@@ -19,9 +27,10 @@ data class SongSaved @JvmOverloads constructor(
     @ColumnInfo(name = "quantity") var quantity: Int = 0
 )
 
-data class FishAddictionPart(
-    @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "owned") val owned: Boolean,
-    @ColumnInfo(name = "donated") val donated: Boolean,
-    @ColumnInfo(name = "quantity") val quantity: Int
+@Entity(tableName = "art")
+data class ArtSaved @JvmOverloads constructor(
+    @PrimaryKey @ColumnInfo(name = "id") var id: Int = 0,
+    @ColumnInfo(name = "owned") var owned: Boolean = false,
+    @ColumnInfo(name = "quantity") var quantity: Int = 0
 )
+

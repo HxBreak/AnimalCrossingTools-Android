@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.ui
 
+import android.animation.ObjectAnimator
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.view.View
@@ -12,34 +13,10 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.AppBarLayout
 import com.hxbreak.animalcrossingtools.R
+import com.hxbreak.animalcrossingtools.view.AnimatedTextView
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.fragment_song.*
 import java.lang.NullPointerException
-
-open class AnimatedEditBackAbleAppbarFragment : EditBackAbleAppbarFragment(){
-
-    var title: String = ""
-        set(value) {
-            if (value != field) {
-                makeTitleAnimate(field, value)
-                field = value
-            }
-        }
-
-    var nextTitle: TextView? = null
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        nextTitle = view.findViewById<TextView>(R.id.next_title)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
-    open fun makeTitleAnimate(from: String, to: String){
-
-    }
-}
 
 open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
 
@@ -58,6 +35,7 @@ open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireToolbar().setNavigationIcon(navigationIcon())
+        requireToolbar().title = ""
         if (configSupportActionBar()){
             (requireActivity() as AppCompatActivity).setSupportActionBar(requireToolbar())
             supportActionBarSet = true
@@ -90,6 +68,7 @@ open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
         super.onUiSelectChanged(value)
         handleBackPressed.isEnabled = value
     }
+
 }
 
 open class EditableAppbarFragment : AppbarFragment() {
@@ -117,13 +96,28 @@ open class EditableAppbarFragment : AppbarFragment() {
         toolbarBackgroundTransition.run { if (uiSelectMode) startTransition(200) else reverseTransition(200)  }
     }
 
-    open fun onUiSelectChanged(value : Boolean) {}//dummy function
+    open fun onUiSelectChanged(value : Boolean) { animateToolbarIcons(value) }
+
+    open fun animateIconList(): List<View> = emptyList() //dummy function
+
+    private fun animateToolbarIcons(visible: Boolean) {
+        val target = if (visible) 1f else 0f
+        animateIconList().forEachIndexed { i, view ->
+            view.visibility = View.VISIBLE
+            ObjectAnimator.ofFloat(view, "alpha", target)
+                .apply {
+                    duration = 200
+                    startDelay = i.toLong() * 150
+                    start()
+                }
+        }
+    }
 }
 
 open class AppbarFragment : DaggerFragment(){
     var appbar: AppBarLayout? = null
     var toolbar: Toolbar? = null
-    var toolbarTitle: TextView? = null
+    var toolbarTitle: AnimatedTextView? = null
 
     val nav by lazy { findNavController() }
 

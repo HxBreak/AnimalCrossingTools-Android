@@ -10,19 +10,11 @@
         android:label="fragment_main"
         tools:layout="@layout/fragment_main">
         <action
-            android:id="@+id/action_mainFragment_to_fishFragment2"
-            app:destination="@id/fishFragment2"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            android:id="@+id/action_mainFragment_to_fishFragment"
+            app:destination="@id/fishFragment" />
         <action
             android:id="@+id/action_mainFragment_to_songFragment"
-            app:destination="@id/songFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:destination="@id/songFragment"/>
         <action
             android:id="@+id/action_mainFragment_to_trackerFragment"
             app:destination="@id/trackerFragment"
@@ -32,15 +24,20 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_mainFragment_to_settingsFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_villagerFragment"
+            app:destination="@id/villagerFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_artFragment"
+            app:destination="@id/artFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_bugsFragment"
+            app:destination="@id/bugsFragment" />
 
     </fragment>
     <fragment
-        android:id="@+id/fishFragment2"
+        android:id="@+id/fishFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.fish.FishFragment"
         android:label="FishFragment" />
     <fragment
@@ -90,4 +87,20 @@
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
+    <fragment
+        android:id="@+id/villagerFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.villager.VillagerFragment"
+        android:label="VillagerFragment" />
+    <fragment
+        android:id="@+id/artFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.art.ArtFragment"
+        android:label="ArtFragment" />
+    <fragment
+        android:id="@+id/bugsFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.bugs.BugsFragment"
+        android:label="BugsFragment" />
+    <!--    app:enterAnim="@anim/slide_in_right"-->
+<!--    app:exitAnim="@anim/slide_out_left"-->
+<!--    app:popEnterAnim="@anim/slide_in_left"-->
+<!--    app:popExitAnim="@anim/slide_out_right"-->
 </navigation>

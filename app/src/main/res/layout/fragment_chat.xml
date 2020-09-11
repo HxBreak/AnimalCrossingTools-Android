@@ -90,7 +90,7 @@
                 app:icon2="@drawable/am_none_to_mark"
                 app:icon1="@drawable/am_mark_to_none"
                 android:tooltipText="Mark Donated"
-                android:id="@+id/bookmark"
+                android:id="@+id/donate"
                 android:layout_width="24dp"
                 android:layout_height="24dp" />
         </androidx.appcompat.widget.Toolbar>

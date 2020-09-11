@@ -64,11 +64,12 @@
             <!-- AppCompat/MaterialComponents layout inflators don't automatically handle
                  Switch widgets. See https://material.io/develop/android/components/switch/ -->
             <com.google.android.material.switchmaterial.SwitchMaterial
-                style="@style/AppTheme.Widget.Settings.Switch"
                 android:id="@+id/settings_time_zone"
+                style="@style/AppTheme.Widget.Settings.Switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Enable notification" />
+                android:text="Enable notification"
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
@@ -113,8 +114,9 @@
                 android:gravity="start|center_vertical"
                 android:minHeight="48dp"
                 android:padding="8dp"
+                android:text="0.0"
                 android:textAppearance="?textAppearanceBody2"
-                android:text="0.0" />
+                android:visibility="gone" />
 
         </LinearLayout>
 

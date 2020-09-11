@@ -1,13 +1,11 @@
 package com.hxbreak.animalcrossingtools
 
-import android.util.Log
 import androidx.annotation.MainThread
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
-import java.lang.IllegalArgumentException
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -365,4 +363,3 @@ interface CombinedLiveDataScope<T> : CoroutineScope {
      */
     val latestValue: T?
 }
-

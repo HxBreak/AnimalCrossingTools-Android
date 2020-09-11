@@ -18,7 +18,6 @@ open class App : DaggerApplication() {
 
     override fun onCreate() {
         super.onCreate()
-//        System.loadLibrary("hook")
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {

@@ -15,11 +15,14 @@ import javax.inject.Singleton
         AndroidInjectionModule::class,
         FishListModule::class,
         SongListModule::class,
-        TempModule::class,
         TrackerModule::class,
         SettingModule::class,
         MainActivityModule::class,
-        NowPlayingModule::class
+        NowPlayingModule::class,
+        NavigationMenuModule::class,
+        VillagerModule::class,
+        ArtModule::class,
+        BugsModule::class,
     ]
 )
 interface ApplicationComponent : AndroidInjector<App> {

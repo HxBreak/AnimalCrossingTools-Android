@@ -31,16 +31,18 @@ class LiveDataCallAdapter<R>(private val responseType: Type) :
             }
 
             private fun enqueue() {
-                call.enqueue(object : Callback<R> {
-                    override fun onFailure(call: Call<R>, t: Throwable) {
-                        postValue(Result.Error(Exception(t)))
-                    }
+                if (!call.isExecuted) {
+                    call.enqueue(object : Callback<R> {
+                        override fun onFailure(call: Call<R>, t: Throwable) {
+                            postValue(Result.Error(Exception(t)))
+                        }
 
-                    override fun onResponse(call: Call<R>, response: Response<R>) {
-                        postValue(Success(response.body()!!))
-                        isSuccess = true
-                    }
-                })
+                        override fun onResponse(call: Call<R>, response: Response<R>) {
+                            postValue(Success(response.body()!!))
+                            isSuccess = true
+                        }
+                    })
+                }
             }
         }
     }

@@ -2,6 +2,7 @@ package com.hxbreak.animalcrossingtools.ui.fish
 
 import android.util.Pair
 import androidx.lifecycle.*
+import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.character.CharUtil
 import com.hxbreak.animalcrossingtools.combinedLiveData
 import com.hxbreak.animalcrossingtools.data.FishSaved
@@ -15,7 +16,9 @@ import java.lang.IllegalStateException
 import java.util.*
 import javax.inject.Inject
 
-data class SelectableFishEntity(var selected: Boolean, val fish: FishEntityMix)
+data class SelectableFishEntity(var selected: Boolean, val fish: FishEntityMix): ItemComparable<Int>{
+    override fun id() = fish.fish.id
+}
 
 class FishViewModel @Inject constructor(
     private val repository: DataRepository,
@@ -29,7 +32,7 @@ class FishViewModel @Inject constructor(
     val error = MutableLiveData<Pair<Exception, () -> Unit>>()
 
 
-    private val items: LiveData<List<FishEntityMix>> = refresh.switchMap { forceUpdate ->
+    private val items = refresh.switchMap { forceUpdate ->
         loading.value = true
         liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
             val result = repository.fishSource().allFish()
@@ -75,11 +78,11 @@ class FishViewModel @Inject constructor(
         error.postValue(Pair.create(exception, retry))
     }
 
-    private val selected = MutableLiveData<List<FishEntityMix>>()
+    val selected = MutableLiveData<List<FishEntityMix>>(emptyList())
 
-    private val internalClickedFishId = MutableLiveData<Int>(-1)
-    val clickedFish: LiveData<FishEntityMix?> =
-        combinedLiveData(x = internalClickedFishId, y = itemsWithLocalData,
+    private val internalClickedFishId = MutableLiveData(-1)
+
+    val clickedFish = combinedLiveData(x = internalClickedFishId, y = itemsWithLocalData,
             runCheck = { x, y -> x }) { x, y ->
             if (x == -1) {
                 emit(null)
@@ -87,15 +90,6 @@ class FishViewModel @Inject constructor(
                 emit(y?.firstOrNull { it.fish.id == x })
             }
         }
-
-    val selectedFish: LiveData<List<FishEntityMix>> = combinedLiveData(context = Dispatchers.IO,
-        x = itemsWithLocalData, y = selected,
-        runCheck = { x: Boolean, _: Boolean -> x }) { items, sel ->
-        if (!(items == null || sel == null)) {
-            val ids = sel.map { it.fish.id }
-            emit(items.filter { ids.contains(it.fish.id) })
-        }
-    }
 
     val editMode = MutableLiveData<Boolean>(false)
 
@@ -109,7 +103,7 @@ class FishViewModel @Inject constructor(
     }
 
 
-    val bookmarkAction = combinedLiveData(
+    val foundAction = combinedLiveData(
         viewModelScope.coroutineContext + Dispatchers.IO,
         x = savedList, y = selected
     ) { saved, sel ->
@@ -127,7 +121,7 @@ class FishViewModel @Inject constructor(
                     item
                 )
             }
-                .sortedBy { CharUtil.headPinyin(it.fish.fish.name.nameCNzh) }
+            .sortedBy { CharUtil.headPinyin(it.fish.fish.name.nameCNzh) }
             emit(value)
         }
 
@@ -147,14 +141,6 @@ class FishViewModel @Inject constructor(
         "$actives/${it.size}"
     }
 
-    init {
-        loadFish()
-    }
-
-    private fun loadFish() {
-        refresh.value = false//trigger of load
-    }
-
     fun toggleFish(fish: FishEntityMix) {
         val oldSel = selected.value
         val newSelected = arrayListOf<FishEntityMix>()
@@ -171,10 +157,11 @@ class FishViewModel @Inject constructor(
     }
 
     fun toggleFounded() {
-        if (selectedFish.value.isNullOrEmpty()) return
-        val toValue = bookmarkAction.value!!
+        if (selected.value.isNullOrEmpty()) return
+        val toValue = foundAction.value!!
         viewModelScope.launch {
-            val modifyStatus = selectedFish.value!!.map {
+            val fish = data.value.orEmpty().filter { it.selected }.map { it.fish }
+            val modifyStatus = fish.map {
                 FishSaved(
                     it.fish.id,
                     toValue,
@@ -187,11 +174,12 @@ class FishViewModel @Inject constructor(
         }
     }
 
-    fun toggleBookmark() {
-        if (selectedFish.value.isNullOrEmpty()) return
+    fun toggleDonate() {
+        if (selected.value.isNullOrEmpty()) return
         val toValue = donateAction.value!!
         viewModelScope.launch {
-            val modifyStatus = selectedFish.value!!.map {
+            val fish = data.value.orEmpty().filter { it.selected }.map { it.fish }
+            val modifyStatus = fish.map {
                 FishSaved(
                     it.fish.id,
                     it.saved?.owned ?: false,

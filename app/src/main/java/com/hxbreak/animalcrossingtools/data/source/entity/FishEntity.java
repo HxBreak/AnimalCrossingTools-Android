@@ -3,15 +3,13 @@ package com.hxbreak.animalcrossingtools.data.source.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class FishEntity {
 
     private int id;
     @SerializedName("file-name")
     private String filename;
     private CommonName name;
-    private FishAvailability availability;
+    private ItemAvailability availability;
     private String shadow;
     private int price;
     @SerializedName("price-cj")
@@ -58,11 +56,11 @@ public class FishEntity {
         this.name = name;
     }
 
-    public FishAvailability getAvailability() {
+    public ItemAvailability getAvailability() {
         return availability;
     }
 
-    public void setAvailability(FishAvailability availability) {
+    public void setAvailability(ItemAvailability availability) {
         this.availability = availability;
     }
 
@@ -265,92 +263,6 @@ public class FishEntity {
         }
     }
 
-    public static class FishAvailability {
-        @SerializedName("month-northern")
-        private String monthnorthern;
-        @SerializedName("month-southern")
-        private String monthsouthern;
-        private String time;
-        private boolean isAllDay;
-        private boolean isAllYear;
-        private String location;
-        private String rarity;
-        @SerializedName("month-array-northern")
-        private List<Integer> monthArrayNorthern;
-        @SerializedName("month-array-southern")
-        private List<Integer> monthArraySouthern;
 
-        public List<Integer> getMonthArrayNorthern() {
-            return monthArrayNorthern;
-        }
-
-        public void setMonthArrayNorthern(List<Integer> monthArrayNorthern) {
-            this.monthArrayNorthern = monthArrayNorthern;
-        }
-
-        public List<Integer> getMonthArraySouthern() {
-            return monthArraySouthern;
-        }
-
-        public void setMonthArraySouthern(List<Integer> monthArraySouthern) {
-            this.monthArraySouthern = monthArraySouthern;
-        }
-
-        public String getMonthnorthern() {
-            return monthnorthern;
-        }
-
-        public void setMonthnorthern(String monthnorthern) {
-            this.monthnorthern = monthnorthern;
-        }
-
-        public String getMonthsouthern() {
-            return monthsouthern;
-        }
-
-        public void setMonthsouthern(String monthsouthern) {
-            this.monthsouthern = monthsouthern;
-        }
-
-        public String getTime() {
-            return time;
-        }
-
-        public void setTime(String time) {
-            this.time = time;
-        }
-
-        public boolean isIsAllDay() {
-            return isAllDay;
-        }
-
-        public void setIsAllDay(boolean isAllDay) {
-            this.isAllDay = isAllDay;
-        }
-
-        public boolean isIsAllYear() {
-            return isAllYear;
-        }
-
-        public void setIsAllYear(boolean isAllYear) {
-            this.isAllYear = isAllYear;
-        }
-
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(String location) {
-            this.location = location;
-        }
-
-        public String getRarity() {
-            return rarity;
-        }
-
-        public void setRarity(String rarity) {
-            this.rarity = rarity;
-        }
-    }
 }
 

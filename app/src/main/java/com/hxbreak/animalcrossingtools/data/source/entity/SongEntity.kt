@@ -12,7 +12,7 @@ data class Song(
     val fileName: String,
     val id: Int,
     val isOrderable: Boolean,
-    val name: SongName,
+    val name: LocalizationName,
     @SerializedName("sell-price")
     val sellPrice: Int?,
     @SerializedName("image_uri")

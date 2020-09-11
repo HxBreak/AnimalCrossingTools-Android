@@ -120,7 +120,7 @@ class MusicPlayFragment : DaggerFragment() {
         transitionSet.duration = 300
         transitionSet.addTransition(transform)
         sharedElementEnterTransition = transitionSet
-        postponeEnterTransition()
+//        postponeEnterTransition()
     }
 
     override fun onDestroy() {

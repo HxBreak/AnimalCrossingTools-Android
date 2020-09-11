@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class SongName implements Serializable {
+public class LocalizationName implements Serializable {
 
     @SerializedName("name-USen")
     private String nameUSen;

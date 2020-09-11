@@ -30,7 +30,7 @@
                         android:id="@+id/textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Collected/All"
+                        android:text="Donated/All"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         app:layout_constraintBottom_toBottomOf="@+id/textView2"
                         app:layout_constraintEnd_toStartOf="@+id/textView3"
@@ -77,7 +77,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
                     <TextView
-                        android:id="@+id/collected_summary"
+                        android:id="@+id/donated_summary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="等待中"
@@ -93,10 +93,10 @@
                         android:layout_height="wrap_content"
                         android:text="等待中"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintBottom_toBottomOf="@+id/collected_summary"
+                        app:layout_constraintBottom_toBottomOf="@+id/donated_summary"
                         app:layout_constraintEnd_toEndOf="@+id/textView3"
                         app:layout_constraintStart_toStartOf="@+id/textView3"
-                        app:layout_constraintTop_toTopOf="@+id/collected_summary" />
+                        app:layout_constraintTop_toTopOf="@+id/donated_summary" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -127,18 +127,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:textAppearance="?attr/titleTextAppearance"
-                android:id="@+id/title"
-                android:textColor="?attr/titleTextColor"
-                android:layout_height="56dp"
-                android:gravity="center"
-                android:layout_width="wrap_content" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:textAppearance="?attr/titleTextAppearance"
-                android:id="@+id/animation_title"
-                android:textColor="?attr/titleTextColor"
+            <com.hxbreak.animalcrossingtools.view.AnimatedTextView
+                android:id="@id/title"
+                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:textColor="?attr/colorOnPrimary"
                 android:layout_height="56dp"
                 android:gravity="center"
                 android:layout_width="wrap_content" />
@@ -149,8 +141,9 @@
                 app:icon1="@drawable/am_edit_to_ok"
                 app:icon2="@drawable/am_ok_to_edit"
                 android:id="@+id/edit_mode"
-                android:layout_width="24dp"
-                android:layout_height="24dp" />
+                android:scaleType="centerInside"
+                android:layout_width="42dp"
+                android:layout_height="?attr/actionBarSize"/>
 
             <com.hxbreak.animalcrossingtools.view.IconView
                 android:layout_gravity="right"
@@ -158,10 +151,11 @@
                 android:visibility="invisible"
                 app:icon1="@drawable/am_invisible_to_visible"
                 app:icon2="@drawable/am_visible_to_invisible"
-                android:id="@+id/donated"
+                android:id="@+id/found"
                 android:tooltipText="Mark Founded"
-                android:layout_width="24dp"
-                android:layout_height="24dp" />
+                android:scaleType="centerInside"
+                android:layout_width="42dp"
+                android:layout_height="?attr/actionBarSize" />
 
 
             <com.hxbreak.animalcrossingtools.view.IconView
@@ -171,9 +165,10 @@
                 app:icon2="@drawable/am_none_to_mark"
                 app:icon1="@drawable/am_mark_to_none"
                 android:tooltipText="Mark Donated"
-                android:id="@+id/bookmark"
-                android:layout_width="24dp"
-                android:layout_height="24dp" />
+                android:id="@+id/donate"
+                android:scaleType="centerInside"
+                android:layout_width="42dp"
+                android:layout_height="?attr/actionBarSize"/>
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>

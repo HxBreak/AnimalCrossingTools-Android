@@ -12,18 +12,6 @@ class SongRemoteDataSource(
     val songSavedDao: SongSavedDao
 ) : SongDataSource {
     override fun getAllSongs(): LiveData<Result<Map<String, Song>>> {
-//        val result = MutableLiveData<Result<List<SongMix>>>()
-//        var r: LiveData<Result<Map<String, Song>>>? = null
-//        suspendCoroutine<Unit> { con ->
-//            r = services.allSongs()
-//            r?.observeForever { con.resume(Unit) }
-//        }
-//        val ret: Result<Map<String, Song>>? = r?.value
-//        if (ret is Result.Success){
-//
-//        }else{
-//
-//        }
         return services.allSongs()
     }
 

@@ -66,4 +66,7 @@
         <item name="switchTextAppearance">?attr/textAppearanceBody2</item>
     </style>
 
+    <style name="AppTheme.Widget.ColoredBackground">
+        <item name="android:background">@color/cardview_dark_background</item>
+    </style>
 </resources>

@@ -1,15 +1,11 @@
 package com.hxbreak.animalcrossingtools.ui.song
 
-import android.media.Image
 import android.net.Uri
-import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
-import android.util.Log
-import android.view.View
-import androidx.core.app.BundleCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.*
 import com.example.android.uamp.media.extensions.*
+import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.data.source.entity.Song
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.Result
@@ -20,7 +16,6 @@ import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import com.hxbreak.animalcrossingtools.livedata.CombinedLiveData
 import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
-import kotlinx.android.synthetic.main.item_fish.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -37,7 +32,7 @@ class SongViewModel @Inject constructor(
     val loading = MutableLiveData(false)
     val editMode = MutableLiveData(false)
     val erro = MutableLiveData<Event<Exception>>()
-    val selected = MutableLiveData<MutableList<Int>>()
+    val selected = MutableLiveData<MutableList<Int>>(mutableListOf())
     val lunchNowPlayingEvent = MutableLiveData<Event<WeakReference<Pair<TransitionView, Song>>>>()
     val locale = preferenceStorage.selectedLocale
 
@@ -149,12 +144,14 @@ class SongViewModel @Inject constructor(
     }
 
     fun toggleSong(id: Int) {
-        if (selected.value?.contains(id) == true) {
-            selected.value?.remove(id)
+        val list = mutableListOf<Int>()
+        list.addAll(selected.value.orEmpty())
+        if (list.contains(id)) {
+            list.remove(id)
         } else {
-            selected.value?.add(id)
+            list.add(id)
         }
-        selected.value = selected.value
+        selected.value = list
     }
 
     fun toggleOwnSong() {
@@ -191,7 +188,9 @@ data class SongMixSelectable(
     private val song1: Song,
     private val songSaved1: SongSaved?,
     var selected: Boolean
-) : SongMix(song1, songSaved1)
+) : SongMix(song1, songSaved1), ItemComparable<Int>{
+    override fun id() = song1.id
+}
 
 fun Song.imageTransitionName(): String = "$fileName-image"
 fun Song.titleTransitionName(): String = "$fileName-title"

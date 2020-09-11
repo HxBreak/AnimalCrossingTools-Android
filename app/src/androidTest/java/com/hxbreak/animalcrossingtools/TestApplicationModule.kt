@@ -2,7 +2,6 @@ package com.hxbreak.animalcrossingtools
 
 import android.content.Context
 import android.provider.Settings
-import android.util.Log
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
 import com.hxbreak.animalcrossingtools.data.CoroutinesCallAdapterFactory
@@ -12,6 +11,7 @@ import com.hxbreak.animalcrossingtools.data.services.AnimalCrossingServices
 import com.hxbreak.animalcrossingtools.data.source.*
 import com.hxbreak.animalcrossingtools.data.source.local.FishDataSource
 import com.hxbreak.animalcrossingtools.data.source.local.FishLocalDataSource
+import com.hxbreak.animalcrossingtools.data.source.remote.RepoDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.SongDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.SongRemoteDataSource
 import dagger.Binds
@@ -48,6 +48,8 @@ object TestApplicationModule {
                     services, database.songSavedDao()
                 )
             }
+
+            override fun repoSource() = RepoDataSource(serviceV2, database)
         }
     }
 

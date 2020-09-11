@@ -14,6 +14,7 @@ import com.hxbreak.tracker_proto.data.ConnectedClient
 import kotlinx.android.extensions.LayoutContainer
 
 import kotlinx.android.synthetic.main.item_fish.*
+import kotlinx.android.synthetic.main.viewstub_checkbox.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -77,9 +78,9 @@ class TrackerAdapter(private val viewModel: TrackerViewModel) :
             fish_item.setOnClickListener {
                 viewModel.chatWith(client)
             }
+            found_icon.visibility = View.GONE
             donated_icon.visibility = View.GONE
-            bookmark_icon.visibility = View.GONE
-            fish_title.text =
+            title.text =
                 "${client.id} - ${NetworkUtils.ipToString(client.addr)}:${client.port}"
 //            fish_title.setTextColor(if (isActive) view.context.resources.getColor(R.color.colorAccent) else Color.BLACK)
 //            fish_title.setText("${fish.fish.name}-\$${fish.fish.price}")
@@ -94,7 +95,7 @@ class TrackerAdapter(private val viewModel: TrackerViewModel) :
                 in 700..1500 -> "online-slow"
                 else -> "offline"
             }
-            fish_subtitle.setText("$text")
+            subtitle.setText("$text")
         }
 
         companion object {

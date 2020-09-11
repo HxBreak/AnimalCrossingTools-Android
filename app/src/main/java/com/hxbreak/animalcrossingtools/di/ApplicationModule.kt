@@ -3,7 +3,6 @@ package com.hxbreak.animalcrossingtools.di
 import android.content.ComponentName
 import android.content.Context
 import android.provider.Settings
-import android.util.Log
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -16,6 +15,7 @@ import com.hxbreak.animalcrossingtools.data.services.AnimalCrossingServices
 import com.hxbreak.animalcrossingtools.data.source.*
 import com.hxbreak.animalcrossingtools.data.source.local.FishDataSource
 import com.hxbreak.animalcrossingtools.data.source.local.FishLocalDataSource
+import com.hxbreak.animalcrossingtools.data.source.remote.RepoDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.SongDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.SongRemoteDataSource
 import com.hxbreak.animalcrossingtools.media.MusicService
@@ -55,6 +55,8 @@ object ApplicationModule {
                     services, database.songSavedDao()
                 )
             }
+
+            override fun repoSource() = RepoDataSource(serviceV2, database)
         }
     }
 
