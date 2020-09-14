@@ -22,4 +22,7 @@ interface AnimalCrossingServiceV2 {
     @GET("sea/")
     suspend fun allSeaCreatures(): Result<Map<String, SeaCreatureEntity>>
 
+    @GET("fossils/")
+    suspend fun allFossils(): Result<Map<String, FossilEntity>>
+
 }

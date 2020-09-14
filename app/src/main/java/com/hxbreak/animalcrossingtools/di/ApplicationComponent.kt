@@ -23,7 +23,8 @@ import javax.inject.Singleton
         VillagerModule::class,
         ArtModule::class,
         BugsModule::class,
-        SeaCreatureModule::class
+        SeaCreatureModule::class,
+        FossilModule::class,
     ]
 )
 interface ApplicationComponent : AndroidInjector<App> {

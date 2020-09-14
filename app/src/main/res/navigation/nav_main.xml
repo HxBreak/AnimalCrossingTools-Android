@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_mainFragment_to_seaCreatureFragment"
             app:destination="@id/seaCreatureFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_fossilFragment"
+            app:destination="@id/fossilFragment" />
 
     </fragment>
     <fragment
@@ -106,6 +109,10 @@
         android:id="@+id/seaCreatureFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.seacreature.SeaCreatureFragment"
         android:label="SeaCreatureFragment" />
+    <fragment
+        android:id="@+id/fossilFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.fossil.FossilFragment"
+        android:label="FossilFragment" />
     <!--    app:enterAnim="@anim/slide_in_right"-->
 <!--    app:exitAnim="@anim/slide_out_left"-->
 <!--    app:popEnterAnim="@anim/slide_in_left"-->

@@ -36,4 +36,10 @@ class RepoDataSource(
         is Result.Error -> result
         else -> throw IllegalStateException("The result from service shouldn\'t using loading")
     }
+
+    suspend fun allFossils(): Result<List<FossilEntity>> = when(val result = service.allFossils()){
+        is Result.Success -> Result.Success(result.data.values.toList())
+        is Result.Error -> result
+        else -> throw IllegalStateException("The result from service shouldn\'t using loading")
+    }
 }
