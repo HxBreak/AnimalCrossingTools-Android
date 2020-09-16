@@ -75,6 +75,7 @@ class MusicPlayFragment : DaggerFragment() {
         }
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
         args.song?.let {
+            Timber.e("${it.titleTransitionName()}")
             ViewCompat.setTransitionName(imageView, it.imageTransitionName())
             ViewCompat.setTransitionName(textView6, it.titleTransitionName())
         }
@@ -102,12 +103,6 @@ class MusicPlayFragment : DaggerFragment() {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-        val changeImage = ChangeImageTransform()
-        changeImage.addTarget(imageView)
-        transitionSet.addTransition(changeImage)
-        val changeBounds = ChangeBounds()
-        changeBounds.addTarget(textView6)
-        transitionSet.addTransition(changeBounds)
     }
 
     private val transitionSet = TransitionSet()

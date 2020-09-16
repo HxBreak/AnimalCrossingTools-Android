@@ -8,7 +8,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:transitionGroup="true"
         android:id="@+id/refresh_layout"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
@@ -32,7 +31,7 @@
                         android:id="@+id/textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Donated/All"
+                        android:text="Owned/All"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         app:layout_constraintBottom_toBottomOf="@+id/textView2"
                         app:layout_constraintEnd_toStartOf="@+id/textView3"
@@ -43,6 +42,7 @@
                     <TextView
                         android:id="@+id/textView2"
                         android:layout_width="wrap_content"
+                        android:visibility="invisible"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="Found/All"
@@ -57,6 +57,7 @@
                         android:id="@+id/textView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:visibility="invisible"
                         android:text="Actived/All"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         app:layout_constraintBottom_toBottomOf="@+id/textView"
@@ -72,6 +73,7 @@
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="16dp"
                         android:text="1/99"
+                        android:visibility="invisible"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/textView2"
@@ -92,6 +94,7 @@
                     <TextView
                         android:id="@+id/active_summary"
                         android:layout_width="wrap_content"
+                        android:visibility="invisible"
                         android:layout_height="wrap_content"
                         android:text="TextView"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -103,6 +106,7 @@
             </androidx.cardview.widget.CardView>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
+                tools:listitem="@layout/item_fish"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </com.hxbreak.animalcrossingtools.view.ScrollViewGroup>
@@ -116,7 +120,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            app:title="Fish"
+            app:title="Arts"
             app:titleEnabled="true"
             android:fitsSystemWindows="true"
             android:id="@id/toolbar"
@@ -144,13 +148,13 @@
                 android:layout_height="?attr/actionBarSize" />
 
             <com.hxbreak.animalcrossingtools.view.IconView
-                android:layout_gravity="end"
-                android:layout_marginEnd="8dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="8dp"
                 android:visibility="invisible"
-                app:icon2="@drawable/am_none_to_mark"
-                app:icon1="@drawable/am_mark_to_none"
-                android:tooltipText="Mark Donated"
-                android:id="@+id/donate"
+                app:icon1="@drawable/am_invisible_to_visible"
+                app:icon2="@drawable/am_visible_to_invisible"
+                android:id="@+id/found"
+                android:tooltipText="Mark Founded"
                 android:scaleType="centerInside"
                 android:layout_width="42dp"
                 android:layout_height="?attr/actionBarSize" />

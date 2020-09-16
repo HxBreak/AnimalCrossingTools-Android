@@ -3,12 +3,16 @@ package com.hxbreak.animalcrossingtools.ui.song
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialSharedAxis
 
 import com.hxbreak.animalcrossingtools.R
@@ -16,6 +20,7 @@ import com.hxbreak.animalcrossingtools.adapter.SelectionAdapter
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.extensions.testChanged
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
+import com.hxbreak.animalcrossingtools.fragment.useOnce
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import kotlinx.android.synthetic.main.fragment_song.*
 import javax.inject.Inject
@@ -41,6 +46,14 @@ class SongFragment : EditBackAbleAppbarFragment() {
         enterTransition = forward
         val backward = MaterialSharedAxis(MaterialSharedAxis.X, false)
         returnTransition = backward
+        val exit = MaterialElevationScale(false).apply {
+            duration = 300
+        }
+        exitTransition = exit
+        val reenter = MaterialElevationScale(true).apply {
+            duration = 300
+        }
+        reenterTransition = reenter
     }
 
     var adapter: SelectionAdapter? = null
@@ -64,6 +77,7 @@ class SongFragment : EditBackAbleAppbarFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
+        recycler_view.doOnPreDraw { startPostponedEnterTransition() }
         adapter = SelectionAdapter()
         requireAdapter().register(SongViewBinder(viewModel))
         requireToolbar().title = ""
@@ -78,9 +92,6 @@ class SongFragment : EditBackAbleAppbarFragment() {
         }
         refresh_layout.setOnRefreshListener {
             viewModel.refresh.value = true
-        }
-        recycler_view.post {
-            startPostponedEnterTransition()
         }
         edit_mode.setOnClickListener {
             uiSelectMode = !viewModel.editMode.value!!
@@ -126,16 +137,23 @@ class SongFragment : EditBackAbleAppbarFragment() {
             it.let {
                 it.get()?.let {
                     val extras = FragmentNavigatorExtras(
-                        it.first.retrieve("root") to "container",
-                        it.first.retrieve("image") to it.second.imageTransitionName(),
-                        it.first.retrieve("title") to it.second.titleTransitionName()
+                        it.second.root to "container",
+                        it.second.image to it.first.imageTransitionName(),
+//                        it.second.title to it.first.titleTransitionName(),
                     )
-
-                    findNavController().navigate(
-                        SongFragmentDirections.actionSongFragmentToMusicPlayFragment(
-                            it.second
-                        ), extras
-                    )
+                    val action = SongFragmentDirections.actionSongFragmentToMusicPlayFragment(it.first)
+                    object : FragmentFactory(){
+                        override fun instantiate(
+                            classLoader: ClassLoader,
+                            className: String
+                        ): Fragment {
+                            return super.instantiate(classLoader, className)
+                        }
+                    }.useOnce(parentFragmentManager){
+                        findNavController().navigate(
+                            action.actionId, action.arguments, null, extras
+                        )
+                    }
                 }
             }
         })
@@ -155,3 +173,9 @@ class SongFragment : EditBackAbleAppbarFragment() {
         inflater.inflate(R.menu.song_fragment_menu, menu)
     }
 }
+
+internal data class SongItemView(
+    val root: View,
+    val title: View,
+    val image: View
+)

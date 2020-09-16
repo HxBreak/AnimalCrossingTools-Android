@@ -1,6 +1,11 @@
 package com.hxbreak.animalcrossingtools.fragment
 
+import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 open class Event<out T>(private val content: T) {
 
@@ -31,4 +36,15 @@ class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Obser
             onEventUnhandledContent(it)
         }
     }
+}
+
+@ExperimentalContracts
+inline fun FragmentFactory.useOnce(fragmentManager: FragmentManager, block: () -> Unit){
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    val saved = fragmentManager.fragmentFactory
+    fragmentManager.fragmentFactory = this
+    block()
+    fragmentManager.fragmentFactory = saved
 }

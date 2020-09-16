@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools
 
+import android.content.ComponentName
 import android.content.Context
 import android.provider.Settings
 import androidx.room.Room
@@ -14,6 +15,8 @@ import com.hxbreak.animalcrossingtools.data.source.local.FishLocalDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.RepoDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.SongDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.SongRemoteDataSource
+import com.hxbreak.animalcrossingtools.media.MusicService
+import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

@@ -61,15 +61,7 @@ class SongViewBinder(val viewModel: SongViewModel) : SelectionItemViewDelegate<S
                 if (viewModel.editMode.value!!) {
                     checkBox.performClick()
                 } else {
-                    viewModel.playSong(song.song, object : TransitionView {
-                        override fun retrieve(name: String) = when (name) {
-                            "image" -> image
-                            "title" -> title
-                            "root" -> itemView
-                            else -> throw RuntimeException()
-                        }
-
-                    })
+                    viewModel.playSong(song.song, SongItemView(itemView, title, image))
                 }
             }
         }

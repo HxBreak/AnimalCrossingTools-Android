@@ -17,6 +17,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.473"
+            tools:srcCompat="@drawable/ic_home_black_24dp" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/texts"
             app:layout_constraintStart_toEndOf="@+id/image"
@@ -51,17 +63,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.473"
-            tools:srcCompat="@drawable/ic_home_black_24dp" />
+
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/found_icon"

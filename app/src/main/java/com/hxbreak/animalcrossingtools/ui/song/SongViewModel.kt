@@ -2,6 +2,7 @@ package com.hxbreak.animalcrossingtools.ui.song
 
 import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
+import android.view.View
 import androidx.core.os.bundleOf
 import androidx.lifecycle.*
 import com.example.android.uamp.media.extensions.*
@@ -33,7 +34,7 @@ class SongViewModel @Inject constructor(
     val editMode = MutableLiveData(false)
     val erro = MutableLiveData<Event<Exception>>()
     val selected = MutableLiveData<MutableList<Int>>(mutableListOf())
-    val lunchNowPlayingEvent = MutableLiveData<Event<WeakReference<Pair<TransitionView, Song>>>>()
+    internal val lunchNowPlayingEvent = MutableLiveData<Event<WeakReference<Pair<Song, SongItemView>>>>()
     val locale = preferenceStorage.selectedLocale
 
     val cds = refresh.switchMap {
@@ -168,7 +169,7 @@ class SongViewModel @Inject constructor(
         }
     }
 
-    fun playSong(song: Song, transitionView: TransitionView) {
+    internal fun playSong(song: Song, itemView: SongItemView) {
         val metadata = MediaMetadataCompat.Builder().apply {
             mediaUri = song.musicUrl
             displayTitle = "${song.localName}"
@@ -180,7 +181,7 @@ class SongViewModel @Inject constructor(
             Uri.parse(song.musicUrl),
             bundleOf("MediaMetaData" to metadata)
         )
-        lunchNowPlayingEvent.value = Event(WeakReference(transitionView to song))
+        lunchNowPlayingEvent.value = Event(WeakReference(song to itemView))
     }
 }
 

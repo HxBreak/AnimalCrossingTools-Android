@@ -25,4 +25,6 @@ interface AnimalCrossingServiceV2 {
     @GET("fossils/")
     suspend fun allFossils(): Result<Map<String, FossilEntity>>
 
+    @GET("houseware/")
+    suspend fun allHousewares(): Result<Map<String, List<HousewareEntity>>>
 }
