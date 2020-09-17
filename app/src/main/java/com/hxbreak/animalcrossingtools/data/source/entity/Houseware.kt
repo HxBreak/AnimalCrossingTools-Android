@@ -1,6 +1,7 @@
 package com.hxbreak.animalcrossingtools.data.source.entity
 
 import com.google.gson.annotations.SerializedName
+import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 
 data class HousewareEntity(
     val name: LocalizationName,
@@ -51,4 +52,6 @@ data class HousewareEntity(
     @SerializedName("variant-id")
     val variantId: String,
     val version: String
-)
+): ItemComparable<String> {
+    override fun id() = "$fileName-$variantId-$version"
+}

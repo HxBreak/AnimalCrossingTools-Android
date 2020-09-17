@@ -25,6 +25,8 @@ import javax.inject.Singleton
         BugsModule::class,
         SeaCreatureModule::class,
         FossilModule::class,
+        HousewaresModule::class,
+        DiGlideModule::class,
     ]
 )
 interface ApplicationComponent : AndroidInjector<App> {

@@ -5,7 +5,6 @@ import com.hxbreak.animalcrossingtools.di.DaggerApplicationComponent
 import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
-import timber.log.Timber
 import javax.inject.Inject
 
 open class App : DaggerApplication() {

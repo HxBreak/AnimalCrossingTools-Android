@@ -13,103 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.hxbreak.animalcrossingtools.view.ScrollViewGroup
-            android:id="@+id/scrollContent"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            tools:listitem="@layout/item_fish"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.cardview.widget.CardView
-                android:tag="pin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Owned/All"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView2"
-                        app:layout_constraintEnd_toStartOf="@+id/textView3"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/textView2"
-                        app:layout_constraintTop_toTopOf="@+id/textView2" />
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:visibility="invisible"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Found/All"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        app:layout_constraintBottom_toTopOf="@+id/founded_summary"
-                        app:layout_constraintEnd_toStartOf="@+id/textView"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="invisible"
-                        android:text="Actived/All"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/textView"
-                        app:layout_constraintTop_toTopOf="@+id/textView" />
-
-                    <TextView
-                        android:id="@+id/founded_summary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="1/99"
-                        android:visibility="invisible"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/textView2"
-                        app:layout_constraintStart_toStartOf="@+id/textView2"
-                        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-                    <TextView
-                        android:id="@+id/donated_summary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="-"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintBottom_toBottomOf="@+id/founded_summary"
-                        app:layout_constraintEnd_toEndOf="@+id/textView"
-                        app:layout_constraintStart_toStartOf="@+id/textView"
-                        app:layout_constraintTop_toTopOf="@+id/founded_summary" />
-
-                    <TextView
-                        android:id="@+id/active_summary"
-                        android:layout_width="wrap_content"
-                        android:visibility="invisible"
-                        android:layout_height="wrap_content"
-                        android:text="TextView"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintBottom_toBottomOf="@+id/donated_summary"
-                        app:layout_constraintEnd_toEndOf="@+id/textView3"
-                        app:layout_constraintStart_toStartOf="@+id/textView3"
-                        app:layout_constraintTop_toTopOf="@+id/donated_summary" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                tools:listitem="@layout/item_fish"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </com.hxbreak.animalcrossingtools.view.ScrollViewGroup>
+            android:layout_height="match_parent" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -120,7 +28,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            app:title="Arts"
+            app:title="Housewares"
             app:titleEnabled="true"
             android:fitsSystemWindows="true"
             android:id="@id/toolbar"
@@ -137,27 +45,6 @@
                 android:gravity="center"
                 android:layout_width="wrap_content" />
 
-            <com.hxbreak.animalcrossingtools.view.IconView
-                android:layout_gravity="end"
-                android:layout_marginEnd="12dp"
-                app:icon1="@drawable/am_edit_to_ok"
-                app:icon2="@drawable/am_ok_to_edit"
-                android:id="@+id/edit_mode"
-                android:scaleType="centerInside"
-                android:layout_width="42dp"
-                android:layout_height="?attr/actionBarSize" />
-
-            <com.hxbreak.animalcrossingtools.view.IconView
-                android:layout_gravity="right"
-                android:layout_marginRight="8dp"
-                android:visibility="invisible"
-                app:icon1="@drawable/am_invisible_to_visible"
-                app:icon2="@drawable/am_visible_to_invisible"
-                android:id="@+id/found"
-                android:tooltipText="Mark Founded"
-                android:scaleType="centerInside"
-                android:layout_width="42dp"
-                android:layout_height="?attr/actionBarSize" />
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>

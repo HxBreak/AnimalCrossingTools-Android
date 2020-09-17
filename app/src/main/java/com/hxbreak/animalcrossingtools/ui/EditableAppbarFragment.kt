@@ -28,18 +28,9 @@ open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
         override fun handleOnBackPressed() { onBackPressed() }
     }
 
-    open fun configSupportActionBar() = false
-
-    private var supportActionBarSet = false
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireToolbar().setNavigationIcon(navigationIcon())
-        requireToolbar().title = ""
-        if (configSupportActionBar()){
-            (requireActivity() as AppCompatActivity).setSupportActionBar(requireToolbar())
-            supportActionBarSet = true
-        }
         requireToolbar().setNavigationOnClickListener {
             onBackPressed()
         }
@@ -49,10 +40,6 @@ open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        if (supportActionBarSet){
-            (requireActivity() as AppCompatActivity).setSupportActionBar(null)
-            supportActionBarSet = false
-        }
     }
 
     open fun onBackPressed(){
@@ -127,11 +114,20 @@ open class AppbarFragment : DaggerFragment(){
 
     fun requireToolbarTitle() = toolbarTitle ?: throw NullPointerException()
 
+    open fun configSupportActionBar() = false
+
+    private var supportActionBarSet = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         appbar = view.findViewById(R.id.appbar)
         toolbar = view.findViewById(R.id.toolbar)
         toolbarTitle = view.findViewById(R.id.title)
+        if (configSupportActionBar()){
+            (requireActivity() as AppCompatActivity).setSupportActionBar(requireToolbar())
+            supportActionBarSet = true
+        }
+        requireToolbar().title = ""
     }
 
     override fun onDestroyView() {
@@ -139,6 +135,10 @@ open class AppbarFragment : DaggerFragment(){
         appbar = null
         toolbar = null
         toolbarTitle = null
+        if (supportActionBarSet){
+//            (requireActivity() as AppCompatActivity).setSupportActionBar(null)
+//            supportActionBarSet = false
+        }
     }
 
     protected fun canNavigateUp() : Boolean{

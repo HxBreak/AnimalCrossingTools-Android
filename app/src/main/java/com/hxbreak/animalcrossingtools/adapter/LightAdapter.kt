@@ -61,15 +61,9 @@ internal object DefaultItemComparableDiffUtil : DiffUtil.ItemCallback<ItemCompar
 
 }
 
-class LightAdapter: ListAdapter<ItemComparable<*>, RecyclerView.ViewHolder> {
-
-    constructor(diffCallback: DiffUtil.ItemCallback<ItemComparable<*>> = DefaultItemComparableDiffUtil) : super(diffCallback) {}
+class Typer {
 
     private val indexer = mutableListOf<ViewItemRelation>()
-
-    init {
-        register(PlaceHolder::class.java, PlaceHolderViewBinder())
-    }
 
     fun register(clazz: Class<*>, delegate: ItemViewDelegate<*, out RecyclerView.ViewHolder>){
         @Suppress("UNCHECKED_CAST")
@@ -80,12 +74,34 @@ class LightAdapter: ListAdapter<ItemComparable<*>, RecyclerView.ViewHolder> {
         register(T::class.java, delegate)
     }
 
+    operator fun get(index: Int) = indexer[index]
+
+    fun indexOfFirst(predicate: (ViewItemRelation) -> Boolean): Int {
+        return indexer.indexOfFirst(predicate)
+    }
+}
+
+class LightAdapter(val typer: Typer = Typer(), diffCallback: DiffUtil.ItemCallback<ItemComparable<*>> = DefaultItemComparableDiffUtil):
+    ListAdapter<ItemComparable<*>, RecyclerView.ViewHolder>(diffCallback) {
+
+    init {
+        register(PlaceHolder::class.java, PlaceHolderViewBinder())
+    }
+
+    fun register(clazz: Class<*>, delegate: ItemViewDelegate<*, out RecyclerView.ViewHolder>){
+        typer.register(clazz, delegate)
+    }
+
+    inline fun <reified T : ItemComparable<*>> register(delegate: ItemViewDelegate<T, out RecyclerView.ViewHolder>){
+        typer.register(T::class.java, delegate)
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        indexer[getItemViewType(position)].delegate.onBindViewHolder(getItem(position) as Any?, holder)
+        typer[getItemViewType(position)].delegate.onBindViewHolder(getItem(position) as Any?, holder)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return indexer[viewType].delegate.onCreateViewHolder(parent)
+        return typer[viewType].delegate.onCreateViewHolder(parent)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -94,7 +110,7 @@ class LightAdapter: ListAdapter<ItemComparable<*>, RecyclerView.ViewHolder> {
 
     private fun indexViewType(position: Int): Int {
         val clazz = getItem(position)?.javaClass ?: PlaceHolder::class.java
-        val index = indexer.indexOfFirst { it.clazz.isAssignableFrom(clazz) }
+        val index = typer.indexOfFirst { it.clazz.isAssignableFrom(clazz) }
         if (index > -1){
             return index
         }

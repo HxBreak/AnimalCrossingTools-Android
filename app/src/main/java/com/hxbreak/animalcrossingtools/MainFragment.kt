@@ -72,6 +72,7 @@ class MainFragment : EditableAppbarFragment() {
             NavigationMenu("Song", R.id.action_mainFragment_to_songFragment),
             NavigationMenu("Villager", R.id.action_mainFragment_to_villagerFragment),
             NavigationMenu("Art", R.id.action_mainFragment_to_artFragment),
+            NavigationMenu("Housewares", R.id.action_mainFragment_to_housewaresFragment),
         ))
         recycler_view.post {
             startPostponedEnterTransition()

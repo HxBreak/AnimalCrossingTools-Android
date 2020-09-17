@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_mainFragment_to_fossilFragment"
             app:destination="@id/fossilFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_housewaresFragment"
+            app:destination="@id/housewaresFragment" />
 
     </fragment>
     <fragment
@@ -113,6 +116,10 @@
         android:id="@+id/fossilFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.fossil.FossilFragment"
         android:label="FossilFragment" />
+    <fragment
+        android:id="@+id/housewaresFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.houseware.HousewaresFragment"
+        android:label="HousewaresFragment" />
     <!--    app:enterAnim="@anim/slide_in_right"-->
 <!--    app:exitAnim="@anim/slide_out_left"-->
 <!--    app:popEnterAnim="@anim/slide_in_left"-->

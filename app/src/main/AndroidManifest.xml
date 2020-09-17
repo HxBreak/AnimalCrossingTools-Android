@@ -40,6 +40,8 @@
             tools:node="merge">
             <meta-data android:name="${applicationId}.startup.LogInitializer"
                 android:value="androidx.startup" />
+            <meta-data android:name="${applicationId}.startup.NormalInitializer"
+                android:value="androidx.startup" />
         </provider>
     </application>
 

@@ -83,13 +83,7 @@ object ApplicationModule {
     @Singleton
     @Provides
     @ApiV1
-    fun provideRetrofit(logger: HttpLoggingInterceptor, gson: Gson): Retrofit {
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(logger)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .build()
-
+    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl("https://acnhapi.com/v1/")
@@ -102,13 +96,19 @@ object ApplicationModule {
     @JvmStatic
     @Singleton
     @Provides
-    @ApiV2
-    fun provideRetrofitV2(logger: HttpLoggingInterceptor, gson: Gson): Retrofit {
-        val okHttpClient = OkHttpClient.Builder()
+    fun provideOkHttpClient(logger: HttpLoggingInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
             .addInterceptor(logger)
             .readTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .build()
+    }
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    @ApiV2
+    fun provideRetrofitV2(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl("https://acnhapi.com/v1/")
