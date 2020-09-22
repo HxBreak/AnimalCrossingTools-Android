@@ -8,6 +8,6 @@ import dagger.android.ContributesAndroidInjector
 abstract class DiGlideModule{
 
     @ContributesAndroidInjector
-    abstract fun injectDependents(): GlideModule
+    abstract fun injectGlideApp(): GlideModule
 
 }

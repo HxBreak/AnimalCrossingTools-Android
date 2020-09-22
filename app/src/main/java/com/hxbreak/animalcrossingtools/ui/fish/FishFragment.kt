@@ -110,7 +110,7 @@ class FishFragment : EditBackAbleAppbarFragment() {
         }
 
         adapter = FishAdapter()
-        requireAdapter().register(FishViewBinder(viewModel))
+        requireAdapter().register(FishViewBinder(viewModel, viewLifecycleOwner))
         recycler_view.adapter = adapter
         recycler_view.mEnableAlphabet = enableIndicator
 

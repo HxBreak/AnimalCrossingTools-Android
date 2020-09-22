@@ -7,6 +7,7 @@ import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.SelectionItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.SelectionViewHolder
+import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_fish.*
@@ -31,13 +32,16 @@ class ArtViewBinder(val viewModel: ArtViewModel) : SelectionItemViewDelegate<Art
             donated_icon.visibility = View.GONE
             found_icon.visibility = if (item.saved?.owned == true) View.VISIBLE else View.GONE
             itemView.setOnClickListener {
-                if (viewModel.editMode.value == true){
+                if (viewModel.editMode.value == true) {
                     checkBox.performClick()
                 }
             }
-            subtitle.text = "hasFake: ${if (item.art.hasFake) "yes" else "no"}, BuyPrice: ${item.art.buyPrice}"
+            subtitle.text =
+                "hasFake: ${if (item.art.hasFake) "yes" else "no"}, BuyPrice: ${item.art.buyPrice}"
             title.text = item.art.name.toLocaleName(viewModel.locale)
-            GlideApp.with(image).load(item.art.imageUri).into(image)
+            GlideApp.with(image).load(item.art.imageUri)
+                .littleCircleWaitAnimation(containerView.context)
+                .into(image)
         }
     }
 

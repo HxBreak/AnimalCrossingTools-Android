@@ -7,6 +7,7 @@ import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.SelectionItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.SelectionViewHolder
+import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_bug.*
@@ -33,15 +34,18 @@ class BugViewBinder(val viewModel: BugsViewModel) : SelectionItemViewDelegate<Bu
                 viewModel.toggle(bug.entity.id)
             }
             itemView.setOnClickListener {
-            if (viewModel.editMode.value == true){
+                if (viewModel.editMode.value == true) {
                     checkBox.performClick()
                 }
             }
             donated_icon.visibility = if (bug.saved?.donated == true) View.VISIBLE else View.GONE
             found_icon.visibility = if (bug.saved?.owned == true) View.VISIBLE else View.GONE
-            GlideApp.with(image).load(bug.entity.imageUri).into(image)
+            GlideApp.with(image).load(bug.entity.imageUri)
+                .littleCircleWaitAnimation(containerView.context)
+                .into(image)
             title.text = "${bug.entity.name.toLocaleName(viewModel.locale)}-\$${bug.entity.price}"
-            subtitle.text = "${if (bug.entity.availability.isAllDay) "All Day" else bug.entity.availability.time}-${bug.entity.availability.location}"
+            subtitle.text =
+                "${if (bug.entity.availability.isAllDay) "All Day" else bug.entity.availability.time}-${bug.entity.availability.location}"
         }
     }
 }

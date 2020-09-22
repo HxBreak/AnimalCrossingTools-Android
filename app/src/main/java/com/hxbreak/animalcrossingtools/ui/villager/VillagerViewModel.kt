@@ -1,6 +1,7 @@
 package com.hxbreak.animalcrossingtools.ui.villager
 
 import androidx.lifecycle.*
+import com.hxbreak.animalcrossingtools.GlideProgressCollector
 import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 class VillagerViewModel @Inject constructor(
     private val repository: DataRepository,
-    private val preferenceStorage: PreferenceStorage
+    private val preferenceStorage: PreferenceStorage,
+    val collector: GlideProgressCollector,
 ): ViewModel(){
 
     val locale = preferenceStorage.selectedLocale

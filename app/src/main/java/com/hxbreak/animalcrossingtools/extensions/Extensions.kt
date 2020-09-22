@@ -1,9 +1,13 @@
 package com.hxbreak.animalcrossingtools.extensions
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.hxbreak.animalcrossingtools.GlideRequest
 import com.hxbreak.animalcrossingtools.theme.Theme
+import com.hxbreak.animalcrossingtools.utils.ViewUtils
 
 
 /**
@@ -15,4 +19,13 @@ fun AppCompatActivity.updateForTheme(theme: Theme) = when (theme) {
     Theme.LIGHT -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
     Theme.SYSTEM -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     Theme.BATTERY_SAVER -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+}
+
+fun GlideRequest<*>.littleCircleWaitAnimation(context: Context, color: Int = -1) = this.let {
+    val drawable = CircularProgressDrawable(context).apply {
+        strokeWidth = ViewUtils.dp2px(context, 2f).toFloat()
+        centerRadius = ViewUtils.dp2px(context, 16f).toFloat()
+        start()
+    }
+    this.placeholder(drawable)
 }

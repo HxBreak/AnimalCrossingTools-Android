@@ -8,6 +8,7 @@ import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.SelectionItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.SelectionViewHolder
+import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
 import com.hxbreak.animalcrossingtools.view.SlideSection
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_fish.*
@@ -29,7 +30,7 @@ class SongViewBinder(val viewModel: SongViewModel) : SelectionItemViewDelegate<S
         val view: View
     ) : SelectionViewHolder(view), LayoutContainer {
 
-        override val containerView: View?
+        override val containerView: View
             get() = view
 
         fun bindData(song: SongMixSelectable) {
@@ -41,7 +42,9 @@ class SongViewBinder(val viewModel: SongViewModel) : SelectionItemViewDelegate<S
             }
             itemView.isClickable = true
             GlideApp.with(image).clear(image)
-            GlideApp.with(image).load("${song.song.imageUrl}").into(image)
+            GlideApp.with(image).load("${song.song.imageUrl}")
+                .littleCircleWaitAnimation(containerView.context)
+                .into(image)
             found_icon.visibility = View.GONE
             donated_icon.visibility =
                 if (song.songSaved?.owned == true) View.VISIBLE else View.GONE

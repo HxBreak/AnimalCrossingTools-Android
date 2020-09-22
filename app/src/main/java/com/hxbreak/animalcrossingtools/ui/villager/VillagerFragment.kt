@@ -7,10 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.transition.TransitionSet
 import com.google.android.material.transition.MaterialArcMotion
@@ -22,7 +20,6 @@ import com.hxbreak.animalcrossingtools.adapter.SelectionAdapter
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import kotlinx.android.synthetic.main.fragment_chat.*
-import timber.log.Timber
 import javax.inject.Inject
 
 class VillagerFragment : EditBackAbleAppbarFragment(){
@@ -70,13 +67,13 @@ class VillagerFragment : EditBackAbleAppbarFragment(){
             refresh_layout.isRefreshing = it == true
         }
         refresh_layout.setOnRefreshListener { viewModel.refresh.value = true }
-        viewModel.erro.observe(viewLifecycleOwner){
+        viewModel.erro.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
                 Toast.makeText(requireContext(), "$it", Toast.LENGTH_SHORT).show()
             }
         }
-        requireAdapter().register(VillagerViewBinder(viewModel))
-        viewModel.villagers.observe(viewLifecycleOwner){
+        requireAdapter().register(VillagerViewBinder(viewModel, viewLifecycleOwner))
+        viewModel.villagers.observe(viewLifecycleOwner) {
             requireAdapter().submitList(it)
         }
         recycler_view.layoutManager = StaggeredGridLayoutManager(3, GridLayoutManager.VERTICAL)

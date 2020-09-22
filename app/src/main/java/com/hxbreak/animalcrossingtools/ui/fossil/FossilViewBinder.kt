@@ -7,6 +7,7 @@ import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.SelectionItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.SelectionViewHolder
+import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_bug.*
@@ -33,14 +34,17 @@ class FossilViewBinder(val viewModel: FossilViewModel) : SelectionItemViewDelega
                 viewModel.toggle(fossil.entity.fileName)
             }
             itemView.setOnClickListener {
-            if (viewModel.editMode.value == true){
+                if (viewModel.editMode.value == true) {
                     checkBox.performClick()
                 }
             }
             donated_icon.visibility = if (fossil.saved?.donated == true) View.VISIBLE else View.GONE
             found_icon.visibility = if (fossil.saved?.owned == true) View.VISIBLE else View.GONE
-            GlideApp.with(image).load(fossil.entity.imageUri).into(image)
-            title.text = "${fossil.entity.name.toLocaleName(viewModel.locale)}-\$${fossil.entity.price}"
+            GlideApp.with(image).load(fossil.entity.imageUri)
+                .littleCircleWaitAnimation(containerView.context)
+                .into(image)
+            title.text =
+                "${fossil.entity.name.toLocaleName(viewModel.locale)}-\$${fossil.entity.price}"
             subtitle.text = "part of ${fossil.entity.partOf}"
         }
     }

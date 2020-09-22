@@ -4,6 +4,7 @@ import android.media.AudioManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.Observer
 import androidx.lifecycle.distinctUntilChanged
 import androidx.navigation.fragment.findNavController

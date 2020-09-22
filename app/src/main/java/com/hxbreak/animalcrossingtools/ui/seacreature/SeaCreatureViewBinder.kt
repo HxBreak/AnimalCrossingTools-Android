@@ -7,6 +7,7 @@ import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.SelectionItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.SelectionViewHolder
+import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_seacreature.*
@@ -33,15 +34,21 @@ class SeaCreatureViewBinder(val viewModel: SeaCreatureViewModel) : SelectionItem
                 viewModel.toggle(seaCreature.entity.id)
             }
             itemView.setOnClickListener {
-            if (viewModel.editMode.value == true){
+                if (viewModel.editMode.value == true) {
                     checkBox.performClick()
                 }
             }
-            donated_icon.visibility = if (seaCreature.saved?.donated == true) View.VISIBLE else View.GONE
-            found_icon.visibility = if (seaCreature.saved?.owned == true) View.VISIBLE else View.GONE
-            GlideApp.with(image).load(seaCreature.entity.imageUri).into(image)
-            title.text = "${seaCreature.entity.name.toLocaleName(viewModel.locale)}-\$${seaCreature.entity.price}"
-            subtitle.text = "${if (seaCreature.entity.availability.isAllDay) "All Day" else seaCreature.entity.availability.time}"
+            donated_icon.visibility =
+                if (seaCreature.saved?.donated == true) View.VISIBLE else View.GONE
+            found_icon.visibility =
+                if (seaCreature.saved?.owned == true) View.VISIBLE else View.GONE
+            GlideApp.with(image).load(seaCreature.entity.imageUri)
+                .littleCircleWaitAnimation(containerView.context)
+                .into(image)
+            title.text =
+                "${seaCreature.entity.name.toLocaleName(viewModel.locale)}-\$${seaCreature.entity.price}"
+            subtitle.text =
+                "${if (seaCreature.entity.availability.isAllDay) "All Day" else seaCreature.entity.availability.time}"
         }
     }
 }

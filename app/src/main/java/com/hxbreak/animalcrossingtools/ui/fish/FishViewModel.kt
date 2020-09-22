@@ -2,6 +2,7 @@ package com.hxbreak.animalcrossingtools.ui.fish
 
 import android.util.Pair
 import androidx.lifecycle.*
+import com.hxbreak.animalcrossingtools.GlideProgressCollector
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.character.CharUtil
 import com.hxbreak.animalcrossingtools.combinedLiveData
@@ -22,7 +23,8 @@ data class SelectableFishEntity(var selected: Boolean, val fish: FishEntityMix):
 
 class FishViewModel @Inject constructor(
     private val repository: DataRepository,
-    val preferenceStorage: PreferenceStorage
+    val preferenceStorage: PreferenceStorage,
+    val collector: GlideProgressCollector,
 ) : ViewModel() {
 
     val locale = preferenceStorage.selectedLocale

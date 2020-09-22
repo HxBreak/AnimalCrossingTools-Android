@@ -15,6 +15,7 @@ import com.hxbreak.animalcrossingtools.adapter.LightAdapter
 import com.hxbreak.animalcrossingtools.adapter.Typer
 import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
+import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_houseware.*
@@ -78,8 +79,11 @@ class HousewaresFragment : EditBackAbleAppbarFragment(){
 class HousewareItemViewBinder: ItemViewDelegate<HousewareEntity, HousewareItemViewBinder.ViewHolder>{
 
     inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer{
-        fun bind(entity: HousewareEntity){
-            GlideApp.with(houseware_image).load(entity.image_uri).into(houseware_image)
+        fun bind(entity: HousewareEntity) {
+            GlideApp.with(houseware_image)
+                .load(entity.image_uri)
+                .littleCircleWaitAnimation(containerView.context)
+                .into(houseware_image)
             houseware_name.text = entity.variant
         }
     }

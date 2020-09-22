@@ -6,6 +6,7 @@ import android.provider.Settings
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.hxbreak.animalcrossingtools.GlideProgressCollector
 import com.hxbreak.animalcrossingtools.data.CoroutinesCallAdapterFactory
 import com.hxbreak.animalcrossingtools.data.LiveDataCallAdapterFactory
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
@@ -31,6 +32,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -64,9 +66,23 @@ object ApplicationModule {
     @Singleton
     @Provides
     fun provideLogger(): HttpLoggingInterceptor {
-        val ret = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
-            Timber.e(it)
-        })
+        val log = Timber.tag("normalApi")
+        val ret = HttpLoggingInterceptor {
+            log.e(it)
+        }
+        ret.level = HttpLoggingInterceptor.Level.BASIC
+        return ret
+    }
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    @GlideLogger
+    fun provideGlideLogger(): HttpLoggingInterceptor {
+        val log = Timber.tag("Glide")
+        val ret = HttpLoggingInterceptor {
+            log.e(it)
+        }
         ret.level = HttpLoggingInterceptor.Level.BASIC
         return ret
     }
@@ -83,7 +99,7 @@ object ApplicationModule {
     @Singleton
     @Provides
     @ApiV1
-    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
+    fun provideRetrofit(@Named("NormalApi") okHttpClient: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl("https://acnhapi.com/v1/")
@@ -96,6 +112,7 @@ object ApplicationModule {
     @JvmStatic
     @Singleton
     @Provides
+    @Named("NormalApi")
     fun provideOkHttpClient(logger: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(logger)
@@ -107,8 +124,19 @@ object ApplicationModule {
     @JvmStatic
     @Singleton
     @Provides
+    fun provideGlideHttpClient(@GlideLogger logger: HttpLoggingInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(logger)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .build()
+    }
+
+    @JvmStatic
+    @Singleton
+    @Provides
     @ApiV2
-    fun provideRetrofitV2(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
+    fun provideRetrofitV2(@Named("NormalApi") okHttpClient: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl("https://acnhapi.com/v1/")
@@ -176,6 +204,14 @@ object ApplicationModule {
     @Retention(AnnotationRetention.RUNTIME)
     annotation class ApiV2
 
+    @Qualifier
+    @Retention(AnnotationRetention.RUNTIME)
+    annotation class GlideOkHttpClient
+
+    @Qualifier
+    @Retention(AnnotationRetention.RUNTIME)
+    annotation class GlideLogger
+
     @JvmStatic
     @Singleton
     @Provides
@@ -196,6 +232,11 @@ object ApplicationModule {
     @Provides
     fun providesPreferenceStorage(context: Context): PreferenceStorage =
         SharedPreferenceStorage(context)
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideProgressCollector() = GlideProgressCollector()
 }
 
 @Module
