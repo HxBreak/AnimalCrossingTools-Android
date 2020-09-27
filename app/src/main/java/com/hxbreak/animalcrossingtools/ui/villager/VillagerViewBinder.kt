@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.hxbreak.animalcrossingtools.GlideApp
+import com.hxbreak.animalcrossingtools.GlideProgress
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.SelectionItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.SelectionViewHolder
@@ -32,6 +34,8 @@ class VillagerViewBinder(val viewModel: VillagerViewModel, val viewLifecycleOwne
     inner class ViewHolder(override val containerView: View) : SelectionViewHolder(containerView),
         LayoutContainer {
 
+        var livedata : LiveData<GlideProgress.Loading>? = null
+
         fun bind(villager: VillagerEntity) {
             val drawable = CircularProgressDrawable(containerView.context).apply {
                 strokeWidth = 5f
@@ -42,7 +46,9 @@ class VillagerViewBinder(val viewModel: VillagerViewModel, val viewLifecycleOwne
                 .load(villager.image_uri)
                 .placeholder(drawable)
                 .into(villager_avatar)
-            viewModel.collector[villager.image_uri].observe(viewLifecycleOwner) {
+            livedata?.removeObservers(viewLifecycleOwner)
+            livedata = viewModel.collector[villager.image_uri]
+            livedata?.observe(viewLifecycleOwner) {
                 drawable.setStartEndTrim(0f, it.text().toFloat())
                 drawable.invalidateSelf()
             }
@@ -51,9 +57,6 @@ class VillagerViewBinder(val viewModel: VillagerViewModel, val viewLifecycleOwne
             gender_value.text = villager.gender
             birthday_value.text = villager.birthday
             saying_value.text = "Saying: ${villager.saying}"
-
-//            saying_value.setTextColor(Color.parseColor(villager.textcolor))
-//            saying_value.background = ColorDrawable(Color.parseColor(villager.bubblecolor))
         }
     }
 

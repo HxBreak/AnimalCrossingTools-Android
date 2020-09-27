@@ -28,7 +28,7 @@ class VillagerViewModel @Inject constructor(
         liveData (viewModelScope.coroutineContext + Dispatchers.IO){
             when(val result = repository.repoSource().allVillagers()){
                 is Result.Success -> emit(result.data)
-                is Result.Error -> erro.value = Event(result.exception)
+                is Result.Error -> erro.postValue(Event(result.exception))
                 else -> throw IllegalStateException("other state is not allow")
             }
             loading.postValue(false)

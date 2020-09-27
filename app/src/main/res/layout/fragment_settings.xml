@@ -61,6 +61,14 @@
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:text="Choose Language" />
+
+            <TextView
+                style="@style/AppTheme.Widget.Settings.Button"
+                android:id="@+id/settings_about_software"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:text="About" />
             <!-- AppCompat/MaterialComponents layout inflators don't automatically handle
                  Switch widgets. See https://material.io/develop/android/components/switch/ -->
             <com.google.android.material.switchmaterial.SwitchMaterial
@@ -77,6 +85,7 @@
                 android:background="?android:dividerHorizontal" />
 
             <TextView
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"

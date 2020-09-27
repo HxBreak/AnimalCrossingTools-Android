@@ -1,25 +1,25 @@
 package com.hxbreak.animalcrossingtools.ui.settings
 
 import android.os.Bundle
-import android.os.LocaleList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.LocaleListCompat
-import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.i18n.ResourceLanguageSettingDialogFragment
-import com.hxbreak.animalcrossingtools.theme.Theme
 import com.hxbreak.animalcrossingtools.theme.ThemeSettingDialogFragment
 import dagger.android.support.DaggerFragment
 
 import kotlinx.android.synthetic.main.fragment_settings.*
-import java.util.*
 import javax.inject.Inject
 
 class SettingsFragment : DaggerFragment() {
+
+    private val navigator by lazy {
+        findNavController()
+    }
 
     @Inject
     lateinit var viewModelFactory: DiViewModelFactory
@@ -32,6 +32,10 @@ class SettingsFragment : DaggerFragment() {
 
         val backward = MaterialSharedAxis(MaterialSharedAxis.X, false)
         returnTransition = backward
+
+        reenterTransition = backward
+
+        exitTransition = forward
     }
 
     override fun onCreateView(
@@ -57,5 +61,8 @@ class SettingsFragment : DaggerFragment() {
                 .show(childFragmentManager, null)
         }
 
+        settings_about_software.setOnClickListener {
+            navigator.navigate(SettingsFragmentDirections.actionGlobalFlutterFragment("about", cachedEngineId = "only"))
+        }
     }
 }

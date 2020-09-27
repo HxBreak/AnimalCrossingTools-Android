@@ -2,14 +2,10 @@ package com.hxbreak.animalcrossingtools
 
 import android.os.Bundle
 import android.view.*
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.viewModels
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
-import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.Navigator
+import androidx.core.view.doOnPreDraw
+import androidx.navigation.*
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +14,6 @@ import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.adapter.ItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
-import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.ui.EditableAppbarFragment
 import kotlinx.android.extensions.LayoutContainer
@@ -63,7 +58,13 @@ class MainFragment : EditableAppbarFragment() {
         recycler_view.layoutManager = LinearLayoutManager(requireContext())
         adapter = LightAdapter()
         recycler_view.adapter = adapter
-        requireAdapter().register(NavigationMenuViewBinder(navigator))
+        requireAdapter().register(NavigationMenuViewBinder {
+            if (it.resId != null){
+                navigator.navigate(it.resId, it.arguments, it.options, FragmentNavigatorExtras())
+            } else if (it.direction != null){
+                navigator.navigate(it.direction)
+            }
+        })
         requireAdapter().submitList(listOf(
             NavigationMenu("Fish", R.id.action_mainFragment_to_fishFragment),
             NavigationMenu("Bug", R.id.action_mainFragment_to_bugsFragment),
@@ -73,8 +74,10 @@ class MainFragment : EditableAppbarFragment() {
             NavigationMenu("Villager", R.id.action_mainFragment_to_villagerFragment),
             NavigationMenu("Art", R.id.action_mainFragment_to_artFragment),
             NavigationMenu("Housewares", R.id.action_mainFragment_to_housewaresFragment),
+            NavigationMenu("Flutter",
+                direction = MainNavDirections.actionGlobalFlutterFragment("/", cachedEngineId = "only")),
         ))
-        recycler_view.post {
+        recycler_view.doOnPreDraw {
             startPostponedEnterTransition()
         }
     }
@@ -104,15 +107,16 @@ class MainFragment : EditableAppbarFragment() {
 
 data class NavigationMenu(
     val title: String,
-    val resId: Int?,
+    val resId: Int? = null,
     val arguments: Bundle? = null,
     val options: NavOptions? = null,
     val extra: Navigator.Extras? = null,
+    val direction: NavDirections? = null
 ): ItemComparable<String>{
     override fun id() = title
 }
 
-class NavigationMenuViewBinder(val navigator: NavController) : ItemViewDelegate<NavigationMenu, NavigationMenuViewBinder.ViewHolder>{
+class NavigationMenuViewBinder(val onClickListener: (NavigationMenu) -> Unit) : ItemViewDelegate<NavigationMenu, NavigationMenuViewBinder.ViewHolder>{
 
     override fun onCreateViewHolder(parent: ViewGroup) = ViewHolder(LayoutInflater.from(parent.context)
         .inflate(R.layout.item_navigation_menu, parent, false))
@@ -127,11 +131,7 @@ class NavigationMenuViewBinder(val navigator: NavController) : ItemViewDelegate<
             item_title.text = data.title
             ViewCompat.setTransitionName(containerView, data.title)
             itemView.setOnClickListener {
-                if (data.resId != null){
-                    navigator.navigate(data.resId, data.arguments, data.options, FragmentNavigatorExtras(
-                        containerView to "container"
-                    ))
-                }
+                onClickListener(data)
             }
         }
     }

@@ -25,4 +25,6 @@
     <!-- Notificaiton Channel -->
     <string name="notification_channel">Now Playing</string>
     <string name="notification_channel_description">Shows what music is currently playing in UAMP</string>
+
+    <string name="root" translatable="false">/</string>
 </resources>

@@ -5,6 +5,14 @@ apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/home/hxbreak/default')
+            storePassword '12367h'
+            keyAlias 'acnh'
+            keyPassword '12367h'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
@@ -25,11 +33,12 @@ android {
 //                abiFilters 'arm64-v8a', 'armeabi-v7a'
 //            }
 //        }
-//        ndk{
-//            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
-//        }
+        ndk{
+            abiFilters 'armeabi-v7a'
+        }
 
         multiDexEnabled = true
+        signingConfig signingConfigs.release
     }
 
     androidExtensions {
@@ -126,6 +135,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation("com.squareup.okhttp3:okhttp:3.14.7")
+    implementation("com.squareup.okio:okio:2.2.2")
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.retrofit2:converter-gson:+'
@@ -167,12 +177,13 @@ dependencies {
 
     implementation "com.jakewharton.timber:timber:$timberVersion"
     //    implementation(project(":recyclerview-fastscroll"))
-    def paging_version = "3.0.0-alpha05"
+    def paging_version = "3.0.0-alpha06"
 
     implementation "androidx.paging:paging-runtime:$paging_version"
     def exoplayer_version = "2.11.7"
     implementation "com.google.android.exoplayer:exoplayer:$exoplayer_version"
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
-    implementation "androidx.startup:startup-runtime:1.0.0-alpha03"
+    implementation "androidx.startup:startup-runtime:1.0.0-beta01"
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0-rc02"
+    implementation project(':flutter')
 }

@@ -13,6 +13,7 @@ import javax.inject.Singleton
     modules = [
         ApplicationModule::class,
         AndroidInjectionModule::class,
+        FlutterModule::class,
         FishListModule::class,
         SongListModule::class,
         TrackerModule::class,

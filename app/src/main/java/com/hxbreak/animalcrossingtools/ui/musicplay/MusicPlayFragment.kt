@@ -1,50 +1,30 @@
 package com.hxbreak.animalcrossingtools.ui.musicplay
 
-import android.content.Context
 import android.graphics.Color
-import android.graphics.Matrix
-import android.graphics.RectF
-import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
-import android.support.v4.media.session.PlaybackStateCompat
-import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import androidx.core.app.SharedElementCallback
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.transition.*
-import com.bumptech.glide.Glide
-import com.example.android.uamp.media.extensions.currentPlayBackPosition
 import com.example.android.uamp.media.extensions.duration
 import com.example.android.uamp.media.extensions.fullDescription
-import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
-import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.ui.song.imageTransitionName
 import com.hxbreak.animalcrossingtools.ui.song.titleTransitionName
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_fish.*
 import kotlinx.android.synthetic.main.fragment_music_play.*
-import kotlinx.android.synthetic.main.fragment_music_play.toolbar
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.math.floor
 
 
 class MusicPlayFragment : DaggerFragment() {

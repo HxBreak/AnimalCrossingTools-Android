@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_main.xml"
+    android:id="@+id/main_nav"
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/mainFragment"
@@ -43,7 +43,9 @@
         <action
             android:id="@+id/action_mainFragment_to_housewaresFragment"
             app:destination="@id/housewaresFragment" />
-
+        <action
+            android:id="@+id/action_mainFragment_to_flutterFragment"
+            app:destination="@id/flutterFragment" />
     </fragment>
     <fragment
         android:id="@+id/fishFragment"
@@ -84,7 +86,9 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.settings.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="SettingsFragment" >
+    </fragment>
+
     <fragment
         android:id="@+id/musicPlayFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.musicplay.MusicPlayFragment"
@@ -96,31 +100,65 @@
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
+
     <fragment
         android:id="@+id/villagerFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.villager.VillagerFragment"
         android:label="VillagerFragment" />
+
     <fragment
         android:id="@+id/artFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.art.ArtFragment"
         android:label="ArtFragment" />
+
     <fragment
         android:id="@+id/bugsFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.bugs.BugsFragment"
         android:label="BugsFragment" />
+
     <fragment
         android:id="@+id/seaCreatureFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.seacreature.SeaCreatureFragment"
         android:label="SeaCreatureFragment" />
+
     <fragment
         android:id="@+id/fossilFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.fossil.FossilFragment"
         android:label="FossilFragment" />
+
     <fragment
         android:id="@+id/housewaresFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.houseware.HousewaresFragment"
         android:label="HousewaresFragment" />
-    <!--    app:enterAnim="@anim/slide_in_right"-->
+
+    <fragment android:id="@+id/flutterFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.flutter.ACNHFlutterFragment"
+        android:label="FlutterFragment" >
+        <argument
+            android:name="destination"
+            app:argType="string"
+            app:nullable="false"
+            />
+        <argument
+            android:name="cached_engine_id"
+            app:argType="string"
+            app:nullable="false"
+            />
+        <argument
+            android:name="should_attach_engine_to_activity"
+            app:argType="boolean"
+            app:nullable="false"
+            android:defaultValue="false"
+            />
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_flutterFragment"
+        app:destination="@id/flutterFragment"
+        app:launchSingleTop="true" >
+
+    </action>
+<!--    app:enterAnim="@anim/slide_in_right"-->
 <!--    app:exitAnim="@anim/slide_out_left"-->
 <!--    app:popEnterAnim="@anim/slide_in_left"-->
 <!--    app:popExitAnim="@anim/slide_out_right"-->

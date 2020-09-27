@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +14,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.view.AnimatedTextView
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_song.*
 import java.lang.NullPointerException
 
 open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
