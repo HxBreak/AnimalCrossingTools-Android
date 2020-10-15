@@ -75,7 +75,7 @@ class MainFragment : EditableAppbarFragment() {
             NavigationMenu("Art", R.id.action_mainFragment_to_artFragment),
             NavigationMenu("Housewares", R.id.action_mainFragment_to_housewaresFragment),
             NavigationMenu("Flutter",
-                direction = MainNavDirections.actionGlobalFlutterFragment("/", cachedEngineId = "only")),
+                direction = MainNavDirections.actionGlobalFlutterFragment("/about", cachedEngineId = "only")),
         ))
         recycler_view.doOnPreDraw {
             startPostponedEnterTransition()

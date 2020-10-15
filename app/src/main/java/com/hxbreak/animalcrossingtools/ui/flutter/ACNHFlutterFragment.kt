@@ -3,9 +3,11 @@ package com.hxbreak.animalcrossingtools.ui.flutter
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialSharedAxis
 import io.flutter.embedding.android.FlutterFragment
+import timber.log.Timber
 
 /**
  * Flutter Module Enter Point
@@ -21,8 +23,7 @@ class ACNHFlutterFragment : FlutterFragment(){
         enterTransition = forward
         val backward = MaterialSharedAxis(MaterialSharedAxis.X, false)
         returnTransition = backward
-
-        args.destination
+        flutterEngine!!.navigationChannel.pushRoute(args.destination)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,9 +33,23 @@ class ACNHFlutterFragment : FlutterFragment(){
                 this@ACNHFlutterFragment.onBackPressed()
             }
         })
+        flutterEngine?.navigationChannel?.setMethodCallHandler { call, result ->
+            when(call.method){
+                "routeUpdated" -> {
+                    val previousRouteName = call.argument<Any?>("previousRouteName")
+                    val routeName = call.argument<Any?>("routeName")
+                    if (previousRouteName is String && previousRouteName == args.destination){
+                        findNavController().navigateUp()
+                    }else if (routeName is String && routeName == "/"){
+                        findNavController().navigateUp()
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        flutterEngine?.navigationChannel?.setMethodCallHandler(null)
     }
 }

@@ -15,6 +15,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.systemchannels.PlatformChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 import java.lang.reflect.Proxy
 import javax.inject.Inject
 
