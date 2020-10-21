@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.ui.art
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.combinedLiveData
@@ -17,7 +18,7 @@ import java.lang.Exception
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
-class ArtViewModel @Inject constructor(
+class ArtViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
     private val preferenceStorage: PreferenceStorage
 ) : ViewModel(){

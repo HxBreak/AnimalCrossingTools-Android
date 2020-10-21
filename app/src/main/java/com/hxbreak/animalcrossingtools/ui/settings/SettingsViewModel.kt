@@ -2,17 +2,20 @@ package com.hxbreak.animalcrossingtools.ui.settings
 
 import android.os.Build
 import androidx.core.os.BuildCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.*
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.theme.Theme
 import com.hxbreak.animalcrossingtools.theme.themeFromStorageKey
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class SettingsViewModel @Inject constructor(val preferenceStorage: PreferenceStorage) :
+class SettingsViewModel @ViewModelInject constructor(
+    val preferenceStorage: PreferenceStorage,
+    @Assisted savedState: SavedStateHandle
+) :
     ViewModel() {
     val availableThemes: MutableLiveData<List<Theme>> = MutableLiveData()
     val availableResourceLanguage: MutableLiveData<List<Locale>> = MutableLiveData()

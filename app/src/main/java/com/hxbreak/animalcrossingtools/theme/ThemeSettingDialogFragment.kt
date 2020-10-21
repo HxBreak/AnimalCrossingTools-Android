@@ -20,20 +20,16 @@ import android.app.Dialog
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hxbreak.animalcrossingtools.R
-import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.ui.settings.SettingsViewModel
-import dagger.android.support.DaggerAppCompatDialogFragment
-import timber.log.Timber
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class ThemeSettingDialogFragment : DaggerAppCompatDialogFragment() {
-
-    @Inject
-    lateinit var viewModelFactory: DiViewModelFactory
+@AndroidEntryPoint
+class ThemeSettingDialogFragment : AppCompatDialogFragment() {
 
     private lateinit var listAdapter: ArrayAdapter<ThemeHolder>
 
@@ -54,7 +50,7 @@ class ThemeSettingDialogFragment : DaggerAppCompatDialogFragment() {
             .create()
     }
 
-    private val viewModel by viewModels<SettingsViewModel> { viewModelFactory }
+    private val viewModel by viewModels<SettingsViewModel>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

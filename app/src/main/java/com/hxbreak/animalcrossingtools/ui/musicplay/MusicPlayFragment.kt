@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -18,16 +19,15 @@ import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
-import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.ui.song.imageTransitionName
 import com.hxbreak.animalcrossingtools.ui.song.titleTransitionName
-import dagger.android.support.DaggerFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_music_play.*
 import timber.log.Timber
 import javax.inject.Inject
 
-
-class MusicPlayFragment : DaggerFragment() {
+@AndroidEntryPoint
+class MusicPlayFragment : Fragment() {
 
     companion object {
         fun newInstance() = MusicPlayFragment()
@@ -35,10 +35,7 @@ class MusicPlayFragment : DaggerFragment() {
 
     val args: MusicPlayFragmentArgs by navArgs()
 
-    @Inject
-    lateinit var viewModelFactory: DiViewModelFactory
-
-    private val viewModel by viewModels<MusicPlayViewModel> { viewModelFactory }
+    private val viewModel by viewModels<MusicPlayViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

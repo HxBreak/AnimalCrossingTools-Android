@@ -24,6 +24,9 @@ import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
@@ -37,6 +40,7 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module(includes = [ApplicationModuleBinds::class])
+@InstallIn(ApplicationComponent::class)
 object ApplicationModule {
 
     @JvmStatic
@@ -176,7 +180,7 @@ object ApplicationModule {
     @JvmStatic
     @Singleton
     @Provides
-    fun provideMusicServiceConnection(context: Context) = MusicServiceConnection.getInstance(
+    fun provideMusicServiceConnection(@ApplicationContext context: Context) = MusicServiceConnection.getInstance(
         context,
         ComponentName(context, MusicService::class.java)
     )
@@ -184,7 +188,7 @@ object ApplicationModule {
     @JvmStatic
     @Singleton
     @Provides
-    fun provideDatabase(context: Context): AnimalCrossingDatabase {
+    fun provideDatabase(@ApplicationContext context: Context): AnimalCrossingDatabase {
         val result = Room.databaseBuilder(
             context.applicationContext,
             AnimalCrossingDatabase::class.java, "ACNH.db"
@@ -216,7 +220,7 @@ object ApplicationModule {
     @Singleton
     @Provides
     @AndroidId
-    fun provideAndroidId(context: Context): String {
+    fun provideAndroidId(@ApplicationContext context: Context): String {
         val ANDROID_ID =
             Settings.System.getString(context.contentResolver, Settings.System.ANDROID_ID);
         return ANDROID_ID;
@@ -230,7 +234,7 @@ object ApplicationModule {
     @JvmStatic
     @Singleton
     @Provides
-    fun providesPreferenceStorage(context: Context): PreferenceStorage =
+    fun providesPreferenceStorage(@ApplicationContext context: Context): PreferenceStorage =
         SharedPreferenceStorage(context)
 
     @JvmStatic
@@ -240,6 +244,7 @@ object ApplicationModule {
 }
 
 @Module
+@InstallIn(ApplicationComponent::class)
 abstract class ApplicationModuleBinds {
 
     @Singleton

@@ -17,17 +17,14 @@ import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.CommonItemDecoration
 import com.hxbreak.animalcrossingtools.adapter.SelectionAdapter
-import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_chat.*
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class VillagerFragment : EditBackAbleAppbarFragment(){
 
-    @Inject
-    lateinit var viewModelFactory: DiViewModelFactory
-
-    private val viewModel by viewModels<VillagerViewModel> { viewModelFactory }
+    private val viewModel by viewModels<VillagerViewModel>()
 
     private val transitionSet = TransitionSet()
 

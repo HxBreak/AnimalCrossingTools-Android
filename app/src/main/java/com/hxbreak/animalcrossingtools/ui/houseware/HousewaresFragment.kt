@@ -14,21 +14,18 @@ import com.hxbreak.animalcrossingtools.adapter.ItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
 import com.hxbreak.animalcrossingtools.adapter.Typer
 import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
-import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_houseware.*
 import kotlinx.android.synthetic.main.item_houseware_item.*
 import kotlinx.android.synthetic.main.item_housewares_variants.*
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class HousewaresFragment : EditBackAbleAppbarFragment(){
 
-    @Inject
-    lateinit var viewModelFactory: DiViewModelFactory
-
-    private val viewModel by viewModels<HousewaresViewModel> { viewModelFactory }
+    private val viewModel by viewModels<HousewaresViewModel>()
 
     override fun configSupportActionBar() = true
 

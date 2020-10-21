@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.ui.seacreature
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.combinedLiveData
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
 
-class SeaCreatureViewModel @Inject constructor(
+class SeaCreatureViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
     private val preferenceStorage: PreferenceStorage
 ) : ViewModel(){

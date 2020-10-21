@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
@@ -10,7 +11,7 @@ import com.hxbreak.animalcrossingtools.theme.ThemedActivityDelegate
 import com.hxbreak.animalcrossingtools.theme.themeFromStorageKey
 import javax.inject.Inject
 
-class MainActivityViewModel @Inject constructor(
+class MainActivityViewModel @ViewModelInject constructor(
     themedActivityDelegate: ThemedActivityDelegateImpl,
     val connection: MusicServiceConnection
 ) : ViewModel(), ThemedActivityDelegate by themedActivityDelegate

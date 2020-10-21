@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.ui.bugs
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.combinedLiveData
@@ -15,7 +16,7 @@ import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
 
-class BugsViewModel @Inject constructor(
+class BugsViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
     private val preferenceStorage: PreferenceStorage
 ): ViewModel(){

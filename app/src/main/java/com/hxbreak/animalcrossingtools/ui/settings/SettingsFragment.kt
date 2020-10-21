@@ -4,25 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
-import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.i18n.ResourceLanguageSettingDialogFragment
 import com.hxbreak.animalcrossingtools.theme.ThemeSettingDialogFragment
-import dagger.android.support.DaggerFragment
 
 import kotlinx.android.synthetic.main.fragment_settings.*
 import javax.inject.Inject
 
-class SettingsFragment : DaggerFragment() {
+class SettingsFragment : Fragment() {
 
     private val navigator by lazy {
         findNavController()
     }
-
-    @Inject
-    lateinit var viewModelFactory: DiViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

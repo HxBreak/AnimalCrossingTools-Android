@@ -2,6 +2,7 @@ package com.hxbreak.animalcrossingtools.ui.musicplay
 
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -20,7 +21,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.floor
 
-class MusicPlayViewModel @Inject constructor(val connection: MusicServiceConnection) : ViewModel() {
+class MusicPlayViewModel @ViewModelInject constructor(val connection: MusicServiceConnection) : ViewModel() {
 
     private val nowPlaying = Observer<MediaMetadataCompat> {
         Timber.e(it.toString())

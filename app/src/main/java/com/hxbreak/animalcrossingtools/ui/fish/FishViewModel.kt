@@ -1,6 +1,7 @@
 package com.hxbreak.animalcrossingtools.ui.fish
 
 import android.util.Pair
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.hxbreak.animalcrossingtools.GlideProgressCollector
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
@@ -21,7 +22,7 @@ data class SelectableFishEntity(var selected: Boolean, val fish: FishEntityMix):
     override fun id() = fish.fish.id
 }
 
-class FishViewModel @Inject constructor(
+class FishViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
     val preferenceStorage: PreferenceStorage,
     val collector: GlideProgressCollector,

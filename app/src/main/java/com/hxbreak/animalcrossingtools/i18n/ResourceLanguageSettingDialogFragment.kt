@@ -20,20 +20,16 @@ import android.app.Dialog
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.map
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.ui.settings.SettingsViewModel
-import dagger.android.support.DaggerAppCompatDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import javax.inject.Inject
 
-class ResourceLanguageSettingDialogFragment : DaggerAppCompatDialogFragment() {
-
-    @Inject
-    lateinit var viewModelFactory: DiViewModelFactory
+@AndroidEntryPoint
+class ResourceLanguageSettingDialogFragment : AppCompatDialogFragment() {
 
     private lateinit var listAdapter: ArrayAdapter<LanguageHolder>
 
@@ -54,7 +50,7 @@ class ResourceLanguageSettingDialogFragment : DaggerAppCompatDialogFragment() {
             .create()
     }
 
-    private val viewModel by viewModels<SettingsViewModel> { viewModelFactory }
+    private val viewModel by viewModels<SettingsViewModel>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

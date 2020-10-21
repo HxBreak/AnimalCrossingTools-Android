@@ -4,6 +4,7 @@ import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.example.android.uamp.media.extensions.*
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
@@ -23,7 +24,7 @@ import java.lang.Exception
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
-class SongViewModel @Inject constructor(
+class SongViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
     private val connection: MusicServiceConnection,
     private val preferenceStorage: PreferenceStorage

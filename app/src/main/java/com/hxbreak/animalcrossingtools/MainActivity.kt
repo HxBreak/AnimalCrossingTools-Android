@@ -4,27 +4,24 @@ import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.extensions.updateForTheme
-import dagger.android.support.DaggerAppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import io.flutter.embedding.android.FlutterEngineConfigurator
 import io.flutter.embedding.android.FlutterFragment
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.systemchannels.PlatformChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 import kotlinx.android.synthetic.main.activity_main.*
-import timber.log.Timber
 import java.lang.reflect.Proxy
-import javax.inject.Inject
 
-class MainActivity : DaggerAppCompatActivity(), FlutterEngineConfigurator {
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity(), FlutterEngineConfigurator {
 
-    @Inject
-    lateinit var viewModelFactory: DiViewModelFactory
 
-    private val viewModel by viewModels<MainActivityViewModel> { viewModelFactory }
+    private val viewModel by viewModels<MainActivityViewModel>()
 
     private val navigator by lazy {
         nav_host_fragment.findNavController()

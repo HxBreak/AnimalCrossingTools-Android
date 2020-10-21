@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.ui.villager
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.hxbreak.animalcrossingtools.GlideProgressCollector
 import com.hxbreak.animalcrossingtools.data.Result
@@ -11,7 +12,7 @@ import java.lang.Exception
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
-class VillagerViewModel @Inject constructor(
+class VillagerViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
     private val preferenceStorage: PreferenceStorage,
     val collector: GlideProgressCollector,

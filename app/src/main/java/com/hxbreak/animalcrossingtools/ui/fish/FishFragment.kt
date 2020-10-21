@@ -14,20 +14,16 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
-import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.extensions.testChanged
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.bottom_sheet_fish.*
 import kotlinx.android.synthetic.main.fragment_fish.*
-import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class FishFragment : EditBackAbleAppbarFragment() {
 
-    @Inject
-    lateinit var viewModelFactory: DiViewModelFactory
-
-    private val viewModel by viewModels<FishViewModel> { viewModelFactory }
+    private val viewModel by viewModels<FishViewModel>()
     private var bottomSheetView: View? = null
     private var adapter: FishAdapter? = null
 

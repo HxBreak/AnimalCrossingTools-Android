@@ -14,17 +14,13 @@ import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.adapter.ItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
-import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.ui.EditableAppbarFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.item_navigation_menu.*
-import javax.inject.Inject
 
 class MainFragment : EditableAppbarFragment() {
-
-    @Inject
-    lateinit var viewModelFactory: DiViewModelFactory
 
     private var adapter: LightAdapter? = null
 

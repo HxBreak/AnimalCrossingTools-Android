@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.ui.houseware
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.data.Result
@@ -9,7 +10,7 @@ import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class HousewaresViewModel @Inject constructor(
+class HousewaresViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
     private val preferenceStorage: PreferenceStorage,
 ): ViewModel(){

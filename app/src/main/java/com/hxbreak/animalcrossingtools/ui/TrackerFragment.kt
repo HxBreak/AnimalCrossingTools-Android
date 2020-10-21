@@ -9,25 +9,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.NotificationCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hxbreak.animalcrossingtools.R
-import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
-import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_tracker.*
 import javax.inject.Inject
 
-class TrackerFragment : DaggerFragment() {
+class TrackerFragment : Fragment() {
 
     companion object {
         fun newInstance() = TrackerFragment()
     }
-
-    @Inject
-    lateinit var viewModelFactory: DiViewModelFactory
-    private val viewModel by viewModels<TrackerViewModel>(ownerProducer = { requireActivity() }) { viewModelFactory }
+    private val viewModel by activityViewModels<TrackerViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

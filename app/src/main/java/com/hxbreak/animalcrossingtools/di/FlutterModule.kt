@@ -5,6 +5,9 @@ import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.theme.Theme
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
@@ -13,12 +16,13 @@ import io.flutter.plugin.common.MethodChannel
 import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object FlutterModule {
 
     @JvmStatic
     @Singleton
     @Provides
-    fun provideFlutterEngine(context: Context, storage: PreferenceStorage): FlutterEngine {
+    fun provideFlutterEngine(@ApplicationContext context: Context, storage: PreferenceStorage): FlutterEngine {
         val engine = FlutterEngine(context)
         engine.dartExecutor.executeDartEntrypoint(
             DartExecutor.DartEntrypoint.createDefault()

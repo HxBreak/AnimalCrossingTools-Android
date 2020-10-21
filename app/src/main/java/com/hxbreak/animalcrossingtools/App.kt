@@ -1,14 +1,14 @@
 package com.hxbreak.animalcrossingtools
 
+import android.app.Application
 import com.hxbreak.animalcrossingtools.data.source.AnimalCrossingDatabase
-import com.hxbreak.animalcrossingtools.di.DaggerApplicationComponent
 import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
-import dagger.android.AndroidInjector
-import dagger.android.support.DaggerApplication
+import dagger.hilt.android.HiltAndroidApp
 import io.flutter.embedding.engine.FlutterEngine
 import javax.inject.Inject
 
-open class App : DaggerApplication() {
+@HiltAndroidApp
+open class App : Application() {
 
     @Inject
     lateinit var database: AnimalCrossingDatabase
@@ -16,14 +16,11 @@ open class App : DaggerApplication() {
     @Inject
     lateinit var musicServiceConnection: MusicServiceConnection
 
-    @Inject
-    lateinit var engine: FlutterEngine
+//    @Inject
+//    lateinit var engine: FlutterEngine
 
     override fun onCreate() {
         super.onCreate()
     }
 
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerApplicationComponent.factory().create(applicationContext)
-    }
 }

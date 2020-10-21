@@ -9,11 +9,11 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.AppBarLayout
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.view.AnimatedTextView
-import dagger.android.support.DaggerFragment
 import java.lang.NullPointerException
 
 open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
@@ -99,7 +99,7 @@ open class EditableAppbarFragment : AppbarFragment() {
     }
 }
 
-open class AppbarFragment : DaggerFragment(){
+open class AppbarFragment : Fragment(){
     var appbar: AppBarLayout? = null
     var toolbar: Toolbar? = null
     var toolbarTitle: AnimatedTextView? = null

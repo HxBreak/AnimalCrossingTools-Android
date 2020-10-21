@@ -10,19 +10,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.SelectionAdapter
-import com.hxbreak.animalcrossingtools.di.DiViewModelFactory
 import com.hxbreak.animalcrossingtools.extensions.testChanged
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_seacreature.*
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class SeaCreatureFragment : EditBackAbleAppbarFragment(){
 
-    @Inject
-    lateinit var viewModelFactory: DiViewModelFactory
-
-    private val viewModel by viewModels<SeaCreatureViewModel> { viewModelFactory }
+    private val viewModel by viewModels<SeaCreatureViewModel>()
 
     private var adapter: SelectionAdapter? = null
 

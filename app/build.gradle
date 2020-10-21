@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     signingConfigs {
@@ -140,14 +141,14 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.retrofit2:converter-gson:+'
 
-    // Dagger
-    implementation "com.google.dagger:dagger:$daggerVersion"
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
-    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
-    // Using Dagger in androidTest and Robolectric too
-    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
-    kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
+//    // Dagger
+//    implementation "com.google.dagger:dagger:$daggerVersion"
+//    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+//    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+//    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+//    // Using Dagger in androidTest and Robolectric too
+//    kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
+//    kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
 
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/logging-interceptor
     implementation group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '3.14.7'
@@ -186,4 +187,9 @@ dependencies {
     implementation "androidx.startup:startup-runtime:1.0.0-beta01"
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0-rc02"
     implementation project(':flutter')
+    implementation "com.google.dagger:hilt-android:2.28-alpha"
+    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha01'
+    // When using Kotlin.
+    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha01'
 }

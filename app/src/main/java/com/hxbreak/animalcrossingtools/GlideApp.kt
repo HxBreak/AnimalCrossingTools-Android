@@ -17,6 +17,10 @@ import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.util.ContentLengthInputStream
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.android.components.ApplicationComponent
 import okhttp3.*
 import okio.*
 import java.io.IOException
@@ -26,16 +30,15 @@ import javax.inject.Inject
 @GlideModule
 class GlideModule : AppGlideModule() {
 
-    @Inject
-    lateinit var client: OkHttpClient
-
-    @Inject
-    lateinit var collector: GlideProgressCollector
+    @EntryPoint
+    @InstallIn(ApplicationComponent::class)
+    interface GlideAppEntryPoint{
+        fun okHttpClient(): OkHttpClient
+        fun collector(): GlideProgressCollector
+    }
 
     override fun applyOptions(context: Context, builder: GlideBuilder) {
         super.applyOptions(context, builder)
-        (context.applicationContext as App).androidInjector().inject(this)
-
         builder.setDefaultRequestOptions {
             RequestOptions()
                 .skipMemoryCache(true)
@@ -44,10 +47,11 @@ class GlideModule : AppGlideModule() {
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
         super.registerComponents(context, glide, registry)
+        val entryPoint = EntryPointAccessors.fromApplication(context, GlideAppEntryPoint::class.java)
         registry.replace(
             GlideUrl::class.java,
             InputStream::class.java,
-            ProgressiveOkHttpUrlLoader.Factory(client, collector)
+            ProgressiveOkHttpUrlLoader.Factory(entryPoint.okHttpClient(), entryPoint.collector())
         )
     }
 
