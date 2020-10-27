@@ -76,6 +76,7 @@ class BugsFragment : EditBackAbleAppbarFragment(){
         viewModel.ownAction.observe(viewLifecycleOwner){
             if (found.isSelected == it) found.morph()
         }
+        viewModel.activies.observe(viewLifecycleOwner){ active_summary.text = it }
         found.setOnClickListener { viewModel.toggleOwn() }
         donate.setOnClickListener { viewModel.toggleDonate() }
         viewModel.donate.observe(viewLifecycleOwner){ donated_summary.text = it }

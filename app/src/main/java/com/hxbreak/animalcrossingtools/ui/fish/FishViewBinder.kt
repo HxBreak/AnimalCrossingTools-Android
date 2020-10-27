@@ -62,9 +62,10 @@ class FishViewBinder(val viewModel: FishViewModel, val viewLifecycleOwner: Lifec
             val i = fishEntity.fish.fish
             availability.background = ColorDrawable(Color.TRANSPARENT)
             if (monthValue.toShort() in i.availability.monthArray(viewModel.hemisphere)){
-                availability.background = ColorDrawable(Color.BLUE)
                 if (i.availability.timeArray.orEmpty().contains(hour.toShort())){
                     availability.background = ColorDrawable(Color.GREEN)
+                }else{
+                    availability.background = ColorDrawable(Color.BLUE)
                 }
             }
             donated_icon.visibility =

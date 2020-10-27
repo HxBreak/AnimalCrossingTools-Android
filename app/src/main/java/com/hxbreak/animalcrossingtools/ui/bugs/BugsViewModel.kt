@@ -10,6 +10,7 @@ import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.BugEntity
 import com.hxbreak.animalcrossingtools.data.source.entity.BugEntityMix
+import com.hxbreak.animalcrossingtools.data.source.entity.monthArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -18,9 +19,10 @@ import javax.inject.Inject
 
 class BugsViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
-    private val preferenceStorage: PreferenceStorage
+    val preferenceStorage: PreferenceStorage
 ): ViewModel(){
     val locale = preferenceStorage.selectedLocale
+    val hemisphere = preferenceStorage.selectedHemisphere
 
     val editMode = MutableLiveData(false)
     val refresh = MutableLiveData(false)
@@ -78,6 +80,15 @@ class BugsViewModel @ViewModelInject constructor(
         x = selected, y = bugEntityWithSaved, runCheck = {x, y -> y}){x, y ->
         val result =  !x.orEmpty().any { id -> y.orEmpty().firstOrNull { it.entity.id == id }?.saved?.donated ?: false }
         emit(result)
+    }
+
+    val activies = bugEntityWithSaved.map {
+        val now = preferenceStorage.timeInNow
+        val month = now.monthValue
+        val hour = now.hour
+        val value = it.count { (it.entity.availability.monthArray(hemisphere).contains(month.toShort()) &&
+                it.entity.availability.timeArray.orEmpty().contains(hour.toShort())) }
+        "$value/${it.size}"
     }
 
     fun toggleDonate(){

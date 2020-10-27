@@ -63,6 +63,13 @@
             app:layout_constraintVertical_bias="0.473"
             tools:srcCompat="@drawable/ic_home_black_24dp" />
 
+        <View
+            app:layout_constraintTop_toTopOf="@id/image"
+            app:layout_constraintStart_toStartOf="@id/image"
+            android:id="@+id/availability"
+            android:layout_height="8dp"
+            android:layout_width="8dp"/>
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/found_icon"
             android:layout_width="24dp"
