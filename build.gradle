@@ -3,7 +3,7 @@
 buildscript {
     ext.kotlin_version = '1.4.10'
     ext.ktlintVersion = '0.35.0'
-    ext.navigationVersion = '2.3.0'
+    ext.navigationVersion = '2.3.1'
     repositories {
         google()
         jcenter()
@@ -64,14 +64,13 @@ ext {
     junitVersion = '4.12'
     materialVersion = '1.0.0'
     mockitoVersion = '2.19.0'
-    recyclerViewVersion = '1.2.0-alpha05'
+    recyclerViewVersion = '1.2.0-alpha06'
     robolectricVersion = '4.3.1'
     roomVersion = '2.2.5'
     rulesVersion = '1.0.1'
     timberVersion = '4.7.1'
     preference_version = "1.1.1"
     truthVersion = '1.0'
-    daggerVersion = '2.23.2'
 }
 
 //task clean(type: Delete) {

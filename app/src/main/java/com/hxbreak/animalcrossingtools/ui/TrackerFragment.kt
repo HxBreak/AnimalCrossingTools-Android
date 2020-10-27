@@ -43,41 +43,41 @@ class TrackerFragment : Fragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        recycler_view.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        val adapter = TrackerAdapter(viewModel)
-        recycler_view.adapter = adapter
-        viewModel.onlines.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
-        })
-        viewModel.peerLastData.observe(viewLifecycleOwner, Observer {
-            it?.getContentIfNotHandled()?.let {
-                val service =
-                    requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                var channel: NotificationChannel? = null
-                if (Build.VERSION.SDK_INT >= 26) {
-                    channel =
-                        NotificationChannel("1", "Message", NotificationManager.IMPORTANCE_DEFAULT)
-                    service.createNotificationChannel(channel)
-                }
-                val notification = NotificationCompat.Builder(requireContext(), "1")
-                    .setSmallIcon(R.mipmap.ic_launcher_round)
-                    .setContentTitle("$it")
-                    .setSubText("Message Recv")
-                    .build()
-                service.notify(0, notification)
-            }
-        })
-        viewModel.oclient.observe(viewLifecycleOwner, Observer {
-            it?.getContentIfNotHandled()?.let {
-                findNavController().navigate(
-                    TrackerFragmentDirections.actionTrackerFragmentToChatFragment(
-                        it
-                    )
-                )
-            }
-        })
-    }
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//        recycler_view.layoutManager =
+//            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+//        val adapter = TrackerAdapter(viewModel)
+//        recycler_view.adapter = adapter
+//        viewModel.onlines.observe(viewLifecycleOwner, Observer {
+//            adapter.submitList(it)
+//        })
+//        viewModel.peerLastData.observe(viewLifecycleOwner, Observer {
+//            it?.getContentIfNotHandled()?.let {
+//                val service =
+//                    requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//                var channel: NotificationChannel? = null
+//                if (Build.VERSION.SDK_INT >= 26) {
+//                    channel =
+//                        NotificationChannel("1", "Message", NotificationManager.IMPORTANCE_DEFAULT)
+//                    service.createNotificationChannel(channel)
+//                }
+//                val notification = NotificationCompat.Builder(requireContext(), "1")
+//                    .setSmallIcon(R.mipmap.ic_launcher_round)
+//                    .setContentTitle("$it")
+//                    .setSubText("Message Recv")
+//                    .build()
+//                service.notify(0, notification)
+//            }
+//        })
+//        viewModel.oclient.observe(viewLifecycleOwner, Observer {
+//            it?.getContentIfNotHandled()?.let {
+//                findNavController().navigate(
+//                    TrackerFragmentDirections.actionTrackerFragmentToChatFragment(
+//                        it
+//                    )
+//                )
+//            }
+//        })
+//    }
 }

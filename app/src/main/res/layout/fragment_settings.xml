@@ -53,14 +53,58 @@
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:text="Choose Theme" />
+            <LinearLayout
+                style="@style/AppTheme.Widget.Settings.Button"
+                android:id="@+id/settings_choose_resource_language"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textAppearance="?textAppearanceBody2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Choose Resource Language" />
+
+                <TextView
+                    android:id="@+id/locale_value"
+                    android:paddingTop="@dimen/spacing_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?textAppearanceCaption"
+                    tools:text="中国"
+                    />
+            </LinearLayout>
 
             <TextView
                 style="@style/AppTheme.Widget.Settings.Button"
-                android:id="@+id/settings_choose_resource_language"
+                android:id="@+id/settings_choose_island_hemisphere"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"
-                android:text="Choose Language" />
+                android:text="Choose Where You Live" />
+
+            <LinearLayout
+                style="@style/AppTheme.Widget.Settings.Button"
+                android:id="@+id/settings_choose_timezone"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textAppearance="?textAppearanceBody2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:text="Choose Timezone" />
+                <TextView
+                    android:id="@+id/clock"
+                    android:paddingTop="@dimen/spacing_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?textAppearanceCaption"
+                    tools:text="2020 11-1"
+                    />
+            </LinearLayout>
+
 
             <TextView
                 style="@style/AppTheme.Widget.Settings.Button"

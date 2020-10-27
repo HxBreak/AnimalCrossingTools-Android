@@ -1,28 +1,40 @@
-package com.hxbreak.animalcrossingtools
+package com.hxbreak.animalcrossingtools.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.*
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialSharedAxis
+import com.hxbreak.animalcrossingtools.MainNavDirections
+import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.adapter.ItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
+import com.hxbreak.animalcrossingtools.services.InstantMessageServices
+import com.hxbreak.animalcrossingtools.services.handler.InstantMessageController
 import com.hxbreak.animalcrossingtools.ui.EditableAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.item_navigation_menu.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainFragment : EditableAppbarFragment() {
 
     private var adapter: LightAdapter? = null
+    private var messageAdapter: InstantMessageNotificationAdapter? = null
+    @Inject
+    lateinit var controller: InstantMessageController
 
     private fun requireAdapter() = adapter ?: throw IllegalStateException("adapter == null")
 
@@ -47,13 +59,36 @@ class MainFragment : EditableAppbarFragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
+    private val onNavigateToLobbyList = View.OnClickListener{
+        Toast.makeText(requireContext(), "Navigate To Lobby", Toast.LENGTH_SHORT).show()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val intent = Intent(requireContext(), InstantMessageServices::class.java).apply {
+            val bundle = Bundle().apply {
+                putString("host", "192.168.0.105")
+                putInt("port", 19999)
+            }
+            putExtras(bundle)
+        }
+        requireContext().startService(intent)
+
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         postponeEnterTransition()
         recycler_view.layoutManager = LinearLayoutManager(requireContext())
         adapter = LightAdapter()
-        recycler_view.adapter = adapter
+
+        messageAdapter = InstantMessageNotificationAdapter(controller, onNavigateToLobbyList)
+        controller.authorized.observe(viewLifecycleOwner){
+            messageAdapter?.notifyItemChanged(0)
+        }
+        controller.lobbyList.observe(viewLifecycleOwner){
+            messageAdapter?.notifyItemChanged(0)
+        }
+
+        recycler_view.adapter = ConcatAdapter(messageAdapter, adapter)
         requireAdapter().register(NavigationMenuViewBinder {
             if (it.resId != null){
                 navigator.navigate(it.resId, it.arguments, it.options, FragmentNavigatorExtras())
@@ -71,7 +106,8 @@ class MainFragment : EditableAppbarFragment() {
             NavigationMenu("Art", R.id.action_mainFragment_to_artFragment),
             NavigationMenu("Housewares", R.id.action_mainFragment_to_housewaresFragment),
             NavigationMenu("Flutter",
-                direction = MainNavDirections.actionGlobalFlutterFragment("/about", cachedEngineId = "only")),
+                direction = MainNavDirections.actionGlobalFlutterFragment("/hello", cachedEngineId = "only")
+            ),
         ))
         recycler_view.doOnPreDraw {
             startPostponedEnterTransition()
@@ -82,6 +118,7 @@ class MainFragment : EditableAppbarFragment() {
         super.onDestroyView()
         (requireActivity() as AppCompatActivity).setSupportActionBar(null)
         adapter = null
+        messageAdapter = null
     }
 
     override fun onResume() {

@@ -32,7 +32,9 @@
                 <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
             </intent-filter>
         </service>
-
+        <service android:name=".services.InstantMessageServices"
+            android:enabled="true"
+            />
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

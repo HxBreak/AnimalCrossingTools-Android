@@ -1,23 +1,21 @@
 package com.hxbreak.animalcrossingtools.ui.fish
 
 import android.graphics.Color
-import android.graphics.drawable.Animatable
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.SelectionItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.SelectionViewHolder
+import com.hxbreak.animalcrossingtools.data.source.entity.monthArray
 import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
-import com.hxbreak.animalcrossingtools.text
 import com.hxbreak.animalcrossingtools.view.SlideSection
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_fish.*
 import kotlinx.android.synthetic.main.viewstub_checkbox.*
-import timber.log.Timber
 
 class FishViewBinder(val viewModel: FishViewModel, val viewLifecycleOwner: LifecycleOwner) :
     SelectionItemViewDelegate<SelectableFishEntity, FishViewBinder.ViewHolder> {
@@ -58,11 +56,21 @@ class FishViewBinder(val viewModel: FishViewModel, val viewLifecycleOwner: Lifec
                 .load(fishEntity.fish.fish.icon_uri)
                 .littleCircleWaitAnimation(view.context)
                 .into(image)
+            val now = viewModel.preferenceStorage.timeInNow
+            val monthValue = now.monthValue
+            val hour = now.hour
+            val i = fishEntity.fish.fish
+            availability.background = ColorDrawable(Color.TRANSPARENT)
+            if (monthValue.toShort() in i.availability.monthArray(viewModel.hemisphere)){
+                availability.background = ColorDrawable(Color.BLUE)
+                if (i.availability.timeArray.orEmpty().contains(hour.toShort())){
+                    availability.background = ColorDrawable(Color.GREEN)
+                }
+            }
             donated_icon.visibility =
                 if (fishEntity.fish.saved?.donated == true) View.VISIBLE else View.GONE
             found_icon.visibility =
                 if (fishEntity.fish.saved?.owned == true) View.VISIBLE else View.GONE
-            val i = fishEntity.fish
             title.setText("${fishEntity.fish.fish.localeName}-\$${fishEntity.fish.fish.price}")
             subtitle.setText(
                 "${

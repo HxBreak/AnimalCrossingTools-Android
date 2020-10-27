@@ -6,7 +6,7 @@
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.hxbreak.animalcrossingtools.MainFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.home.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main">
         <action
@@ -65,9 +65,6 @@
         android:id="@+id/chatFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.chat.ChatFragment"
         android:label="ChatFragment">
-        <argument
-            android:name="oclient"
-            app:argType="com.hxbreak.tracker_proto.data.ConnectedClient" />
     </fragment>
     <fragment
         android:id="@+id/trackerFragment"

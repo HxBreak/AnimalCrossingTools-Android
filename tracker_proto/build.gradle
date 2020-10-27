@@ -3,10 +3,6 @@ apply plugin: 'kotlin'
 apply plugin: 'com.google.protobuf'
 apply plugin: 'idea'
 
-ext{
-    kotlin_version = '1.3.61'
-}
-
 idea{
     module {
         sourceDirs += file("src/main/proto")
@@ -31,15 +27,22 @@ protobuf{
         protoc {
             artifact = 'com.google.protobuf:protoc:3.12.0' // 也可以配置本地编译器路径
         }
+        plugins {
+            javalite {
+                artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+            }
+        }
 
         generateProtoTasks {
 
             all().each { task ->
                 task.builtins {
                     remove java
-                    java{}
+//                    java{}
                 }
-                task.plugins {}
+                task.plugins {
+                    javalite{}
+                }
             }
         }
     }
@@ -47,10 +50,5 @@ protobuf{
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api "com.google.protobuf:protobuf-java:3.12.0"
-
+    api group: 'com.google.protobuf', name: 'protobuf-lite', version: '3.0.1'
 }
-
-sourceCompatibility = "8"
-targetCompatibility = "8"

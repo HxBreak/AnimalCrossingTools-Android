@@ -21,6 +21,7 @@ import com.hxbreak.animalcrossingtools.data.source.remote.SongDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.SongRemoteDataSource
 import com.hxbreak.animalcrossingtools.media.MusicService
 import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
+import com.hxbreak.animalcrossingtools.services.handler.InstantMessageController
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -34,6 +35,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Qualifier
@@ -43,7 +45,6 @@ import javax.inject.Singleton
 @InstallIn(ApplicationComponent::class)
 object ApplicationModule {
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideAnimalCrossingDataSource(
@@ -66,7 +67,6 @@ object ApplicationModule {
         }
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideLogger(): HttpLoggingInterceptor {
@@ -78,7 +78,6 @@ object ApplicationModule {
         return ret
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     @GlideLogger
@@ -91,7 +90,6 @@ object ApplicationModule {
         return ret
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideGson(): Gson {
@@ -99,7 +97,6 @@ object ApplicationModule {
         return builder.create()
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     @ApiV1
@@ -113,7 +110,6 @@ object ApplicationModule {
     }
 
 
-    @JvmStatic
     @Singleton
     @Provides
     @Named("NormalApi")
@@ -125,7 +121,6 @@ object ApplicationModule {
             .build()
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideGlideHttpClient(@GlideLogger logger: HttpLoggingInterceptor): OkHttpClient {
@@ -136,7 +131,6 @@ object ApplicationModule {
             .build()
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     @ApiV2
@@ -151,7 +145,6 @@ object ApplicationModule {
     }
 
 
-    @JvmStatic
     @Singleton
     @Provides
     @ApiV1
@@ -159,14 +152,12 @@ object ApplicationModule {
         return retrofit.create(AnimalCrossingServices::class.java)
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideServicsV2(@ApiV2 retrofit: Retrofit) =
         retrofit.create(AnimalCrossingServiceV2::class.java)
 
 
-    @JvmStatic
     @Singleton
     @Provides
     fun providerFishLocalDataSource(
@@ -177,7 +168,6 @@ object ApplicationModule {
         return FishLocalDataSource(database.fishDao(), serviceV2, ioDispatcher)
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideMusicServiceConnection(@ApplicationContext context: Context) = MusicServiceConnection.getInstance(
@@ -185,7 +175,6 @@ object ApplicationModule {
         ComponentName(context, MusicService::class.java)
     )
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideDatabase(@ApplicationContext context: Context): AnimalCrossingDatabase {
@@ -195,10 +184,6 @@ object ApplicationModule {
         ).build()
         return result
     }
-
-    @Qualifier
-    @Retention(AnnotationRetention.RUNTIME)
-    annotation class AndroidId
 
     @Qualifier
     @Retention(AnnotationRetention.RUNTIME)
@@ -216,7 +201,6 @@ object ApplicationModule {
     @Retention(AnnotationRetention.RUNTIME)
     annotation class GlideLogger
 
-    @JvmStatic
     @Singleton
     @Provides
     @AndroidId
@@ -226,21 +210,27 @@ object ApplicationModule {
         return ANDROID_ID;
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideIoDispatcher() = Dispatchers.IO
 
-    @JvmStatic
     @Singleton
     @Provides
     fun providesPreferenceStorage(@ApplicationContext context: Context): PreferenceStorage =
         SharedPreferenceStorage(context)
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideProgressCollector() = GlideProgressCollector()
+
+    @Singleton
+    @Provides
+    fun provideInstantMessageController() = InstantMessageController()
+
+    @Provides
+    fun datetimeFormatter(preferenceStorage: PreferenceStorage) : DateTimeFormatter {
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", preferenceStorage.selectedLocale)
+    }
 }
 
 @Module
@@ -251,3 +241,7 @@ abstract class ApplicationModuleBinds {
     @Binds
     abstract fun bindRepository(repo: DefaultDataRepository): DataRepository
 }
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class AndroidId

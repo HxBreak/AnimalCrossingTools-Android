@@ -9,6 +9,7 @@ import com.hxbreak.animalcrossingtools.character.CharUtil
 import com.hxbreak.animalcrossingtools.combinedLiveData
 import com.hxbreak.animalcrossingtools.data.FishSaved
 import com.hxbreak.animalcrossingtools.data.Result
+import com.hxbreak.animalcrossingtools.data.prefs.Hemisphere
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
@@ -29,6 +30,7 @@ class FishViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     val locale = preferenceStorage.selectedLocale
+    val hemisphere = preferenceStorage.selectedHemisphere
 
     val refresh = MutableLiveData(false)
     val loading = MutableLiveData(false)
@@ -137,9 +139,16 @@ class FishViewModel @ViewModelInject constructor(
     }
 
     val active = items.map {
-        val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
+        val timeInNow = preferenceStorage.timeInNow
+        val currentMonth = timeInNow.monthValue.toShort()
+        val currentHour = timeInNow.hour.toShort()
         val actives = it.count {
-            it.fish.availability.monthArraySouthern.contains(currentMonth)
+            val availability = it.fish.availability
+            availability.requireTimeArray().contains(currentHour) && ((if (hemisphere == Hemisphere.Southern)
+                availability.monthArraySouthern
+            else
+                availability.monthArrayNorthern)
+                .contains(currentMonth))
         }
         "$actives/${it.size}"
     }

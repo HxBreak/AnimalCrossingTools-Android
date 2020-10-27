@@ -1,16 +1,31 @@
 import 'package:acnh_module/platform/native_app.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/scheduler.dart';
 import 'platform/platform.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    final theme = await NativePlatform().currentTheme();
-    runApp(MyThemedApp(
-      theme: theme,
-    ));
-  } catch (e) {
-    runApp(MyThemedApp());
+  final theme = await NativePlatform().currentTheme();
+  runApp(MyThemedApp(
+    theme: theme,
+  ));
+}
+
+class CustomTicker extends Ticker {
+  CustomTicker(onTick) : super(onTick);
+  @override
+  void absorbTicker(Ticker originalTicker) {
+    // super.absorbTicker(originalTicker);
+  }
+}
+
+class CustomTickerProvider extends TickerProvider {
+  @override
+  Ticker createTicker(TickerCallback onTick) {
+    final ticker = Ticker(onTick);
+    onTick(Duration(seconds: 1));
+    return ticker;
   }
 }
 
@@ -52,32 +67,35 @@ class CustomMaterialPageRoute<T> extends PageRoute<T>
   }
 
   @override
-  void didAdd() {
-    super.didAdd();
-  }
-
-  @override
-  TickerFuture didPush() {
-    return super.didPush();
-  }
-
-  @override
   void didChangePrevious(Route<dynamic> previousRoute) {
     super.didChangePrevious(previousRoute);
+    if (previousRoute?.settings?.name == '/') {
+      controller.duration = Duration.zero;
+      controller.reverseDuration = Duration.zero;
+      if (controller.isAnimating) {
+        controller.stop();
+        controller.forward();
+      }
+    }
+    print([settings, 'didChangePrevious', previousRoute?.settings]);
   }
 
   @override
   void didPopNext(Route<dynamic> nextRoute) {
     super.didPopNext(nextRoute);
+    if (settings.name == '/') controller.duration = Duration.zero;
+    print([settings, 'didPopNext']);
   }
 
   @override
   void didChangeNext(Route<dynamic> nextRoute) {
     super.didChangeNext(nextRoute);
+    print([settings, 'didChangeNext', nextRoute?.settings]);
   }
 
   @override
   bool didPop(T result) {
+    print([settings, 'didPop']);
     return super.didPop(result);
   }
 
@@ -210,7 +228,17 @@ class MyThemedApp extends StatefulWidget {
 
 class _MyThemedAppState extends State<MyThemedApp> {
   final _navigatorKey = GlobalKey<NavigatorState>();
+  final navigationChannel =
+      MethodChannel("com.hxbreak.animalcrossingtools/navigation");
   NativeThemeMode themeMode;
+
+  _MyThemedAppState() {
+    // navigationChannel.setMethodCallHandler((call) async {
+    // switch(call.method){
+    // case "pushRoute": _navigatorKey.currentState?.push(route)
+    // }
+    // });
+  }
 
   @override
   void initState() {
