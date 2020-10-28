@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
@@ -21,6 +22,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_houseware.*
 import kotlinx.android.synthetic.main.item_houseware_item.*
 import kotlinx.android.synthetic.main.item_housewares_variants.*
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HousewaresFragment : EditBackAbleAppbarFragment(){
@@ -46,6 +48,14 @@ class HousewaresFragment : EditBackAbleAppbarFragment(){
         }
         refresh_layout.setOnRefreshListener { viewModel.refresh.value = true }
         requireToolbarTitle().setText("Housewares")
+        viewModel.error.observe(viewLifecycleOwner){
+            Timber.e(it)
+            Snackbar.make(requireView(), "Error $it", Snackbar.LENGTH_LONG)
+                .setAction("Retry"){
+                    viewModel.refresh.value = true
+                }
+                .show()
+        }
     }
 
     private var adapter: LightAdapter? = null

@@ -18,12 +18,15 @@ class HousewaresViewModel @ViewModelInject constructor(
     val editMode = MutableLiveData<Boolean>(false)
     val loading = MutableLiveData(false)
     val refresh = MutableLiveData(false)
+    val error = MutableLiveData<Throwable>()
     val housewares = refresh.switchMap {
         loading.value = true
         liveData (viewModelScope.coroutineContext + Dispatchers.IO){
             when (val result = repository.repoSource().allHousewares()){
                 is Result.Success -> emit(result.data.map { HousewareVariants(it) })
-                is Result.Error -> {}
+                is Result.Error -> {
+                    error.postValue(result.exception)
+                }
             }
             loading.postValue(false)
         }
