@@ -122,8 +122,11 @@ open class AppbarFragment : Fragment(){
         toolbar = view.findViewById(R.id.toolbar)
         toolbarTitle = view.findViewById(R.id.title)
         if (configSupportActionBar()){
-            (requireActivity() as AppCompatActivity).setSupportActionBar(requireToolbar())
-            supportActionBarSet = true
+            (requireActivity() as? AppCompatActivity)?.let {
+                it.setSupportActionBar(requireToolbar())
+                it.supportActionBar?.title = ""
+                supportActionBarSet = true
+            }
         }
         requireToolbar().title = ""
     }
