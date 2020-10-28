@@ -10,6 +10,7 @@ import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.SeaCreatureEntity
 import com.hxbreak.animalcrossingtools.data.source.entity.SeaCreatureEntityMix
+import com.hxbreak.animalcrossingtools.data.source.entity.monthArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -17,9 +18,10 @@ import javax.inject.Inject
 
 class SeaCreatureViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
-    private val preferenceStorage: PreferenceStorage
+    val preferenceStorage: PreferenceStorage
 ) : ViewModel(){
     val locale = preferenceStorage.selectedLocale
+    val hemisphere = preferenceStorage.selectedHemisphere
 
     val editMode = MutableLiveData(false)
     val refresh = MutableLiveData(false)
@@ -115,6 +117,15 @@ class SeaCreatureViewModel @ViewModelInject constructor(
 
     val donate = seaCreaturesEntityWithSaved.map {
         "${it.count { it.saved?.donated ?: false }}/${it.size}"
+    }
+
+    val activies = seaCreaturesEntityWithSaved.map {
+        val now = preferenceStorage.timeInNow
+        val month = now.monthValue
+        val hour = now.hour
+        val value = it.count { (it.entity.availability.monthArray(hemisphere).contains(month.toShort()) &&
+                it.entity.availability.timeArray.orEmpty().contains(hour.toShort())) }
+        "$value/${it.size}"
     }
 }
 

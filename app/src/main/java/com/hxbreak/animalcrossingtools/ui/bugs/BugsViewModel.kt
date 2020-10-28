@@ -82,15 +82,6 @@ class BugsViewModel @ViewModelInject constructor(
         emit(result)
     }
 
-    val activies = bugEntityWithSaved.map {
-        val now = preferenceStorage.timeInNow
-        val month = now.monthValue
-        val hour = now.hour
-        val value = it.count { (it.entity.availability.monthArray(hemisphere).contains(month.toShort()) &&
-                it.entity.availability.timeArray.orEmpty().contains(hour.toShort())) }
-        "$value/${it.size}"
-    }
-
     fun toggleDonate(){
         val value = selected.value ?: return
         val to = donateAction.value!!
@@ -127,6 +118,15 @@ class BugsViewModel @ViewModelInject constructor(
 
     val donate = bugEntityWithSaved.map {
         "${it.count { it.saved?.donated ?: false }}/${it.size}"
+    }
+
+    val activies = bugEntityWithSaved.map {
+        val now = preferenceStorage.timeInNow
+        val month = now.monthValue
+        val hour = now.hour
+        val value = it.count { (it.entity.availability.monthArray(hemisphere).contains(month.toShort()) &&
+                it.entity.availability.timeArray.orEmpty().contains(hour.toShort())) }
+        "$value/${it.size}"
     }
 
 }

@@ -75,13 +75,34 @@
                     />
             </LinearLayout>
 
-            <TextView
+            <LinearLayout
                 style="@style/AppTheme.Widget.Settings.Button"
                 android:id="@+id/settings_choose_island_hemisphere"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:focusable="true"
-                android:text="Choose Where You Live" />
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textAppearance="?textAppearanceBody2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:text="Choose Where You Live" />
+                <TextView
+                    android:id="@+id/hemisphere"
+                    android:paddingTop="@dimen/spacing_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?textAppearanceCaption"
+                    tools:text="Northern"
+                    />
+            </LinearLayout>
+<!--            <TextView-->
+<!--                style="@style/AppTheme.Widget.Settings.Button"-->
+<!--                android:id="@+id/settings_choose_island_hemisphere"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Choose Where You Live" />-->
 
             <LinearLayout
                 style="@style/AppTheme.Widget.Settings.Button"

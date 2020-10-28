@@ -31,6 +31,8 @@ interface PreferenceStorage {
 
     val dateTimeFormatter: LiveData<DateTimeFormatter>
 
+    val observableHemisphere: LiveData<Hemisphere>
+
     var selectedLocale: Locale
 
     var selectedHemisphere: Hemisphere
@@ -51,6 +53,7 @@ class SharedPreferenceStorage constructor(context: Context) : PreferenceStorage 
         when (key) {
             PREF_DARK_MODE_ENABLED -> observableSelectedThemeResult.value = selectedTheme
             PREF_TIMEZONE -> observableSelectedTimeZoneId.value = ZoneId.of(selectedTimeZone.id)
+            PREF_ISLAND_HEMISPHERE -> observableSelectedHemisphere.value = selectedHemisphere
             else -> {
                 Timber.e("Not Handle For $key")
             }
@@ -79,7 +82,7 @@ class SharedPreferenceStorage constructor(context: Context) : PreferenceStorage 
         prefs, PREF_DARK_MODE_ENABLED, Theme.SYSTEM.storageKey
     )
 
-    private val observableSelectedLocale = MutableLiveData<Locale>()
+    private val observableSelectedLocale by lazy { MutableLiveData<Locale>() }
 
     override var selectedLocale by LocalePreference(
         prefs, PREF_RESOURCE_LANGUAGE, PREF_RESOURCE_REGION, Locale.getDefault(), observableSelectedLocale
@@ -87,6 +90,8 @@ class SharedPreferenceStorage constructor(context: Context) : PreferenceStorage 
 
     override var selectedHemisphere: Hemisphere by HemispherePreference(prefs,
         PREF_ISLAND_HEMISPHERE, Hemisphere.Northern)
+
+    private val observableSelectedHemisphere by lazy { MutableLiveData<Hemisphere>(selectedHemisphere) }
 
     override val timeInNow: LocalDateTime
         get() = LocalDateTime.now(Clock.system(ZoneId.of(selectedTimeZone.id)))
@@ -112,6 +117,9 @@ class SharedPreferenceStorage constructor(context: Context) : PreferenceStorage 
         get() = observableSelectedLocale.map {
             DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(it)
         }
+
+    override val observableHemisphere: LiveData<Hemisphere>
+        get() = observableSelectedHemisphere
 
     init {
         observableSelectedLocale.value = selectedLocale

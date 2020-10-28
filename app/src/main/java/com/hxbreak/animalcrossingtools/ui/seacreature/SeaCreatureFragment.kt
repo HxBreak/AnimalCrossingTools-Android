@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
@@ -80,6 +79,7 @@ class SeaCreatureFragment : EditBackAbleAppbarFragment(){
         donate.setOnClickListener { viewModel.toggleDonate() }
         viewModel.donate.observe(viewLifecycleOwner){ donated_summary.text = it }
         viewModel.found.observe(viewLifecycleOwner){ founded_summary.text = it }
+        viewModel.activies.observe(viewLifecycleOwner){ active_summary.text = it }
     }
 
     override fun onDestroyView() {

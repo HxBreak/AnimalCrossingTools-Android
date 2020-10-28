@@ -31,6 +31,8 @@ import java.text.DateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.temporal.TemporalField
+import java.time.temporal.TemporalUnit
 import javax.inject.Inject
 import kotlin.concurrent.timerTask
 
@@ -98,6 +100,9 @@ class SettingsFragment : Fragment() {
         preference.observableLocale.observe(viewLifecycleOwner){
             locale_value.text = it.getDisplayName(it)
         }
+        preference.observableHemisphere.observe(viewLifecycleOwner){
+            hemisphere.text = it.toString()
+        }
         val stream : LiveData<Unit> = combinedLiveData(viewLifecycleOwner.lifecycleScope.coroutineContext,
             x = preference.dateTimeFormatter,
             y = preference.observableTimeZone,
@@ -105,8 +110,13 @@ class SettingsFragment : Fragment() {
             if ( x != null && y != null){
                 while (true){
                     if (!isActive) return@combinedLiveData
-                    clock.text = LocalDateTime.now(Clock.system(y)).format(x)
-                    delay(1000L)
+                    val timeClock = Clock.system(y)
+                    clock.text = LocalDateTime.now(timeClock).format(x)
+                    val instant = timeClock.instant()
+                    /**
+                     * always update time after a second left
+                     */
+                    delay((1000L - (instant.toEpochMilli() - (instant.epochSecond * 1000L))))
                 }
             }
         }
