@@ -1,12 +1,19 @@
 package com.hxbreak.animalcrossingtools.data.source.entity
 
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 
+@Entity(tableName = "housewares")
 data class HousewareEntity(
+
+    @Embedded
     val name: LocalizationName,
     @SerializedName("body-title")
-    val bodyTitle: String,
+    val bodyTitle: String?,
     @SerializedName("buy-price")
     val buyPrice: Int,
     val canCustomizeBody: Boolean,
@@ -18,14 +25,16 @@ data class HousewareEntity(
     @SerializedName("file-name")
     val fileName: String,
     @SerializedName("hha-concept-1")
-    val hhaConcept1: String,
+    val hhaConcept1: String?,
     @SerializedName("hha-concept-2")
-    val hhaConcept2: String,
+    val hhaConcept2: String?,
     @SerializedName("hha-series")
-    val hhaSeries: String,
+    val hhaSeries: String?,
     @SerializedName("hha-set")
-    val hhaSet: String,
+    val hhaSet: String?,
     val image_uri: String,
+    @PrimaryKey
+    @ColumnInfo(name = "internal_id")
     @SerializedName("internal-id")
     val internalId: String,
     val isCatalog: Boolean,
@@ -33,12 +42,12 @@ data class HousewareEntity(
     val isInteractive: Boolean,
     val isOutdoor: Boolean,
     @SerializedName("kit-cost")
-    val kitCost: String,
+    val kitCost: String?,
     @SerializedName("lighting-type")
-    val lightingType: String,
-    val pattern: String,
+    val lightingType: String?,
+    val pattern: String?,
     @SerializedName("pattern-title")
-    val patternTitle: String,
+    val patternTitle: String?,
     @SerializedName("sell-price")
     val sellPrice: Int,
     val size: String,
@@ -46,11 +55,11 @@ data class HousewareEntity(
     @SerializedName("source-detail")
     val sourceDetail: String,
     @SerializedName("speaker-type")
-    val speakerType: String,
+    val speakerType: String?,
     val tag: String,
-    val variant: String,
+    val variant: String?,
     @SerializedName("variant-id")
-    val variantId: String,
+    val variantId: String?,
     val version: String
 ): ItemComparable<String> {
     override fun id() = "$fileName-$variantId-$version"

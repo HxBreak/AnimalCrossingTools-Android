@@ -6,6 +6,7 @@ import com.hxbreak.animalcrossingtools.data.source.AnimalCrossingDatabase
 import com.hxbreak.animalcrossingtools.data.source.entity.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 import java.lang.IllegalStateException
 
 class RepoDataSource(
@@ -44,7 +45,10 @@ class RepoDataSource(
     }
 
     suspend fun allHousewares(): Result<List<List<HousewareEntity>>> = when (val result = service.allHousewares()){
-        is Result.Success -> Result.Success(result.data.values.toList())
+        is Result.Success -> {
+            database.housewaresDao().insert(result.data.values.flatten())
+            Result.Success(result.data.values.toList())
+        }
         is Result.Error -> Result.Error(result.exception)
         else -> throw IllegalStateException("The result from service shouldn\'t using loading")
     }

@@ -1,50 +1,66 @@
 package com.hxbreak.animalcrossingtools.data.source.entity;
 
+import androidx.room.ColumnInfo;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
 public class LocalizationName implements Serializable {
 
+    @ColumnInfo(name = "name_us_en")
     @SerializedName("name-USen")
     private String nameUSen;
 
+    @ColumnInfo(name = "name_eu_en")
     @SerializedName("name-EUen")
     private String nameEUen;
 
+    @ColumnInfo(name = "name_eu_de")
     @SerializedName("name-EUde")
     private String nameEUde;
 
+    @ColumnInfo(name = "name_eu_es")
     @SerializedName("name-EUes")
     private String nameEUes;
 
+    @ColumnInfo(name = "name_us_es")
     @SerializedName("name-USes")
     private String nameUSes;
 
+    @ColumnInfo(name = "name_eu_fr")
     @SerializedName("name-EUfr")
     private String nameEUfr;
 
+    @ColumnInfo(name = "name_us_fr")
     @SerializedName("name-USfr")
     private String nameUSfr;
 
+    @ColumnInfo(name = "name_eu_it")
     @SerializedName("name-EUit")
     private String nameEUit;
 
+    @ColumnInfo(name = "name_eu_nl")
     @SerializedName("name-EUnl")
     private String nameEUnl;
 
+    @ColumnInfo(name = "name_cn_zh")
     @SerializedName("name-CNzh")
     private String nameCNzh;
 
+    @ColumnInfo(name = "name_tw_zh")
     @SerializedName("name-TWzh")
     private String nameTWzh;
 
+    @ColumnInfo(name = "name_jp_ja")
     @SerializedName("name-JPja")
     private String nameJPja;
 
+    @ColumnInfo(name = "name_kr_ko")
     @SerializedName("name-KRko")
     private String nameKRko;
 
+    @ColumnInfo(name = "name_eu_ru")
     @SerializedName("name-EUru")
     private String nameEUru;
 

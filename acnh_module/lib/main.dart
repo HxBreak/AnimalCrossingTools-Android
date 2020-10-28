@@ -271,17 +271,7 @@ class _MyThemedAppState extends State<MyThemedApp> {
       themeMode: _currentTheme(),
       routeInformationParser: SimpleRouteInfoParser(),
       routerDelegate: SimpleRouteDelegate({
-        "/": (c) => Scaffold(
-              body: Center(
-                child: Builder(
-                  builder: (ctx) => FlatButton(
-                      onPressed: () {
-                        Navigator.pushNamed(ctx, "/about");
-                      },
-                      child: Text("Go")),
-                ),
-              ),
-            ),
+        "/": (c) => SizedBox(),
         "/about": (c) => MyHomePage(title: "about"),
       }, _navigatorKey),
       title: "Flutter Demo",
