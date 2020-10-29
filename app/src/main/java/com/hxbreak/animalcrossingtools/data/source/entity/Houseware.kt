@@ -22,6 +22,8 @@ data class HousewareEntity(
     val color1: String,
     @SerializedName("color-2")
     val color2: String,
+    @PrimaryKey
+    @ColumnInfo(name = "filename")
     @SerializedName("file-name")
     val fileName: String,
     @SerializedName("hha-concept-1")
@@ -33,7 +35,7 @@ data class HousewareEntity(
     @SerializedName("hha-set")
     val hhaSet: String?,
     val image_uri: String,
-    @PrimaryKey
+
     @ColumnInfo(name = "internal_id")
     @SerializedName("internal-id")
     val internalId: String,
@@ -62,5 +64,8 @@ data class HousewareEntity(
     val variantId: String?,
     val version: String
 ): ItemComparable<String> {
-    override fun id() = "$fileName-$variantId-$version"
+    @ColumnInfo(name = "series_id")
+    lateinit var seriesId: String
+
+    override fun id() = fileName
 }

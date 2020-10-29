@@ -16,11 +16,13 @@
 
     <TextView
         android:id="@+id/houseware_name"
-        app:layout_constraintTop_toBottomOf="@id/houseware_image"
-        app:layout_constraintStart_toStartOf="@id/houseware_image"
-        app:layout_constraintEnd_toEndOf="@id/houseware_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-        tools:text="Name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintEnd_toEndOf="@id/houseware_image"
+        app:layout_constraintStart_toStartOf="@id/houseware_image"
+        app:layout_constraintTop_toBottomOf="@id/houseware_image"
+        tools:text="Name" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,8 @@ import com.hxbreak.animalcrossingtools.adapter.LightAdapter
 import com.hxbreak.animalcrossingtools.adapter.Typer
 import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
 import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
+import com.hxbreak.animalcrossingtools.fragment.EventObserver
+import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
@@ -39,7 +41,7 @@ class HousewaresFragment : EditBackAbleAppbarFragment(){
         val typer = Typer()
         typer.register(HousewareItemViewBinder())
         val recycledViewPool = RecyclerView.RecycledViewPool()
-        requireAdapter().register(HousewaresViewBinder(typer, recycledViewPool))
+        requireAdapter().register(HousewaresViewBinder(typer, recycledViewPool, viewModel))
         viewModel.housewares.observe(viewLifecycleOwner){
             requireAdapter().submitList(it)
         }
@@ -56,6 +58,9 @@ class HousewaresFragment : EditBackAbleAppbarFragment(){
                 }
                 .show()
         }
+        viewModel.database.observe(viewLifecycleOwner, EventObserver{
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
+        })
     }
 
     private var adapter: LightAdapter? = null
@@ -103,22 +108,27 @@ class HousewareItemViewBinder: ItemViewDelegate<HousewareEntity, HousewareItemVi
     }
 }
 
-class HousewaresViewBinder(val typer: Typer,val recycledViewPool: RecyclerView.RecycledViewPool) : ItemViewDelegate<HousewareVariants, HousewaresViewBinder.ViewHolder>{
+class HousewaresViewBinder(val typed: Typer, val recycledViewPool: RecyclerView.RecycledViewPool,
+                           val viewModel: HousewaresViewModel
+) : ItemViewDelegate<HousewareVariants, HousewaresViewBinder.ViewHolder>{
 
     inner class ViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView), LayoutContainer {
-        val adapter = LightAdapter(typer)
 
         fun bind(housewares: HousewareVariants){
-            captain.text = housewares.variants.first().name.nameCNzh
-            item_recycler_view.setRecycledViewPool(recycledViewPool)
-            item_recycler_view.adapter = adapter
-            adapter.submitList(housewares.variants)
+            if (housewares.variants.isNotEmpty()){
+                val adapter = LightAdapter(typed)
+                item_recycler_view.setRecycledViewPool(recycledViewPool)
+                item_recycler_view.adapter = adapter
+                captain.text = housewares.variants.first().name.toLocaleName(viewModel.locale)
+                adapter.submitList(housewares.variants)
+            }else{
+                item_recycler_view.adapter = null
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup) = ViewHolder(LayoutInflater.from(parent.context)
         .inflate(R.layout.item_housewares_variants, parent, false))
-
 
     override fun onBindViewHolder(data: HousewareVariants?, vh: ViewHolder) {
         data?.let { vh.bind(data) }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -14,6 +15,7 @@ import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
 import com.hxbreak.animalcrossingtools.extensions.testChanged
+import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.bottom_sheet_fish.*
@@ -55,30 +57,32 @@ class FishFragment : EditBackAbleAppbarFragment() {
         val enableIndicator = viewModel.locale.language == "zh"
         requireToolbar().title = null
         requireToolbarTitle().setText("Fish")
-        viewModel.data.observe(viewLifecycleOwner, Observer {
+        viewModel.data.observe(viewLifecycleOwner){
             requireAdapter().submitList(it)
-            recycler_view.run {
-                if (itemDecorationCount > 0) {
-                    for (i in itemDecorationCount - 1 downTo 0) {
-                        removeItemDecorationAt(i)
+            recycler_view.doOnPreDraw { _ ->
+                recycler_view.run {
+                    if (itemDecorationCount > 0) {
+                        for (i in itemDecorationCount - 1 downTo 0) {
+                            removeItemDecorationAt(i)
+                        }
                     }
-                }
-                if (it != null) {
-                    if (enableIndicator) {
-                        addItemDecoration(
-                            FishHeadDecoration(
-                                requireContext(),
-                                it.map { it.fish.fish },
-                                recycler_view.width
+                    if (it != null) {
+                        if (enableIndicator) {
+                            addItemDecoration(
+                                FishHeadDecoration(
+                                    requireContext(),
+                                    it.map { it.fish.fish },
+                                    recycler_view.width
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
-        })
-        viewModel.loading.observe(viewLifecycleOwner, Observer {
+        }
+        viewModel.loading.observe(viewLifecycleOwner) {
             refresh_layout.isRefreshing = it == true
-        })
+        }
         refresh_layout.setOnRefreshListener {
             viewModel.refresh.value = true
         }
@@ -110,7 +114,7 @@ class FishFragment : EditBackAbleAppbarFragment() {
         recycler_view.mEnableAlphabet = enableIndicator
 
         edit_mode.setOnClickListener {
-            uiSelectMode = !viewModel.editMode.value!!
+            viewModel.editMode.value = !viewModel.editMode.value!!
         }
 
         donate.setOnClickListener {
@@ -143,11 +147,14 @@ class FishFragment : EditBackAbleAppbarFragment() {
                 found.morph()
         })
 
-        viewModel.editMode.observe(viewLifecycleOwner, Observer {
+        viewModel.editMode.observe(viewLifecycleOwner){
             requireAdapter().editMode = it
-        })
+            uiSelectMode = it
+        }
 
-        viewModel.clickedFish.observe(viewLifecycleOwner, Observer { effectBottomSheet(it) })
+        viewModel.clickedFish.observe(viewLifecycleOwner){
+            effectBottomSheet(it.getContentIfNotHandled())
+        }
     }
 
     var lastOffset = -1.0f

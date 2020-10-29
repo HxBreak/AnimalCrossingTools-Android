@@ -60,9 +60,11 @@ open class EditableAppbarFragment : AppbarFragment() {
 
     open var uiSelectMode = false
         set(value) {
-            field = value
-            onUiSelectChanged(value)
-            animateToolbar()
+            if (field != value){
+                field = value
+                onUiSelectChanged(value)
+                animateToolbar()
+            }
         }
 
     lateinit var toolbarBackgroundTransition: TransitionDrawable
