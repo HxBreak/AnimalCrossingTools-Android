@@ -1,6 +1,7 @@
 package com.hxbreak.animalcrossingtools.ui
 
 import android.animation.ObjectAnimator
+import android.content.SharedPreferences
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.view.View
@@ -9,12 +10,32 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.AppBarLayout
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.view.AnimatedTextView
 import java.lang.NullPointerException
+import java.util.*
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
+
+
+class LazyMutableBooleanProperty(
+    private val mutableLiveData: Lazy<MutableLiveData<Boolean>>
+) : ReadWriteProperty<Any, Boolean> {
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: Boolean) {
+        mutableLiveData.value.value = value
+    }
+
+    override fun getValue(thisRef: Any, property: KProperty<*>): Boolean {
+        return mutableLiveData.value.value ?: error("MutableLiveData Shouldn't Have Null Value")
+    }
+
+}
 
 open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
 
@@ -56,18 +77,26 @@ open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
 
 }
 
+class ReadWritePropertyPlaceHolder<T, V>: ReadWriteProperty<T, V>{
+    override fun setValue(thisRef: T, property: KProperty<*>, value: V) {
+        error("only placeholder here")
+    }
+
+    override fun getValue(thisRef: T, property: KProperty<*>): V {
+        error("only placeholder here")
+    }
+}
+
 open class EditableAppbarFragment : AppbarFragment() {
 
-    open var uiSelectMode = false
-        set(value) {
-            if (field != value){
-                field = value
-                onUiSelectChanged(value)
-                animateToolbar()
-            }
-        }
+    open var uiSelectMode: Boolean by ReadWritePropertyPlaceHolder()
 
-    lateinit var toolbarBackgroundTransition: TransitionDrawable
+    @Suppress("IMPLICIT_NOTHING_TYPE_ARGUMENT_IN_RETURN_POSITION")
+    open val uiSelectModeMutableLiveData: MutableLiveData<Boolean> by lazy {
+        error("just placeholder")
+    }
+
+    open lateinit var toolbarBackgroundTransition: TransitionDrawable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,13 +106,22 @@ open class EditableAppbarFragment : AppbarFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireToolbar().background = toolbarBackgroundTransition
+        uiSelectModeMutableLiveData.observe(viewLifecycleOwner){
+            onUiSelectChanged(it)
+        }
     }
 
+    private var isFirstAnimateToolbar: Boolean = true
+
     open fun animateToolbar(){
+        toolbarBackgroundTransition.resetTransition()
         toolbarBackgroundTransition.run { if (uiSelectMode) startTransition(200) else reverseTransition(200)  }
     }
 
-    open fun onUiSelectChanged(value : Boolean) { animateToolbarIcons(value) }
+    open fun onUiSelectChanged(value : Boolean) {
+        animateToolbar()
+        animateToolbarIcons(value)
+    }
 
     open fun animateIconList(): List<View> = emptyList() //dummy function
 
@@ -139,8 +177,8 @@ open class AppbarFragment : Fragment(){
         toolbar = null
         toolbarTitle = null
         if (supportActionBarSet){
-//            (requireActivity() as AppCompatActivity).setSupportActionBar(null)
-//            supportActionBarSet = false
+            (requireActivity() as AppCompatActivity).setSupportActionBar(null)
+            supportActionBarSet = false
         }
     }
 

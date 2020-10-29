@@ -21,6 +21,7 @@ import com.hxbreak.animalcrossingtools.adapter.ItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
 import com.hxbreak.animalcrossingtools.services.InstantMessageServices
 import com.hxbreak.animalcrossingtools.services.handler.InstantMessageController
+import com.hxbreak.animalcrossingtools.ui.AppbarFragment
 import com.hxbreak.animalcrossingtools.ui.EditableAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
@@ -29,7 +30,7 @@ import kotlinx.android.synthetic.main.item_navigation_menu.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainFragment : EditableAppbarFragment() {
+class MainFragment : AppbarFragment() {
 
     private var adapter: LightAdapter? = null
     private var messageAdapter: InstantMessageNotificationAdapter? = null

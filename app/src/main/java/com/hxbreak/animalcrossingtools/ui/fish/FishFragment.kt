@@ -15,8 +15,8 @@ import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
 import com.hxbreak.animalcrossingtools.extensions.testChanged
-import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
+import com.hxbreak.animalcrossingtools.ui.LazyMutableBooleanProperty
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.bottom_sheet_fish.*
 import kotlinx.android.synthetic.main.fragment_fish.*
@@ -28,11 +28,16 @@ class FishFragment : EditBackAbleAppbarFragment() {
     private var bottomSheetView: View? = null
     private var adapter: FishAdapter? = null
 
+    private val lazyEditMode = lazy { viewModel.editMode }
+
+    override var uiSelectMode by LazyMutableBooleanProperty(lazyEditMode)
+
+    override val uiSelectModeMutableLiveData by lazyEditMode
+
     private fun requireAdapter() = adapter ?: throw IllegalStateException("adapter == null")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val forward = MaterialSharedAxis(MaterialSharedAxis.X, true)
         enterTransition = forward
         val backward = MaterialSharedAxis(MaterialSharedAxis.X, false)
@@ -114,7 +119,7 @@ class FishFragment : EditBackAbleAppbarFragment() {
         recycler_view.mEnableAlphabet = enableIndicator
 
         edit_mode.setOnClickListener {
-            viewModel.editMode.value = !viewModel.editMode.value!!
+            uiSelectMode = !uiSelectMode
         }
 
         donate.setOnClickListener {
@@ -149,7 +154,8 @@ class FishFragment : EditBackAbleAppbarFragment() {
 
         viewModel.editMode.observe(viewLifecycleOwner){
             requireAdapter().editMode = it
-            uiSelectMode = it
+            if (edit_mode.isSelected != it) { edit_mode.morph() }
+            if (it == false){ viewModel.clearSelected() }
         }
 
         viewModel.clickedFish.observe(viewLifecycleOwner){
@@ -191,12 +197,6 @@ class FishFragment : EditBackAbleAppbarFragment() {
         }
     }
 
-    override fun onUiSelectChanged(value: Boolean) {
-        super.onUiSelectChanged(value)
-        viewModel.editMode.value = value
-        if (edit_mode.isSelected != value) { edit_mode.morph() }
-        if (!value){ viewModel.clearSelected() }
-    }
 
     override fun configSupportActionBar() = true
 
