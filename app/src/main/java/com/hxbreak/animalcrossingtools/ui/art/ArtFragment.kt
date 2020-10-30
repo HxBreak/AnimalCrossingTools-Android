@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
@@ -22,6 +23,8 @@ class ArtFragment : EditBackAbleAppbarFragment(){
     var adapter: SelectionAdapter? = null
 
     private fun requireAdapter() = adapter ?: throw IllegalStateException("adapter is null")
+
+    override val uiSelectModeMutableLiveData by lazy { viewModel.editMode }
 
     override fun configSupportActionBar() = true
 
@@ -81,19 +84,16 @@ class ArtFragment : EditBackAbleAppbarFragment(){
         viewModel.collectedText.observe(viewLifecycleOwner){
             donated_summary.text = it
         }
+        viewModel.editMode.observe(viewLifecycleOwner){
+            if (edit_mode.isSelected != it){ edit_mode.morph() }
+            requireAdapter().editMode = it
+            if (!it){ viewModel.clearSelected() }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         adapter = null
-    }
-
-    override fun onUiSelectChanged(value: Boolean) {
-        super.onUiSelectChanged(value)
-        viewModel.editMode.value = value
-        if (edit_mode.isSelected != value){ edit_mode.morph() }
-        requireAdapter().editMode = value
-        if (!value){ viewModel.clearSelected() }
     }
 
     override fun animateIconList() = listOf(donate)

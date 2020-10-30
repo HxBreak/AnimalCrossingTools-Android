@@ -13,6 +13,7 @@ import com.hxbreak.animalcrossingtools.data.prefs.Hemisphere
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
+import com.hxbreak.animalcrossingtools.extensions.previousValue
 import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import kotlinx.coroutines.*

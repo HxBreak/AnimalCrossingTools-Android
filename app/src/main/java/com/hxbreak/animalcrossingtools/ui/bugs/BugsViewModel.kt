@@ -11,6 +11,7 @@ import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.BugEntity
 import com.hxbreak.animalcrossingtools.data.source.entity.BugEntityMix
 import com.hxbreak.animalcrossingtools.data.source.entity.monthArray
+import com.hxbreak.animalcrossingtools.extensions.previousValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber

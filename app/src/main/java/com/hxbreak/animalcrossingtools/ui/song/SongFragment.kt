@@ -7,6 +7,8 @@ import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -28,6 +30,8 @@ import javax.inject.Inject
 class SongFragment : EditBackAbleAppbarFragment() {
 
     private val viewModel by viewModels<SongViewModel>()
+
+    override val uiSelectModeMutableLiveData: MutableLiveData<Boolean> by lazy { viewModel.editMode }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,13 +61,6 @@ class SongFragment : EditBackAbleAppbarFragment() {
 
     private fun requireAdapter() = adapter ?: throw IllegalStateException("adapter == null")
 
-    override fun onUiSelectChanged(value: Boolean) {
-        super.onUiSelectChanged(value)
-        viewModel.editMode.value = value
-        if (edit_mode.isSelected != value){ edit_mode.morph() }
-        if (!value){ viewModel.clearSelected() }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         adapter = null
@@ -91,7 +88,7 @@ class SongFragment : EditBackAbleAppbarFragment() {
             viewModel.refresh.value = true
         }
         edit_mode.setOnClickListener {
-            uiSelectMode = !viewModel.editMode.value!!
+            uiSelectMode = !uiSelectMode
         }
         viewModel.editMode.observe(viewLifecycleOwner) {
             adapter?.editMode = it
@@ -154,6 +151,10 @@ class SongFragment : EditBackAbleAppbarFragment() {
                 }
             }
         })
+        viewModel.editMode.observe(viewLifecycleOwner){
+            if (edit_mode.isSelected != it){ edit_mode.morph() }
+            if (!it){ viewModel.clearSelected() }
+        }
     }
 
     override fun animateIconList() = listOf(donate)

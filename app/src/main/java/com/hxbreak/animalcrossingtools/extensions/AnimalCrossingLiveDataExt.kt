@@ -26,9 +26,25 @@ object ACTransformations{
         }
         return outputLiveData
     }
+
+    @JvmStatic
+    @MainThread
+    fun <X> previousValue(source: LiveData<out X>): LiveData<Pair<X?, X?>>{
+        val outputLiveData = MediatorLiveData<Pair<X?, X?>>()
+        outputLiveData.addSource(source){
+            val previousValue = outputLiveData.value
+            outputLiveData.value = previousValue?.second to it
+
+        }
+        return outputLiveData
+    }
 }
 
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun <X> LiveData<out Collection<X>>.testChanged(): LiveData<CollectionChangeEvent<X>> =
     ACTransformations.testChanged(this)
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <X> LiveData<out X>.previousValue() = ACTransformations.previousValue(this)
+

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -28,11 +29,7 @@ class FishFragment : EditBackAbleAppbarFragment() {
     private var bottomSheetView: View? = null
     private var adapter: FishAdapter? = null
 
-    private val lazyEditMode = lazy { viewModel.editMode }
-
-    override var uiSelectMode by LazyMutableBooleanProperty(lazyEditMode)
-
-    override val uiSelectModeMutableLiveData by lazyEditMode
+    override val uiSelectModeMutableLiveData by lazy { viewModel.editMode }
 
     private fun requireAdapter() = adapter ?: throw IllegalStateException("adapter == null")
 

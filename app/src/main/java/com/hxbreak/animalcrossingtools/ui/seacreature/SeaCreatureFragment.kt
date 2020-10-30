@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
@@ -12,7 +14,16 @@ import com.hxbreak.animalcrossingtools.adapter.SelectionAdapter
 import com.hxbreak.animalcrossingtools.extensions.testChanged
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_bugs.*
 import kotlinx.android.synthetic.main.fragment_seacreature.*
+import kotlinx.android.synthetic.main.fragment_seacreature.active_summary
+import kotlinx.android.synthetic.main.fragment_seacreature.donate
+import kotlinx.android.synthetic.main.fragment_seacreature.donated_summary
+import kotlinx.android.synthetic.main.fragment_seacreature.edit_mode
+import kotlinx.android.synthetic.main.fragment_seacreature.found
+import kotlinx.android.synthetic.main.fragment_seacreature.founded_summary
+import kotlinx.android.synthetic.main.fragment_seacreature.recycler_view
+import kotlinx.android.synthetic.main.fragment_seacreature.refresh_layout
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
@@ -20,6 +31,8 @@ import javax.inject.Inject
 class SeaCreatureFragment : EditBackAbleAppbarFragment(){
 
     private val viewModel by viewModels<SeaCreatureViewModel>()
+
+    override val uiSelectModeMutableLiveData: MutableLiveData<Boolean> by lazy { viewModel.editMode }
 
     private var adapter: SelectionAdapter? = null
 
@@ -43,6 +56,7 @@ class SeaCreatureFragment : EditBackAbleAppbarFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        arrayOf(donate, found).forEach { it.alpha = 0f }
         edit_mode.setOnClickListener {
             uiSelectMode = !viewModel.editMode.value!!
         }
@@ -80,19 +94,16 @@ class SeaCreatureFragment : EditBackAbleAppbarFragment(){
         viewModel.donate.observe(viewLifecycleOwner){ donated_summary.text = it }
         viewModel.found.observe(viewLifecycleOwner){ founded_summary.text = it }
         viewModel.activies.observe(viewLifecycleOwner){ active_summary.text = it }
+        viewModel.editMode.observe(viewLifecycleOwner){
+            if (edit_mode.isSelected != it){ edit_mode.morph() }
+            if (!it) viewModel.clearSelected()
+            requireAdapter().editMode = it
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         adapter = null
-    }
-
-    override fun onUiSelectChanged(value: Boolean) {
-        super.onUiSelectChanged(value)
-        viewModel.editMode.value = value
-        if (edit_mode.isSelected != value){ edit_mode.morph() }
-        if (!value) viewModel.clearSelected()
-        requireAdapter().editMode = value
     }
 
     override fun configSupportActionBar() = true

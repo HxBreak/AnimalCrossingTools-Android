@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
@@ -24,6 +26,7 @@ class FossilFragment : EditBackAbleAppbarFragment(){
     private var adapter: SelectionAdapter? = null
 
     private fun requireAdapter() = adapter ?: throw IllegalStateException("adapter == null")
+    override val uiSelectModeMutableLiveData: MutableLiveData<Boolean> by lazy { viewModel.editMode }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,7 @@ class FossilFragment : EditBackAbleAppbarFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        arrayOf(donate, found).forEach { it.alpha = 0f }
         edit_mode.setOnClickListener {
             uiSelectMode = !viewModel.editMode.value!!
         }
@@ -79,19 +83,16 @@ class FossilFragment : EditBackAbleAppbarFragment(){
         donate.setOnClickListener { viewModel.toggleDonate() }
         viewModel.donate.observe(viewLifecycleOwner){ donated_summary.text = it }
         viewModel.found.observe(viewLifecycleOwner){ founded_summary.text = it }
+        viewModel.editMode.observe(viewLifecycleOwner){
+            if (edit_mode.isSelected != it){ edit_mode.morph() }
+            if (!it) viewModel.clearSelected()
+            requireAdapter().editMode = it
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         adapter = null
-    }
-
-    override fun onUiSelectChanged(value: Boolean) {
-        super.onUiSelectChanged(value)
-        viewModel.editMode.value = value
-        if (edit_mode.isSelected != value){ edit_mode.morph() }
-        if (!value) viewModel.clearSelected()
-        requireAdapter().editMode = value
     }
 
     override fun configSupportActionBar() = true

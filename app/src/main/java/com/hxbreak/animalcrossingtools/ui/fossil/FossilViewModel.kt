@@ -10,6 +10,7 @@ import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.FossilEntity
 import com.hxbreak.animalcrossingtools.data.source.entity.FossilEntityMix
+import com.hxbreak.animalcrossingtools.extensions.previousValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -29,8 +30,7 @@ class FossilViewModel @ViewModelInject constructor(
     private val fossilEntity = refresh.switchMap {
         loading.value = true
         liveData (viewModelScope.coroutineContext + Dispatchers.IO){
-            val result = repository.repoSource().allFossils()
-            when(result){
+            when(val result = repository.repoSource().allFossils()){
                 is Result.Success -> emit(result.data)
                 is Result.Error -> error.postValue(result.exception)
             }

@@ -7,6 +7,7 @@ import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
+import com.hxbreak.animalcrossingtools.extensions.previousValue
 import com.hxbreak.animalcrossingtools.fragment.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,11 +19,11 @@ class HousewaresViewModel @ViewModelInject constructor(
     private val preferenceStorage: PreferenceStorage,
 ): ViewModel(){
     val locale = preferenceStorage.selectedLocale
-    val editMode = MutableLiveData<Boolean>(false)
     val loading = MutableLiveData(false)
     val refresh = MutableLiveData(false)
     val error = MutableLiveData<Throwable>()
     val database = MutableLiveData<Event<String>>()
+
     val housewares = refresh.switchMap {
         loading.value = true
         liveData (viewModelScope.coroutineContext + Dispatchers.IO){

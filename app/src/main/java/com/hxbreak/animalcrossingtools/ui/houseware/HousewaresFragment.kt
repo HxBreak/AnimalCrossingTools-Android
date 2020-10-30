@@ -18,6 +18,7 @@ import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
 import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
+import com.hxbreak.animalcrossingtools.ui.BackAbleAppbarFragment
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
@@ -27,7 +28,7 @@ import kotlinx.android.synthetic.main.item_housewares_variants.*
 import timber.log.Timber
 
 @AndroidEntryPoint
-class HousewaresFragment : EditBackAbleAppbarFragment(){
+class HousewaresFragment : BackAbleAppbarFragment(){
 
     private val viewModel by viewModels<HousewaresViewModel>()
 

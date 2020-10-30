@@ -16,12 +16,12 @@ import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.CommonItemDecoration
 import com.hxbreak.animalcrossingtools.adapter.SelectionAdapter
-import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
+import com.hxbreak.animalcrossingtools.ui.BackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_chat.*
 
 @AndroidEntryPoint
-class VillagerFragment : EditBackAbleAppbarFragment(){
+class VillagerFragment : BackAbleAppbarFragment(){
 
     private val viewModel by viewModels<VillagerViewModel>()
 

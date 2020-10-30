@@ -11,6 +11,7 @@ import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.SeaCreatureEntity
 import com.hxbreak.animalcrossingtools.data.source.entity.SeaCreatureEntityMix
 import com.hxbreak.animalcrossingtools.data.source.entity.monthArray
+import com.hxbreak.animalcrossingtools.extensions.previousValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
