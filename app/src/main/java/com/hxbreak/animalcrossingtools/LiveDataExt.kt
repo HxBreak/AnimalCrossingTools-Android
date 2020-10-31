@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import timber.log.Timber
+import java.lang.ref.WeakReference
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -40,8 +40,8 @@ enum class RunnerType {
 internal class CoroutineLiveData<R, X, Y>(
     private val context: CoroutineContext = EmptyCoroutineContext,
     private val timeoutInMs: Long = DEFAULT_TIMEOUT,
-    private val x: LiveData<X>,
-    private val y: LiveData<Y>,
+    x: LiveData<X>,
+    y: LiveData<Y>,
     private val runCheck: CombinedRunCheck,
     private val runnerType: RunnerType = RunnerType.LINEAR,
     private val block: Block<R, X?, Y?>
