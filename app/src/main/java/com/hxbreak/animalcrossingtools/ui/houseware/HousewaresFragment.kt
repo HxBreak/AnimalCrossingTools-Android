@@ -1,9 +1,11 @@
 package com.hxbreak.animalcrossingtools.ui.houseware
 
+import android.app.SearchManager
+import android.app.SearchableInfo
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +21,6 @@ import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import com.hxbreak.animalcrossingtools.ui.BackAbleAppbarFragment
-import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_houseware.*
@@ -69,6 +70,7 @@ class HousewaresFragment : BackAbleAppbarFragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         val forward = MaterialSharedAxis(MaterialSharedAxis.X, true)
         enterTransition = forward
         val backward = MaterialSharedAxis(MaterialSharedAxis.X, false)
@@ -86,6 +88,22 @@ class HousewaresFragment : BackAbleAppbarFragment(){
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_houseware, container, false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.search_menu, menu)
+        (menu.findItem(R.id.search).actionView as? SearchView)?.let {
+            val search = requireContext().getSystemService(Context.SEARCH_SERVICE) as? SearchManager
+            search?.let {
+                val a: SearchableInfo
+//                it.getSearchableInfo(SearchableInfo())
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
     }
 }
 

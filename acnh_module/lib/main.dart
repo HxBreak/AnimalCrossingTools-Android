@@ -39,7 +39,6 @@ class CustomMaterialPageRoute<T> extends PageRoute<T>
   })  : assert(builder != null),
         assert(maintainState != null),
         assert(fullscreenDialog != null),
-        assert(opaque),
         super(settings: settings, fullscreenDialog: fullscreenDialog);
 
   @override
@@ -101,6 +100,9 @@ class CustomMaterialPageRoute<T> extends PageRoute<T>
 
   @override
   String get debugLabel => '${super.debugLabel}(${settings.name})';
+
+  @override
+  Widget buildContent(BuildContext context) => builder(context);
 }
 
 class SimpleRouteInfoParser extends RouteInformationParser<RouteInformation> {

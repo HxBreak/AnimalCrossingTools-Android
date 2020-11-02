@@ -1,6 +1,7 @@
 package com.hxbreak.animalcrossingtools
 
 import com.hxbreak.animalcrossingtools.character.CharUtil
+import kotlinx.coroutines.delay
 import net.sourceforge.pinyin4j.PinyinHelper
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,8 +26,9 @@ class UnitTest {
     @Test
     fun testClock(){
         val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(Locale.US)
-
         println(LocalDateTime.now().format(formatter))
-        println(Instant.now().nano)
+        val now = Clock.systemDefaultZone()
+        val instant = now.instant()
+        println(instant.toEpochMilli() - (instant.epochSecond * 1000))
     }
 }
