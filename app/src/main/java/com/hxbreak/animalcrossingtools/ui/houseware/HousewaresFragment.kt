@@ -61,7 +61,7 @@ class HousewaresFragment : BackAbleAppbarFragment(){
         val typer = Typer()
         typer.register(HousewareItemViewBinder(){
             nav.navigate(
-                HousewaresFragmentDirections.actionHousewaresFragmentToHousewareDetailFragment(it.internalId.toLong())
+                HousewaresFragmentDirections.actionHousewaresFragmentToHousewareDetailFragment(it.fileName, it.internalId.toLong())
             )
         })
         val recycledViewPool = RecyclerView.RecycledViewPool()

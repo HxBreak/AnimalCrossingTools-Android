@@ -20,6 +20,9 @@ interface HousewaresDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(entity: HousewareEntity)
 
+    @Query("select * from housewares where internal_id == :internalId")
+    suspend fun allInternalId(internalId: String): List<HousewareEntity>
+
     @RawQuery
     fun getCursorViaQuery(query: SupportSQLiteQuery?): Cursor
 

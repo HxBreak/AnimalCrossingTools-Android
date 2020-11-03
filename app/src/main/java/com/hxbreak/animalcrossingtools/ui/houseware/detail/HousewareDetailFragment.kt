@@ -9,8 +9,10 @@ import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
 import com.hxbreak.animalcrossingtools.adapter.Typer
+import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import com.hxbreak.animalcrossingtools.ui.BackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_houseware_detail.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -26,18 +28,22 @@ class HousewareDetailFragment : BackAbleAppbarFragment(){
     @Inject
     lateinit var viewModelFactory: HousewareDetailViewModel.AssistedFactory
     private val viewModel by viewModels<HousewareDetailViewModel>(factoryProducer = {
-            HousewareDetailViewModel.provideFactory(viewModelFactory, args.housewareId)
+            HousewareDetailViewModel.provideFactory(viewModelFactory, args.filename, args.housewareId)
         })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = LightAdapter()
-        val typer = Typer()
-        val recycledViewPool = RecyclerView.RecycledViewPool()
         viewModel.item.observe(viewLifecycleOwner){
             requireToolbarTitle().setText("$it")
         }
-//        requireAdapter().register(HousewaresViewBinder(typer, recycledViewPool, viewModel))
+        viewModel.items.observe(viewLifecycleOwner){
+            it.firstOrNull()?.let {
+                item_title.text = it.name.toLocaleName(viewModel.locale)
+                return@observe
+            }
+            nav.navigateUp()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

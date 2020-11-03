@@ -165,6 +165,9 @@
         android:name="com.hxbreak.animalcrossingtools.ui.houseware.detail.HousewareDetailFragment"
         android:label="HousewareDetailFragment" >
         <argument
+            android:name="filename"
+            app:argType="string" />
+        <argument
             android:name="housewareId"
             app:argType="long" />
     </fragment>

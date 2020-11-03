@@ -6,19 +6,33 @@
     android:id="@+id/coordinator"
     tools:context=".ui.fish.FishFragment"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.viewpager2.widget.ViewPager2
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/viewpager"
+            app:layout_constraintDimensionRatio="H,4:3"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="0dp"/>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <TextView
+            android:id="@+id/item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/viewpager"
+            app:layout_constraintStart_toStartOf="parent"
+            android:paddingTop="@dimen/spacing_normal"
+            android:paddingStart="@dimen/spacing_normal"
+            android:paddingEnd="0dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            tools:text="火箭"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@id/appbar"

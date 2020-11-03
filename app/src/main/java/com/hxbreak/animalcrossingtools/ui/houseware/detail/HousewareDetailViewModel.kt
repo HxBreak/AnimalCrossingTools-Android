@@ -1,23 +1,34 @@
 package com.hxbreak.animalcrossingtools.ui.houseware.detail
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
+import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 
 class HousewareDetailViewModel @AssistedInject constructor(
     private val repository: DataRepository,
-    @Assisted private val housewareId: Long
+    private val preference: PreferenceStorage,
+    @Assisted private val filename: String,
+    @Assisted private val housewareId: Long,
 ): ViewModel(){
 
-    val item = MutableLiveData(housewareId)
+    val locale = preference.selectedLocale
 
+    val dao by lazy {
+        repository.local().housewaresDao()
+    }
+
+    val item = MutableLiveData(filename)
+
+    val items = liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+        emit(dao.allInternalId(housewareId.toString()))
+    }
 
     @AssistedInject.Factory
     interface AssistedFactory {
-        fun create(housewareId: Long): HousewareDetailViewModel
+        fun create(filename: String, housewareId: Long): HousewareDetailViewModel
     }
 
     companion object {
@@ -25,10 +36,11 @@ class HousewareDetailViewModel @AssistedInject constructor(
         @Suppress("UNCHECKED_CAST")
         fun provideFactory(
             assistedFactory: AssistedFactory,
+            filename: String,
             housewareId: Long
         ) = object : ViewModelProvider.Factory{
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return assistedFactory.create(housewareId) as T
+                return assistedFactory.create(filename, housewareId) as T
             }
         }
     }
