@@ -1,9 +1,7 @@
 package com.hxbreak.animalcrossingtools.data.source.entity;
 
 import androidx.room.ColumnInfo;
-
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 public class LocalizationName implements Serializable {

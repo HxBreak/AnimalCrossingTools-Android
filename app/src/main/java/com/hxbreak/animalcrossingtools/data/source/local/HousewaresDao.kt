@@ -1,6 +1,8 @@
 package com.hxbreak.animalcrossingtools.data.source.local
 
+import android.database.Cursor
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
 
 @Dao
@@ -17,4 +19,10 @@ interface HousewaresDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(entity: HousewareEntity)
+
+    @RawQuery
+    fun getCursorViaQuery(query: SupportSQLiteQuery?): Cursor
+
+    @RawQuery
+    fun filterViaQuery(query: SupportSQLiteQuery?): List<HousewareEntity>
 }

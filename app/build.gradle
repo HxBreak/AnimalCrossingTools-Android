@@ -35,7 +35,7 @@ android {
 //            }
 //        }
         ndk{
-            abiFilters 'armeabi-v7a'
+//            abiFilters 'armeabi-v7a'
         }
 
         multiDexEnabled = true
@@ -196,4 +196,5 @@ dependencies {
     // https://mvnrepository.com/artifact/io.netty/netty-all
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.53.Final'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
+    implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 }

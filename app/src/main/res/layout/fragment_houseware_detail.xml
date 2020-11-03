@@ -13,11 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            tools:listitem="@layout/item_fish"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -28,12 +27,11 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <com.hxbreak.animalcrossingtools.ui.houseware.AvoidBottomPaddingMaterialToolbar
-            app:title="Housewares"
+            app:title="HousewaresDetail"
             app:titleEnabled="false"
             android:fitsSystemWindows="true"
             android:id="@id/toolbar"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
-            app:layout_scrollFlags="scroll|snap|enterAlways"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
