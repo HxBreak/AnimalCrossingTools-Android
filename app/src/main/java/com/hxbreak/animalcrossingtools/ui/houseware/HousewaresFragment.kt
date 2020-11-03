@@ -29,6 +29,7 @@ import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import com.hxbreak.animalcrossingtools.ui.BackAbleAppbarFragment
+import com.hxbreak.animalcrossingtools.ui.houseware.detail.HousewareDetailFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_houseware.*
@@ -58,7 +59,11 @@ class HousewaresFragment : BackAbleAppbarFragment(){
         recycler_view.layoutManager = LinearLayoutManager(requireContext())
         recycler_view.adapter = adapter
         val typer = Typer()
-        typer.register(HousewareItemViewBinder())
+        typer.register(HousewareItemViewBinder(){
+            nav.navigate(
+                HousewaresFragmentDirections.actionHousewaresFragmentToHousewareDetailFragment(it.internalId.toLong())
+            )
+        })
         val recycledViewPool = RecyclerView.RecycledViewPool()
         requireAdapter().register(HousewaresViewBinder(typer, recycledViewPool, viewModel))
         viewModel.screenData.observe(viewLifecycleOwner){
@@ -193,7 +198,9 @@ class SuggestionsAdapter(context: Context?, layout: Int, val locale: Locale) : R
     }
 }
 
-class HousewareItemViewBinder: ItemViewDelegate<HousewareEntity, HousewareItemViewBinder.ViewHolder>{
+class HousewareItemViewBinder(
+    val listener: (HousewareEntity) -> Unit
+): ItemViewDelegate<HousewareEntity, HousewareItemViewBinder.ViewHolder>{
 
     inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer{
         fun bind(entity: HousewareEntity) {
@@ -202,6 +209,7 @@ class HousewareItemViewBinder: ItemViewDelegate<HousewareEntity, HousewareItemVi
                 .littleCircleWaitAnimation(containerView.context)
                 .into(houseware_image)
             houseware_name.text = entity.variant
+            containerView.setOnClickListener { listener(entity) }
         }
     }
 

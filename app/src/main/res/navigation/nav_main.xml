@@ -126,7 +126,12 @@
     <fragment
         android:id="@+id/housewaresFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.houseware.HousewaresFragment"
-        android:label="HousewaresFragment" />
+        android:label="HousewaresFragment" >
+        <action
+            android:id="@+id/action_housewaresFragment_to_housewareDetailFragment"
+            app:destination="@id/housewareDetailFragment"
+            app:launchSingleTop="true" />
+    </fragment>
 
     <fragment android:id="@+id/flutterFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.flutter.ACNHFlutterFragment"
@@ -155,7 +160,15 @@
         app:launchSingleTop="true" >
 
     </action>
-<!--    app:enterAnim="@anim/slide_in_right"-->
+    <fragment
+        android:id="@+id/housewareDetailFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.houseware.detail.HousewareDetailFragment"
+        android:label="HousewareDetailFragment" >
+        <argument
+            android:name="housewareId"
+            app:argType="long" />
+    </fragment>
+    <!--    app:enterAnim="@anim/slide_in_right"-->
 <!--    app:exitAnim="@anim/slide_out_left"-->
 <!--    app:popEnterAnim="@anim/slide_in_left"-->
 <!--    app:popExitAnim="@anim/slide_out_right"-->
