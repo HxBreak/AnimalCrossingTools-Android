@@ -5,11 +5,9 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.lang.ref.WeakReference
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.experimental.ExperimentalTypeInference
 
 //Copy from LiveData Ktx
 internal const val DEFAULT_TIMEOUT = 5000L
@@ -22,7 +20,6 @@ typealias CombinedRunCheck = (Boolean, Boolean) -> Boolean
 
 internal val DEFAULT_RUN_CHECK: CombinedRunCheck = { x, y -> x && y }
 
-@UseExperimental(ExperimentalTypeInference::class)
 fun <R, X, Y> combinedLiveData(
     context: CoroutineContext = EmptyCoroutineContext,
     timeoutInMs: Long = DEFAULT_TIMEOUT,
