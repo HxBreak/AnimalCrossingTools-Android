@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">AnimalCrossingTools</string>
 
-    <string name="title_activity_main">MainScreen</string>
+    <string name="title_activity_main">AnimalCrossingTools</string>
 
     <string name="settings_theme_title" translation_description="Choose the app theme">Choose theme</string>
     <string name="settings_theme_system" translation_description="Theme option to use the system default">System default</string>
@@ -15,4 +15,7 @@
 
     <string name="root" translatable="false">/</string>
     <string name="retry">Retry</string>
+    <string name="source">Source: %s</string>
+    <string name="source_detail">Source Detail: %s</string>
+    <string name="houseware_size">Size: %s</string>
 </resources>

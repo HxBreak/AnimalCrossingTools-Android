@@ -29,12 +29,12 @@ import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import com.hxbreak.animalcrossingtools.ui.BackAbleAppbarFragment
-import com.hxbreak.animalcrossingtools.ui.houseware.detail.HousewareDetailFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_houseware.*
 import kotlinx.android.synthetic.main.item_houseware_item.*
 import kotlinx.android.synthetic.main.item_housewares_variants.*
+import timber.log.Timber
 import java.util.*
 
 @AndroidEntryPoint
@@ -46,7 +46,7 @@ class HousewaresFragment : BackAbleAppbarFragment(){
 
     private var adapter: LightAdapter? = null
     private fun requireAdapter() = adapter ?: throw Exception()
-    var suggestionsAdapter : SuggestionsAdapter? = null
+    private var suggestionsAdapter : SuggestionsAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,14 +58,14 @@ class HousewaresFragment : BackAbleAppbarFragment(){
         adapter = LightAdapter()
         recycler_view.layoutManager = LinearLayoutManager(requireContext())
         recycler_view.adapter = adapter
-        val typer = Typer()
-        typer.register(HousewareItemViewBinder(){
+        val typed = Typer()
+        typed.register(HousewareItemViewBinder{
             nav.navigate(
                 HousewaresFragmentDirections.actionHousewaresFragmentToHousewareDetailFragment(it.fileName, it.internalId.toLong())
             )
         })
         val recycledViewPool = RecyclerView.RecycledViewPool()
-        requireAdapter().register(HousewaresViewBinder(typer, recycledViewPool, viewModel))
+        requireAdapter().register(HousewaresViewBinder(typed, recycledViewPool, viewModel))
         viewModel.screenData.observe(viewLifecycleOwner){
             requireAdapter().submitList(it)
         }
@@ -74,12 +74,12 @@ class HousewaresFragment : BackAbleAppbarFragment(){
         }
         refresh_layout.setOnRefreshListener { viewModel.refresh.value = true }
         requireToolbarTitle().setText("Housewares")
-        viewModel.error.observe(viewLifecycleOwner){
+        viewModel.error.observe(viewLifecycleOwner, EventObserver{
             Snackbar.make(requireView(), "Error $it", Snackbar.LENGTH_LONG)
-                .setAction(requireContext().resources.getText(R.string.retry)){
+                .setAction(res.getText(R.string.retry)){
                     viewModel.refresh.value = true
                 }.show()
-        }
+        })
         viewModel.database.observe(viewLifecycleOwner, EventObserver {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
         })
@@ -156,10 +156,6 @@ class HousewaresFragment : BackAbleAppbarFragment(){
                 }
             })
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
     }
 }
 

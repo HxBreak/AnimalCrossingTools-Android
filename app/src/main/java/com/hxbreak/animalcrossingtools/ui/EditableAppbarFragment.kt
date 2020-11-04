@@ -129,6 +129,8 @@ open class AppbarFragment : Fragment(){
     var toolbarTitle: AnimatedTextView? = null
 
     val nav by lazy { findNavController() }
+    protected val res by lazy { requireContext().resources }
+
 
     fun requireAppbar() = appbar ?: throw NullPointerException()
 

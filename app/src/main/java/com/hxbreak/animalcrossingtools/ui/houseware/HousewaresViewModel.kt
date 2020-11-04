@@ -14,6 +14,7 @@ import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
 import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.i18n.toDatabaseNameColumn
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.reflect.InvocationHandler
@@ -29,14 +30,14 @@ class HousewaresViewModel @ViewModelInject constructor(
     val locale = preferenceStorage.selectedLocale
     val loading = MutableLiveData(false)
     val refresh = MutableLiveData(false)
-    val error = MutableLiveData<Throwable>()
+    val error = MutableLiveData<Event<Throwable>>()
     val database = MutableLiveData<Event<String>>()
     val filter = MutableLiveData<String?>()
 
     val housewares = refresh.switchMap {
         loading.value = true
         liveData (viewModelScope.coroutineContext + Dispatchers.IO){
-            viewModelScope.launch (viewModelScope.coroutineContext + Dispatchers.IO){
+            val queryJob = viewModelScope.launch (viewModelScope.coroutineContext + Dispatchers.IO){
                 val cache = repository.local().housewaresDao().all().groupBy {
                     it.seriesId
                 }.map { HousewareVariants(it.value) }
@@ -49,9 +50,10 @@ class HousewaresViewModel @ViewModelInject constructor(
                     database.postValue(Event("Database updated"))
                 }
                 is Result.Error -> {
-                    error.postValue(result.exception)
+                    error.postValue(Event(result.exception))
                 }
             }
+            queryJob.join()
             loading.postValue(false)
         }
     }

@@ -9,5 +9,8 @@
     <string name="settings_theme_battery">基于省电策略</string>
     <string name="settings_theme_system">系统默认</string>
     <string name="settings_theme_title">选择主题</string>
-    <string name="title_activity_main">主页</string>
+    <string name="title_activity_main">动物之森 新地平线 工具</string>
+    <string name="source">来源: %s</string>
+    <string name="source_detail">来源详情: %s</string>
+    <string name="houseware_size">大小: %s</string>
 </resources>
