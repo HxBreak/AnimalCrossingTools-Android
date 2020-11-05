@@ -3,6 +3,7 @@ package com.hxbreak.animalcrossingtools.ui.houseware.detail
 import androidx.lifecycle.*
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
+import com.hxbreak.animalcrossingtools.fragment.Event
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +25,10 @@ class HousewareDetailViewModel @AssistedInject constructor(
 
     val items = liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
         emit(dao.allInternalId(housewareId.toString()))
+    }
+
+    val current = items.map {
+        Event(it.indexOfFirst { it.fileName == filename })
     }
 
     @AssistedInject.Factory

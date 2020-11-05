@@ -41,6 +41,7 @@ class MusicPlayFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        postponeEnterTransition()
         return inflater.inflate(R.layout.fragment_music_play, container, false)
     }
 
@@ -92,7 +93,6 @@ class MusicPlayFragment : Fragment() {
         transitionSet.duration = 300
         transitionSet.addTransition(transform)
         sharedElementEnterTransition = transitionSet
-//        postponeEnterTransition()
     }
 
     override fun onDestroy() {

@@ -134,18 +134,7 @@ class SongFragment : EditBackAbleAppbarFragment() {
 //                        it.second.title to it.first.titleTransitionName(),
                     )
                     val action = SongFragmentDirections.actionSongFragmentToMusicPlayFragment(it.first)
-                    object : FragmentFactory(){
-                        override fun instantiate(
-                            classLoader: ClassLoader,
-                            className: String
-                        ): Fragment {
-                            return super.instantiate(classLoader, className)
-                        }
-                    }.useOnce(parentFragmentManager){
-                        findNavController().navigate(
-                            action.actionId, action.arguments, null, extras
-                        )
-                    }
+                    nav.navigate(action, extras)
                 }
             }
         })

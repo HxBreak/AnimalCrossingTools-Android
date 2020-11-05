@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.RunnerType
@@ -120,6 +121,10 @@ class SettingsFragment : Fragment() {
                 }
             }
         }
+        Snackbar.make(requireView(),
+            resources.getIdentifier("internal_version", "string", requireContext().packageName),
+            Snackbar.LENGTH_SHORT
+        ).show()
         /**
          * observe two #LiveData stream
          */

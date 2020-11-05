@@ -1,14 +1,24 @@
 package com.hxbreak.animalcrossingtools.ui.houseware.detail
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
+import androidx.core.app.SharedElementCallback
+import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
+import androidx.core.view.get
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.ChangeBounds
+import androidx.transition.ChangeTransform
+import androidx.transition.TransitionSet
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.chip.Chip
+import com.google.android.material.transition.MaterialArcMotion
+import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
@@ -17,12 +27,14 @@ import com.hxbreak.animalcrossingtools.adapter.ItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
 import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
 import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
+import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import com.hxbreak.animalcrossingtools.ui.BackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_houseware_detail.*
 import kotlinx.android.synthetic.main.page_simple_info_houseware.*
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -53,6 +65,25 @@ class HousewareDetailFragment : BackAbleAppbarFragment(){
         viewpager.adapter = viewPagerAdapter
         chip_group.layoutManager = FlexboxLayoutManager(requireContext(), FlexDirection.ROW, FlexWrap.WRAP)
         chip_group.adapter = chipAdapter
+        viewModel.current.observe(viewLifecycleOwner, EventObserver {
+            viewpager.setCurrentItem(it, false)
+            viewpager.doOnPreDraw { view ->
+                (viewpager[0] as RecyclerView).layoutManager?.findViewByPosition(it)?.let {
+                    ViewCompat.setTransitionName(it, "${args.filename}-container")
+                }
+//                val viewHolder = chipAdapter?.onCreateViewHolder(viewpager, chipAdapter?.getItemViewType(it) ?: 0)
+//                setEnterSharedElementCallback(object : SharedElementCallback(){
+//                    override fun onMapSharedElements(
+//                        names: MutableList<String>?,
+//                        sharedElements: MutableMap<String, View>?
+//                    ) {
+//                        sharedElements?.clear()
+//                        sharedElements?.put(names!![0], requireView())
+//                    }
+//                })
+                startPostponedEnterTransition()
+            }
+        })
         viewModel.items.observe(viewLifecycleOwner){ entities ->
             entities.firstOrNull()?.let {
                 viewPagerAdapter?.submitList(entities)
@@ -87,11 +118,22 @@ class HousewareDetailFragment : BackAbleAppbarFragment(){
             nav.navigateUp()
         }
     }
+    val transitionSet = TransitionSet()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val transform = MaterialContainerTransform()
+        transform.addTarget(R.id.coordinator)
+        transform.scrimColor = Color.RED
+        transform.setPathMotion(MaterialArcMotion())
+        transitionSet.duration = 300
+        transitionSet.addTransition(transform)
+        transitionSet.addTransition(ChangeTransform())
+        transitionSet.addTransition(ChangeBounds())
+        sharedElementEnterTransition = transitionSet
 //        val forward = MaterialSharedAxis(MaterialSharedAxis.X, true)
-//        enterTransition = forward
+//        enterTransition = transitionSet
 //        val backward = MaterialSharedAxis(MaterialSharedAxis.X, false)
 //        returnTransition = backward
     }
@@ -108,6 +150,7 @@ class HousewareDetailFragment : BackAbleAppbarFragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        postponeEnterTransition()
         return inflater.inflate(R.layout.fragment_houseware_detail, container, false)
     }
 }
