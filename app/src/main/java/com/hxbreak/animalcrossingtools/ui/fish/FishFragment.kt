@@ -194,8 +194,5 @@ class FishFragment : EditBackAbleAppbarFragment() {
         }
     }
 
-
-    override fun configSupportActionBar() = true
-
     override fun animateIconList() = listOf(donate, found)
 }

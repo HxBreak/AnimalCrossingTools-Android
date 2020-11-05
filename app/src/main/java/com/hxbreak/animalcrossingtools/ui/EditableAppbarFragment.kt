@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
 import com.hxbreak.animalcrossingtools.R
@@ -138,21 +140,14 @@ open class AppbarFragment : Fragment(){
 
     fun requireToolbarTitle() = toolbarTitle ?: throw NullPointerException()
 
-    open fun configSupportActionBar() = false
-
-    private var supportActionBarSet = false
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         appbar = view.findViewById(R.id.appbar)
         toolbar = view.findViewById(R.id.toolbar)
         toolbarTitle = view.findViewById(R.id.title)
-        if (configSupportActionBar()){
-            (requireActivity() as? AppCompatActivity)?.let {
-                it.setSupportActionBar(requireToolbar())
-                it.supportActionBar?.title = ""
-                supportActionBarSet = true
-            }
+        (requireActivity() as? AppCompatActivity)?.let {
+            it.setSupportActionBar(requireToolbar())
+            it.supportActionBar?.title = ""
         }
         requireToolbar().title = ""
     }
@@ -162,10 +157,6 @@ open class AppbarFragment : Fragment(){
         appbar = null
         toolbar = null
         toolbarTitle = null
-        if (supportActionBarSet){
-            (requireActivity() as AppCompatActivity).setSupportActionBar(null)
-            supportActionBarSet = false
-        }
     }
 
     protected fun canNavigateUp() : Boolean{

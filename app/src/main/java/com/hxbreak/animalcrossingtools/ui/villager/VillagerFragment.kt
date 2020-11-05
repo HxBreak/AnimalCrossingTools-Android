@@ -77,6 +77,4 @@ class VillagerFragment : BackAbleAppbarFragment(){
         recycler_view.addItemDecoration(CommonItemDecoration(requireContext()))
     }
 
-    override fun configSupportActionBar() = true
-
 }

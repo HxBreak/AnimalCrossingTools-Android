@@ -28,8 +28,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HousewareDetailFragment : BackAbleAppbarFragment(){
 
-    override fun configSupportActionBar() = true
-
     private var adapter: LightAdapter? = null
     private var viewPagerAdapter: LightAdapter? = null
     private fun requireAdapter() = adapter ?: error("adapter == null")

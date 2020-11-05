@@ -42,8 +42,6 @@ class HousewaresFragment : BackAbleAppbarFragment(){
 
     private val viewModel by viewModels<HousewaresViewModel>()
 
-    override fun configSupportActionBar() = true
-
     private var adapter: LightAdapter? = null
     private fun requireAdapter() = adapter ?: throw Exception()
     private var suggestionsAdapter : SuggestionsAdapter? = null

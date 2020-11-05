@@ -95,7 +95,5 @@ class FossilFragment : EditBackAbleAppbarFragment(){
         adapter = null
     }
 
-    override fun configSupportActionBar() = true
-
     override fun animateIconList() = listOf(donate, found)
 }

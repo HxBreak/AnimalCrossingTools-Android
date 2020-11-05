@@ -66,8 +66,6 @@ class SongFragment : EditBackAbleAppbarFragment() {
         adapter = null
     }
 
-    override fun configSupportActionBar() = true
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()

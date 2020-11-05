@@ -26,8 +26,6 @@ class ArtFragment : EditBackAbleAppbarFragment(){
 
     override val uiSelectModeMutableLiveData by lazy { viewModel.editMode }
 
-    override fun configSupportActionBar() = true
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val forward = MaterialSharedAxis(MaterialSharedAxis.X, true)
