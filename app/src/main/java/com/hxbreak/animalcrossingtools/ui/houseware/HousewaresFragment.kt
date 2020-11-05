@@ -54,7 +54,6 @@ class HousewaresFragment : BackAbleAppbarFragment(), SearchView.OnSuggestionList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition()
         suggestionsAdapter = SuggestionsAdapter(
             requireContext(),
             R.layout.abc_search_dropdown_item_icons_2line,

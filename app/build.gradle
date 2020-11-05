@@ -48,7 +48,7 @@ android {
 //                abiFilters 'arm64-v8a', 'armeabi-v7a'
 //            }
 //        }
-        ndk{
+        ndk {
             abiFilters 'armeabi-v7a'
         }
 
@@ -114,15 +114,24 @@ android {
         disable "EnsureInitializerMetadata"
     }
 
-    packagingOptions{
+    packagingOptions {
         exclude "META-INF/*"
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include "x86", "x86_64", "armeabi-v7a", "arm64-v8a"
+            universalApk true
+        }
     }
 
 }
 
 dependencies {
 
-    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar']).matching{}
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar']).matching {}
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -188,7 +197,8 @@ dependencies {
 
     implementation group: 'com.belerweb', name: 'pinyin4j', version: '2.5.0'
     implementation 'com.github.promeg:tinypinyin:2.0.3' // TinyPinyin核心包，约80KB
-    implementation 'com.github.promeg:tinypinyin-lexicons-android-cncity:2.0.3' // 可选，适用于Android的中国地区词典
+    implementation 'com.github.promeg:tinypinyin-lexicons-android-cncity:2.0.3'
+    // 可选，适用于Android的中国地区词典
 
 //    // Java language implementation
 //    implementation "androidx.preference:preference:$preference_version"
