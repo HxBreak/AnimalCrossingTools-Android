@@ -121,10 +121,12 @@ class SettingsFragment : Fragment() {
                 }
             }
         }
-        Snackbar.make(requireView(),
-            resources.getIdentifier("internal_version", "string", requireContext().packageName),
-            Snackbar.LENGTH_SHORT
-        ).show()
+        val datetime = getString(resources.getIdentifier("build_date", "string", requireContext().packageName)).toLong()
+        val instant = Instant.ofEpochMilli(datetime)
+
+
+        settings_build_version.text = "Build Version: ${getString(resources.getIdentifier("internal_version", "string", requireContext().packageName))}"
+        settings_build_date.text = "Build Date: ${DateTimeFormatter.ISO_LOCAL_DATE.format(instant.atOffset(ZoneOffset.UTC))}"
         /**
          * observe two #LiveData stream
          */

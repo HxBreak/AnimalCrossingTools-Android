@@ -126,7 +126,6 @@
                     />
             </LinearLayout>
 
-
             <TextView
                 style="@style/AppTheme.Widget.Settings.Button"
                 android:id="@+id/settings_about_software"
@@ -134,6 +133,27 @@
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:text="About" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:dividerHorizontal" />
+
+            <TextView
+                style="@style/AppTheme.Widget.Settings.Button.Small"
+                android:id="@+id/settings_build_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                tools:text="Build Date: " />
+
+            <TextView
+                style="@style/AppTheme.Widget.Settings.Button.Small"
+                android:id="@+id/settings_build_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                tools:text="Build Version: " />
             <!-- AppCompat/MaterialComponents layout inflators don't automatically handle
                  Switch widgets. See https://material.io/develop/android/components/switch/ -->
             <com.google.android.material.switchmaterial.SwitchMaterial
