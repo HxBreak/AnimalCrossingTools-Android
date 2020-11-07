@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,6 +23,7 @@ import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.extensions.previousValue
+import com.hxbreak.animalcrossingtools.utils.ViewUtils
 import com.hxbreak.animalcrossingtools.view.AnimatedTextView
 import com.hxbreak.animalcrossingtools.view.drawable.AnimatedColorDrawable
 import timber.log.Timber

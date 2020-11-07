@@ -22,6 +22,10 @@ class UnitTest {
         println(CharUtil.toCategory("1"))
         println(CharUtil.toCategory("asd12"))
     }
+    @Test
+    fun timeTest(){
+        println(DateTimeFormatter.ISO_LOCAL_DATE.format(Instant.now().atOffset(ZoneOffset.UTC)))
+    }
 
     @Test
     fun testClock(){
