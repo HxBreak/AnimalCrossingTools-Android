@@ -37,7 +37,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 2
-        versionName "1.0"
+        versionName "0.1alpha"
 
         testInstrumentationRunner "com.hxbreak.animalcrossingtools.CustomTestRunner"
 
@@ -62,7 +62,6 @@ android {
     androidExtensions {
         experimental = true
     }
-
 
     buildTypes {
         release {

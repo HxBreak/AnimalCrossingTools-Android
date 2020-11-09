@@ -82,6 +82,11 @@ open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
 open class BackAbleAppbarFragment : EditBackAbleAppbarFragment(){
     override val uiSelectModeMutableLiveData: MutableLiveData<Boolean>
         get() = MutableLiveData(false)
+
+    override fun onBackPressed(){
+        handleBackPressed.isEnabled = false
+        backPressedDispatcher.onBackPressed()
+    }
 }
 
 open class EditableAppbarFragment : AppbarFragment() {
@@ -109,8 +114,6 @@ open class EditableAppbarFragment : AppbarFragment() {
         }
     }
 
-    private var isFirstAnimateToolbar: Boolean = true
-
     open fun animateIconList(): List<View> = emptyList() //dummy function
 
     private fun animateToolbarIcons(visible: Boolean) {
@@ -134,7 +137,6 @@ open class AppbarFragment : Fragment(){
 
     val nav by lazy { findNavController() }
     protected val res by lazy { requireContext().resources }
-
 
     fun requireAppbar() = appbar ?: throw NullPointerException()
 

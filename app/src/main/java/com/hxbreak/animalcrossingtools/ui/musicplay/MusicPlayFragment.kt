@@ -41,7 +41,6 @@ class MusicPlayFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        postponeEnterTransition()
         return inflater.inflate(R.layout.fragment_music_play, container, false)
     }
 

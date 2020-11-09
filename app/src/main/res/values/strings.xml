@@ -18,4 +18,9 @@
     <string name="source">Source: %s</string>
     <string name="source_detail">Source Detail: %s</string>
     <string name="houseware_size">Size: %s</string>
+    <string name="data_download_policy">Data Download Policy</string>
+    <string name="data_usage">Data Usage</string>
+    <string name="download_when_empty">Download Data When Cache Is Empty</string>
+    <string name="download_always">Always Download Data</string>
+    <string name="download_in_time">After Time %1$s</string>
 </resources>

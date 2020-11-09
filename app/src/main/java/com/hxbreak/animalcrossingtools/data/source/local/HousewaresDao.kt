@@ -11,6 +11,9 @@ interface HousewaresDao {
     @Query("select * from housewares")
     suspend fun all(): List<HousewareEntity>
 
+    @Query("select count(*) from housewares")
+    suspend fun count(): Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: List<HousewareEntity>)
 

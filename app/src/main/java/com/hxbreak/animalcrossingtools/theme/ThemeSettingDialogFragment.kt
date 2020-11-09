@@ -31,6 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ThemeSettingDialogFragment : AppCompatDialogFragment() {
 
+    private val viewModel by viewModels<SettingsViewModel>()
     private lateinit var listAdapter: ArrayAdapter<ThemeHolder>
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -49,8 +50,6 @@ class ThemeSettingDialogFragment : AppCompatDialogFragment() {
             }
             .create()
     }
-
-    private val viewModel by viewModels<SettingsViewModel>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

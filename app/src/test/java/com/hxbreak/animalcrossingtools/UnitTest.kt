@@ -21,6 +21,7 @@ class UnitTest {
         println(CharUtil.toCategory(CharUtil.headPinyin("恩")))
         println(CharUtil.toCategory("1"))
         println(CharUtil.toCategory("asd12"))
+        println(Duration.ofHours(12).seconds % (3600 * 24) / 3600)
     }
     @Test
     fun timeTest(){

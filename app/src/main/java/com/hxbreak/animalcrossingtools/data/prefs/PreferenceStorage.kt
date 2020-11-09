@@ -2,24 +2,19 @@ package com.hxbreak.animalcrossingtools.data.prefs
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.annotation.WorkerThread
-import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import com.hxbreak.animalcrossingtools.theme.Theme
 import timber.log.Timber
-import java.time.Clock
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
-interface PreferenceStorage {
+interface ApplicationPreference
+
+interface PreferenceStorage : ApplicationPreference {
 
     var selectedTheme: String?
 
@@ -42,10 +37,63 @@ interface PreferenceStorage {
     val timeInNow: LocalDateTime
 }
 
+interface DataUsageStorage : ApplicationPreference {
+
+    var selectStorableDataRefreshDuration: StorableDuration
+
+    var lastFurnitureRefreshDateTime: Instant
+}
+
+sealed class StorableDuration {
+    object DOWNLOAD_ALWAYS : StorableDuration()
+    object DOWNLOAD_WHEN_EMPTY : StorableDuration()
+
+    data class InTime(val duration: Duration) : StorableDuration()
+
+    override fun toString(): String {
+        return when(this) {
+            is DOWNLOAD_ALWAYS -> { "always" }
+            is DOWNLOAD_WHEN_EMPTY -> { "whenEmpty" }
+            is InTime -> {
+                "InTime $duration"
+            }
+        }
+    }
+}
+
 enum class Hemisphere{
     Northern,
     Southern
 }
+
+class SharedDataUsageStorage constructor(context: Context) : DataUsageStorage {
+
+    /**
+     * changeListener should init before prefs
+     */
+    private val prefs: Lazy<SharedPreferences> = lazy { // Lazy to prevent IO access to main thread.
+        context.applicationContext.getSharedPreferences(
+            PREFS_NAME, Context.MODE_PRIVATE
+        )
+    }
+
+    override var selectStorableDataRefreshDuration: StorableDuration by StorableDurationPreference(
+        prefs, STORABLE_REFRESH_TYPE, STORABLE_REFRESH_TIME, StorableDuration.DOWNLOAD_WHEN_EMPTY
+    )
+
+    override var lastFurnitureRefreshDateTime: Instant by InstantPreference(
+        prefs, LAST_FURNITURES_REFRESH_DATETIME, Instant.MIN
+    )
+
+
+    companion object {
+        const val LAST_FURNITURES_REFRESH_DATETIME = "LAST_FURNITURES_REFRESH_DATETIME"
+        const val PREFS_NAME = "setting_datausage"
+        const val STORABLE_REFRESH_TYPE = "STORABLE_REFRESH_TYPE"
+        const val STORABLE_REFRESH_TIME = "STORABLE_REFRESH_TIME"
+    }
+}
+
 
 class SharedPreferenceStorage constructor(context: Context) : PreferenceStorage {
 
@@ -136,87 +184,3 @@ class SharedPreferenceStorage constructor(context: Context) : PreferenceStorage 
     }
 }
 
-class TimeZonePreference(
-    private val preferences: Lazy<SharedPreferences>,
-    private val name: String,
-    private val defaultTimeZone: TimeZone
-) : ReadWriteProperty<Any, TimeZone>{
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: TimeZone) {
-        preferences.value.edit {
-            putString(name, value.id)
-        }
-    }
-
-    override fun getValue(thisRef: Any, property: KProperty<*>): TimeZone {
-        val strValue = preferences.value.getString(name, null) ?: return defaultTimeZone
-        return try {
-            TimeZone.getTimeZone(strValue)
-        }catch (e: Exception){
-            defaultTimeZone
-        }
-    }
-}
-
-class HemispherePreference(
-    private val preferences: Lazy<SharedPreferences>,
-    private val name: String,
-    private val defaultHemisphere: Hemisphere
-) : ReadWriteProperty<Any, Hemisphere>{
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: Hemisphere) {
-        preferences.value.edit {
-            putString(name, value.name)
-        }
-    }
-
-    override fun getValue(thisRef: Any, property: KProperty<*>): Hemisphere {
-        val strValue = preferences.value.getString(name, null) ?: return defaultHemisphere
-        return try {
-            Hemisphere.valueOf(strValue)
-        }catch (e: Exception){
-            defaultHemisphere
-        }
-    }
-}
-
-class StringPreference(
-    private val preferences: Lazy<SharedPreferences>,
-    private val name: String,
-    private val defaultValue: String?
-) : ReadWriteProperty<Any, String?> {
-
-    @WorkerThread
-    override fun getValue(thisRef: Any, property: KProperty<*>): String? {
-        return preferences.value.getString(name, defaultValue)
-    }
-
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: String?) {
-        preferences.value.edit { putString(name, value) }
-    }
-}
-
-class LocalePreference(
-    private val preferences: Lazy<SharedPreferences>,
-    private val language: String,
-    private val region: String,
-    private val defaultValue: Locale,
-    private val liveData: MutableLiveData<Locale>? = null
-) : ReadWriteProperty<Any, Locale> {
-
-    @WorkerThread
-    override fun getValue(thisRef: Any, property: KProperty<*>): Locale {
-        val lang = preferences.value.getString(language, null)
-        val reg = preferences.value.getString(region, null)
-        if (lang == null || reg == null) {
-            return defaultValue
-        }
-        return Locale(lang, reg)
-    }
-
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: Locale) {
-        preferences.value.edit {
-            putString(language, value.language)
-            putString(region, value.country)
-        }
-        liveData?.postValue(value)
-    }
-}

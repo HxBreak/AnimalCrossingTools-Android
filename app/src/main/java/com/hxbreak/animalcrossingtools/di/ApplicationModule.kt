@@ -9,7 +9,9 @@ import com.google.gson.GsonBuilder
 import com.hxbreak.animalcrossingtools.GlideProgressCollector
 import com.hxbreak.animalcrossingtools.data.CoroutinesCallAdapterFactory
 import com.hxbreak.animalcrossingtools.data.LiveDataCallAdapterFactory
+import com.hxbreak.animalcrossingtools.data.prefs.DataUsageStorage
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
+import com.hxbreak.animalcrossingtools.data.prefs.SharedDataUsageStorage
 import com.hxbreak.animalcrossingtools.data.prefs.SharedPreferenceStorage
 import com.hxbreak.animalcrossingtools.data.services.AnimalCrossingServiceV2
 import com.hxbreak.animalcrossingtools.data.services.AnimalCrossingServices
@@ -231,6 +233,12 @@ object ApplicationModule {
     fun datetimeFormatter(preferenceStorage: PreferenceStorage) : DateTimeFormatter {
         return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", preferenceStorage.selectedLocale)
     }
+
+    @Singleton
+    @Provides
+    fun provideDataUsagePreferenceStorage(@ApplicationContext context: Context): DataUsageStorage
+            = SharedDataUsageStorage(context)
+
 }
 
 @Module

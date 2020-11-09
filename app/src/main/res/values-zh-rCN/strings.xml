@@ -13,4 +13,9 @@
     <string name="source">来源: %s</string>
     <string name="source_detail">来源详情: %s</string>
     <string name="houseware_size">大小: %s</string>
+    <string name="data_download_policy">数据下载策略</string>
+    <string name="data_usage">数据用量</string>
+    <string name="download_when_empty">仅当无缓存时下载</string>
+    <string name="download_always">总是下载最新数据</string>
+    <string name="download_in_time">%1$s之后</string>
 </resources>

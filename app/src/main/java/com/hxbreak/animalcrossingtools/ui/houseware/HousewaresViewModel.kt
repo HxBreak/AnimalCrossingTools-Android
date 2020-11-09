@@ -8,23 +8,28 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.combinedLiveData
 import com.hxbreak.animalcrossingtools.data.Result
+import com.hxbreak.animalcrossingtools.data.prefs.DataUsageStorage
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
+import com.hxbreak.animalcrossingtools.data.prefs.StorableDuration
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
 import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.i18n.toDatabaseNameColumn
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
+import java.time.Duration
+import java.time.Instant
 
 class HousewaresViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
     private val preferenceStorage: PreferenceStorage,
+    private val dataUsageStorage: DataUsageStorage,
 ): ViewModel(){
 
     val locale = preferenceStorage.selectedLocale
@@ -34,23 +39,47 @@ class HousewaresViewModel @ViewModelInject constructor(
     val database = MutableLiveData<Event<String>>()
     val filter = MutableLiveData<String?>()
 
+    private val usagePolicy by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        dataUsageStorage.selectStorableDataRefreshDuration
+    }
+
     val housewares = refresh.switchMap {
         loading.value = true
         liveData (viewModelScope.coroutineContext + Dispatchers.IO){
+            val cachedCount = repository.local().housewaresDao().count()
             val queryJob = viewModelScope.launch (viewModelScope.coroutineContext + Dispatchers.IO){
                 val cache = repository.local().housewaresDao().all().groupBy {
                     it.seriesId
                 }.map { HousewareVariants(it.value) }
                 emit(cache)
             }
-            when (val result = repository.repoSource().allHousewares()){
-                is Result.Success -> {
-                    emit(result.data.second.map { HousewareVariants(it) })
-                    result.data.first.join()
-                    database.postValue(Event("Database updated"))
+            val block = suspend {
+                when (val result = repository.repoSource().allHousewares()){
+                    is Result.Success -> {
+                        emit(result.data.second.map { HousewareVariants(it) })
+                        result.data.first.join()
+                        dataUsageStorage.lastFurnitureRefreshDateTime = Instant.now()
+                        database.postValue(Event("Database updated"))
+                    }
+                    is Result.Error -> {
+                        error.postValue(Event(result.exception))
+                    }
                 }
-                is Result.Error -> {
-                    error.postValue(Event(result.exception))
+            }
+            when(val policy = usagePolicy){
+                is StorableDuration.DOWNLOAD_ALWAYS -> {
+                    block()
+                }
+                is StorableDuration.DOWNLOAD_WHEN_EMPTY -> {
+                    if (cachedCount < 100){
+                        block()
+                    }
+                }
+                is StorableDuration.InTime -> {
+                    val refreshTime = dataUsageStorage.lastFurnitureRefreshDateTime.epochSecond + policy.duration.seconds
+                    if (Instant.now().epochSecond > refreshTime){
+                        block()
+                    }
                 }
             }
             queryJob.join()

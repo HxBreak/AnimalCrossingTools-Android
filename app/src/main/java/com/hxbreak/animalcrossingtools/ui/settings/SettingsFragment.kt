@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
@@ -124,9 +126,16 @@ class SettingsFragment : Fragment() {
         val datetime = getString(resources.getIdentifier("build_date", "string", requireContext().packageName)).toLong()
         val instant = Instant.ofEpochMilli(datetime)
 
-
         settings_build_version.text = "Build Version: ${getString(resources.getIdentifier("internal_version", "string", requireContext().packageName))}"
         settings_build_date.text = "Build Date: ${DateTimeFormatter.ISO_LOCAL_DATE.format(instant.atOffset(ZoneOffset.UTC))}"
+        ViewCompat.setTransitionName(settings_data_usage, "settings_data_usage_transition")
+        settings_data_usage.setOnClickListener {
+            navigator.navigate(SettingsFragmentDirections.actionSettingsFragmentToDataUsageFragment(),
+                FragmentNavigatorExtras(
+                    settings_data_usage to "root"
+                )
+            )
+        }
         /**
          * observe two #LiveData stream
          */

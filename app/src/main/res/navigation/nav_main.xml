@@ -84,6 +84,9 @@
         android:id="@+id/settingsFragment"
         android:name="com.hxbreak.animalcrossingtools.ui.settings.SettingsFragment"
         android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_dataUsageFragment"
+            app:destination="@id/dataUsageFragment" />
     </fragment>
 
     <fragment
@@ -171,6 +174,10 @@
             android:name="housewareId"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/dataUsageFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.settings.datausage.DataUsageFragment"
+        android:label="DataUsageFragment" />
     <!--    app:enterAnim="@anim/slide_in_right"-->
 <!--    app:exitAnim="@anim/slide_out_left"-->
 <!--    app:popEnterAnim="@anim/slide_in_left"-->
