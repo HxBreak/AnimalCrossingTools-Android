@@ -81,7 +81,7 @@ class HousewareDetailFragment : BackAbleAppbarFragment(){
                     ViewCompat.setTransitionName(it.findViewById(R.id.image), "${args.filename}-container")
                 }
 
-                setFragmentResult("onSelectFilenameVariant",
+                setFragmentResult(HousewaresFragment.KEY_DETAIL_SELECT,
                     bundleOf(
                         HousewaresFragment.ARGUMENT_FILENAME to args.filename,
                     )
@@ -98,7 +98,7 @@ class HousewareDetailFragment : BackAbleAppbarFragment(){
                     (viewpager[0] as RecyclerView).layoutManager?.findViewByPosition(it)?.let {
                         ViewCompat.setTransitionName(it.findViewById(R.id.image), "${item?.fileName}-container")
                     }
-                    setFragmentResult("onSelectFilenameVariant",
+                    setFragmentResult(HousewaresFragment.KEY_DETAIL_SELECT,
                         bundleOf(
                             HousewaresFragment.ARGUMENT_FILENAME to item?.fileName,
                         )

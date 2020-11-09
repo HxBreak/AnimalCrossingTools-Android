@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
 import 'platform/platform.dart';
 
+import 'screens/screens.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final theme = await NativePlatform().currentTheme();
