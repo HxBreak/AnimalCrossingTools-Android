@@ -15,9 +15,17 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 
 fun Duration.toReadableString(): String {
-    return "%2d${ChronoUnit.DAYS.name} %2d${ChronoUnit.HOURS.name}".format(
-        seconds / 3600 / 24, (seconds % (3600 * 24)) / 3600
-    )
+    val days = seconds / 3600 / 24
+    val hours = (seconds % (3600 * 24)) / 3600
+    val dayStr = if (days > 0) ("$days Day" + if (days > 1) "s" else "") else null
+    val hourStr = if (hours > 0) ("$hours Hour" + if (hours > 1) "s" else "") else null
+    val str = mutableListOf<String>()
+    dayStr?.let { str.add(it) }
+    hourStr?.let { str.add(it) }
+    return str.joinToString(separator = ", ")
+//    return "%2d${ChronoUnit.DAYS.name} %2d${ChronoUnit.HOURS.name}".format(
+//        seconds / 3600 / 24, (seconds % (3600 * 24)) / 3600
+//    )
 }
 
 class DurationSelectDialogFragment : AppCompatDialogFragment(){

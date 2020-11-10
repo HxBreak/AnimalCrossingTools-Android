@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
+import com.hxbreak.animalcrossingtools.data.prefs.DataUsageStorage
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.ui.AppbarFragment
 import com.hxbreak.animalcrossingtools.ui.BackAbleAppbarFragment
@@ -26,7 +27,7 @@ class DataUsageFragment : BackAbleAppbarFragment() {
     }
 
     @Inject
-    lateinit var preference: PreferenceStorage
+    lateinit var preference: DataUsageStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +47,12 @@ class DataUsageFragment : BackAbleAppbarFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewCompat.setTransitionName(settings_layout, "root")
-        settings_choose_resource_language.setOnClickListener {
+        ViewCompat.setTransitionName(requireView(), "root")
+        settings_choose_data_download_policy.setOnClickListener {
             FurnitureDataRefreshPolicyFragment.newInstance().show(childFragmentManager, null)
+        }
+        preference.selectStorableDataRefreshDurationLiveData.observe(viewLifecycleOwner){
+            data_download_policy_value.text = it.toLocalilzationString(resources)
         }
     }
 

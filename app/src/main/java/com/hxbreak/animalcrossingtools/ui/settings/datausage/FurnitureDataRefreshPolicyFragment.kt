@@ -1,6 +1,7 @@
 package com.hxbreak.animalcrossingtools.ui.settings.datausage
 
 import android.app.Dialog
+import android.content.res.Resources
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
@@ -16,16 +17,20 @@ import timber.log.Timber
 import java.time.Duration
 import javax.inject.Inject
 
+internal fun StorableDuration.toLocalilzationString(res: Resources): String {
+    return when(this){
+        is StorableDuration.DOWNLOAD_WHEN_EMPTY -> res.getString(R.string.download_when_empty)
+        is StorableDuration.DOWNLOAD_ALWAYS -> res.getString(R.string.download_always)
+        is StorableDuration.InTime -> res.getString(R.string.download_in_time, duration.toReadableString())
+    }
+}
+
 @AndroidEntryPoint
 class FurnitureDataRefreshPolicyFragment : AppCompatDialogFragment(){
 
     inner class StorableDurationWithDescription(val duration: StorableDuration){
         override fun toString(): String {
-            return when(duration){
-                is StorableDuration.DOWNLOAD_WHEN_EMPTY -> getString(R.string.download_when_empty)
-                is StorableDuration.DOWNLOAD_ALWAYS -> getString(R.string.download_always)
-                is StorableDuration.InTime -> getString(R.string.download_in_time, duration.duration.toReadableString())
-            }
+            return duration.toLocalilzationString(resources)
         }
     }
 

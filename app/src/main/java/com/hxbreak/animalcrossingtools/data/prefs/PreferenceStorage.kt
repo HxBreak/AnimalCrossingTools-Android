@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import com.hxbreak.animalcrossingtools.theme.Theme
+import com.hxbreak.animalcrossingtools.ui.settings.datausage.toReadableString
 import timber.log.Timber
 import java.time.*
 import java.time.format.DateTimeFormatter
@@ -37,12 +38,6 @@ interface PreferenceStorage : ApplicationPreference {
     val timeInNow: LocalDateTime
 }
 
-interface DataUsageStorage : ApplicationPreference {
-
-    var selectStorableDataRefreshDuration: StorableDuration
-
-    var lastFurnitureRefreshDateTime: Instant
-}
 
 sealed class StorableDuration {
     object DOWNLOAD_ALWAYS : StorableDuration()
@@ -55,43 +50,16 @@ sealed class StorableDuration {
             is DOWNLOAD_ALWAYS -> { "always" }
             is DOWNLOAD_WHEN_EMPTY -> { "whenEmpty" }
             is InTime -> {
-                "InTime $duration"
+                "InTime ${duration.toReadableString()}"
             }
         }
     }
 }
 
+
 enum class Hemisphere{
     Northern,
     Southern
-}
-
-class SharedDataUsageStorage constructor(context: Context) : DataUsageStorage {
-
-    /**
-     * changeListener should init before prefs
-     */
-    private val prefs: Lazy<SharedPreferences> = lazy { // Lazy to prevent IO access to main thread.
-        context.applicationContext.getSharedPreferences(
-            PREFS_NAME, Context.MODE_PRIVATE
-        )
-    }
-
-    override var selectStorableDataRefreshDuration: StorableDuration by StorableDurationPreference(
-        prefs, STORABLE_REFRESH_TYPE, STORABLE_REFRESH_TIME, StorableDuration.DOWNLOAD_WHEN_EMPTY
-    )
-
-    override var lastFurnitureRefreshDateTime: Instant by InstantPreference(
-        prefs, LAST_FURNITURES_REFRESH_DATETIME, Instant.MIN
-    )
-
-
-    companion object {
-        const val LAST_FURNITURES_REFRESH_DATETIME = "LAST_FURNITURES_REFRESH_DATETIME"
-        const val PREFS_NAME = "setting_datausage"
-        const val STORABLE_REFRESH_TYPE = "STORABLE_REFRESH_TYPE"
-        const val STORABLE_REFRESH_TIME = "STORABLE_REFRESH_TIME"
-    }
 }
 
 
@@ -102,9 +70,6 @@ class SharedPreferenceStorage constructor(context: Context) : PreferenceStorage 
             PREF_DARK_MODE_ENABLED -> observableSelectedThemeResult.value = selectedTheme
             PREF_TIMEZONE -> observableSelectedTimeZoneId.value = ZoneId.of(selectedTimeZone.id)
             PREF_ISLAND_HEMISPHERE -> observableSelectedHemisphere.value = selectedHemisphere
-            else -> {
-                Timber.e("Not Handle For $key")
-            }
         }
     }
 
