@@ -45,7 +45,7 @@ class ArtFragment : EditBackAbleAppbarFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireToolbar().title = ""
-        requireToolbarTitle().setText("Art")
+        requireToolbarTitle().setText(res.getString(R.string.art_catalog))
         adapter = SelectionAdapter()
         requireAdapter().register(ArtViewBinder(viewModel))
         recycler_view.adapter = adapter
@@ -68,9 +68,9 @@ class ArtFragment : EditBackAbleAppbarFragment(){
             val title = requireToolbarTitle()
             if (it.collection.isNullOrEmpty()){
                 title.clearLastSelected()
-                title.setText("Arts", it.inc)
+                title.setText(res.getString(R.string.arts_catalog), it.inc)
             }else{
-                title.setText("${it.collection.size} Piece${if (it.collection.size > 1) "s" else ""} Of Art Selected", it.inc)
+                title.setText(getString(R.string.numbers_of_art_select, it.collection.size), it.inc)
             }
         }
         viewModel.ownAction.observe(viewLifecycleOwner){

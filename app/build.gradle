@@ -55,8 +55,8 @@ android {
         multiDexEnabled = true
         signingConfig signingConfigs.release
 
-        resValue("string", "build_date", "${currentTime()}")
-        resValue("string", "internal_version", "${fetchGitShortHash()}")
+        resValue("string", "_build_date", "${currentTime()}")
+        resValue("string", "_internal_version", "${fetchGitShortHash()}")
     }
 
     androidExtensions {

@@ -110,7 +110,7 @@ class HousewaresFragment : BackAbleAppbarFragment(), SearchView.OnSuggestionList
             refresh_layout.isRefreshing = it == true
         }
         refresh_layout.setOnRefreshListener { viewModel.refresh.value = true }
-        requireToolbarTitle().setText("Housewares")
+        requireToolbarTitle().setText(getString(R.string.furniture_catalog))
         viewModel.error.observe(viewLifecycleOwner, EventObserver {
             Snackbar.make(requireView(), "Error $it", Snackbar.LENGTH_LONG)
                 .setAction(res.getText(R.string.retry)) {
@@ -201,7 +201,7 @@ class HousewaresFragment : BackAbleAppbarFragment(), SearchView.OnSuggestionList
         inflater.inflate(R.menu.search_menu, menu)
         val searchMenu = menu.findItem(R.id.search)
         (searchMenu.actionView as? SearchView)?.let { searchView ->
-            searchView.queryHint = "Search You Want"
+            searchView.queryHint = getString(R.string.common_search_hint)
             searchView.suggestionsAdapter = suggestionsAdapter
             val completeTextView =
                 searchView.findViewById<AppCompatAutoCompleteTextView>(R.id.search_src_text)

@@ -58,7 +58,7 @@ class FishFragment : EditBackAbleAppbarFragment() {
         arrayOf(donate, found).forEach { it.alpha = 0f }
         val enableIndicator = viewModel.locale.language == "zh"
         requireToolbar().title = null
-        requireToolbarTitle().setText("Fish")
+        requireToolbarTitle().setText(res.getString(R.string.fish_catalog))
         viewModel.data.observe(viewLifecycleOwner){
             requireAdapter().submitList(it)
             recycler_view.doOnPreDraw { _ ->
@@ -90,7 +90,7 @@ class FishFragment : EditBackAbleAppbarFragment() {
         }
         viewModel.error.observe(viewLifecycleOwner, Observer {
             val bar = Snackbar.make(coordinator, it.first.toString(), Snackbar.LENGTH_LONG)
-            bar.setAction("RETRY") { v ->
+            bar.setAction(getString(R.string.retry)) { v ->
                 it.second()
             }
             bar.show()
@@ -104,9 +104,9 @@ class FishFragment : EditBackAbleAppbarFragment() {
         viewModel.selected.testChanged().observe(viewLifecycleOwner){
             if (it.collection.isNullOrEmpty()){
                 requireToolbarTitle().clearLastSelected()
-                requireToolbarTitle().setText("Fish", it.inc)
+                requireToolbarTitle().setText(getString(R.string.fish_catalog), it.inc)
             } else {
-                requireToolbarTitle().setText("${it.collection.size} Selected", it.inc)
+                requireToolbarTitle().setText(getString(R.string.numbers_of_fish_select, it.collection.size), it.inc)
             }
         }
 

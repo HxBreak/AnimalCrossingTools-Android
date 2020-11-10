@@ -72,10 +72,10 @@ class BugsFragment : EditBackAbleAppbarFragment(){
         viewModel.selected.testChanged().observe(viewLifecycleOwner){
             val title = requireToolbarTitle()
             if (it.collection.isNullOrEmpty()){
-                title.setText("Bugs", it.inc)
+                title.setText(res.getString(R.string.bug_catalog), it.inc)
                 title.clearLastSelected()
             }else{
-                title.setText("${it.collection.size} Selected", it.inc)
+                title.setText(getString(R.string.numbers_of_bug_select, it.collection.size), it.inc)
             }
         }
         viewModel.selected.observe(viewLifecycleOwner){ selected ->

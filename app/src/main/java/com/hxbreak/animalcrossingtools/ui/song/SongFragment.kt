@@ -110,9 +110,9 @@ class SongFragment : EditBackAbleAppbarFragment() {
         viewModel.selected.testChanged().observe(viewLifecycleOwner){
             if (it.collection.isNullOrEmpty()){
                 requireToolbarTitle().clearLastSelected()
-                requireToolbarTitle().setText("CD", it.inc)
+                requireToolbarTitle().setText(getString(R.string.song_catalog), it.inc)
             }else{
-                requireToolbarTitle().setText("${it.collection.size} 张被选中", it.inc)
+                requireToolbarTitle().setText(getString(R.string.numbers_of_song_select, it.collection.size), it.inc)
             }
         }
 
@@ -120,7 +120,7 @@ class SongFragment : EditBackAbleAppbarFragment() {
             it.visibility = View.INVISIBLE
         }
 
-        textView.text = "已收集/全部"
+        textView.text = getString(R.string.collected_slash_all)
         viewModel.collectedText.observe(viewLifecycleOwner) {
             donated_summary.text = it
         }

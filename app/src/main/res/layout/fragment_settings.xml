@@ -24,7 +24,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:textColor="?attr/titleTextColor"
                 android:gravity="start|center_vertical"
-                android:text="Settings"
+                android:text="@string/settings"
                 android:textAppearance="?attr/titleTextAppearance" />
         </androidx.appcompat.widget.Toolbar>
 
@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"
-                android:text="Choose Theme" />
+                android:text="@string/choose_theme" />
             <LinearLayout
                 style="@style/AppTheme.Widget.Settings.Button"
                 android:id="@+id/settings_choose_resource_language"
@@ -63,7 +63,7 @@
                     android:textAppearance="?textAppearanceBody2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Choose Resource Language" />
+                    android:text="@string/choose_resource_language" />
 
                 <TextView
                     android:id="@+id/locale_value"
@@ -87,7 +87,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="true"
-                    android:text="Choose Where You Live" />
+                    android:text="@string/choose_where_you_live" />
                 <TextView
                     android:id="@+id/hemisphere"
                     android:paddingTop="@dimen/spacing_small"
@@ -115,7 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="true"
-                    android:text="Choose Timezone" />
+                    android:text="@string/choose_timezone" />
                 <TextView
                     android:id="@+id/clock"
                     android:paddingTop="@dimen/spacing_small"
@@ -132,7 +132,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"
-                android:text="Data Usage" />
+                android:text="@string/data_usage" />
 
             <TextView
                 style="@style/AppTheme.Widget.Settings.Button"
@@ -140,7 +140,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"
-                android:text="About" />
+                android:text="@string/about" />
 
             <View
                 android:layout_width="match_parent"

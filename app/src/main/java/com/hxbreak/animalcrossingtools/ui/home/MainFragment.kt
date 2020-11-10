@@ -60,7 +60,7 @@ class MainFragment : AppbarFragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
-    private val onNavigateToLobbyList = View.OnClickListener{
+    private val onNavigateToLobbyList = View.OnClickListener {
         Toast.makeText(requireContext(), "Navigate To Lobby", Toast.LENGTH_SHORT).show()
     }
 
@@ -98,17 +98,17 @@ class MainFragment : AppbarFragment() {
             }
         })
         requireAdapter().submitList(listOf(
-            NavigationMenu("Fish", R.id.action_mainFragment_to_fishFragment),
-            NavigationMenu("Bug", R.id.action_mainFragment_to_bugsFragment),
-            NavigationMenu("SeaCreature", R.id.action_mainFragment_to_seaCreatureFragment),
-            NavigationMenu("Fossil", R.id.action_mainFragment_to_fossilFragment),
-            NavigationMenu("Song", R.id.action_mainFragment_to_songFragment),
-            NavigationMenu("Villager", R.id.action_mainFragment_to_villagerFragment),
-            NavigationMenu("Art", R.id.action_mainFragment_to_artFragment),
-            NavigationMenu("Housewares", R.id.action_mainFragment_to_housewaresFragment),
-            NavigationMenu("Flutter",
-                direction = MainNavDirections.actionGlobalFlutterFragment("/hello", cachedEngineId = "only")
-            ),
+            NavigationMenu(getString(R.string.fish_catalog), R.id.action_mainFragment_to_fishFragment),
+            NavigationMenu(getString(R.string.bug_catalog), R.id.action_mainFragment_to_bugsFragment),
+            NavigationMenu(getString(R.string.sea_creature_catalog), R.id.action_mainFragment_to_seaCreatureFragment),
+            NavigationMenu(getString(R.string.fossil_catalog), R.id.action_mainFragment_to_fossilFragment),
+            NavigationMenu(getString(R.string.song_catalog), R.id.action_mainFragment_to_songFragment),
+            NavigationMenu(getString(R.string.villager_catalog), R.id.action_mainFragment_to_villagerFragment),
+            NavigationMenu(getString(R.string.art_catalog), R.id.action_mainFragment_to_artFragment),
+            NavigationMenu(getString(R.string.furniture_catalog), R.id.action_mainFragment_to_housewaresFragment),
+//            NavigationMenu("Flutter",
+//                direction = MainNavDirections.actionGlobalFlutterFragment("/hello", cachedEngineId = "only")
+//            ),
         ))
         recycler_view.doOnPreDraw {
             startPostponedEnterTransition()
@@ -117,7 +117,6 @@ class MainFragment : AppbarFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        (requireActivity() as AppCompatActivity).setSupportActionBar(null)
         adapter = null
         messageAdapter = null
     }

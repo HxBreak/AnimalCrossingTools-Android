@@ -57,7 +57,7 @@ class VillagerFragment : BackAbleAppbarFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireToolbar().title = ""
-        requireToolbarTitle().setText("Villager")
+        requireToolbarTitle().setText(getString(R.string.villager_catalog))
         adapter = SelectionAdapter()
         viewModel.loading.observe(viewLifecycleOwner){
             refresh_layout.isRefreshing = it == true

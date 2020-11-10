@@ -4,20 +4,16 @@ import android.app.Dialog
 import android.content.res.Resources
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.setFragmentResultListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.data.prefs.DataUsageStorage
 import com.hxbreak.animalcrossingtools.data.prefs.StorableDuration
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.time.Duration
 import javax.inject.Inject
 
-internal fun StorableDuration.toLocalilzationString(res: Resources): String {
+internal fun StorableDuration.toLocalizationString(res: Resources): String {
     return when(this){
         is StorableDuration.DOWNLOAD_WHEN_EMPTY -> res.getString(R.string.download_when_empty)
         is StorableDuration.DOWNLOAD_ALWAYS -> res.getString(R.string.download_always)
@@ -30,7 +26,7 @@ class FurnitureDataRefreshPolicyFragment : AppCompatDialogFragment(){
 
     inner class StorableDurationWithDescription(val duration: StorableDuration){
         override fun toString(): String {
-            return duration.toLocalilzationString(resources)
+            return duration.toLocalizationString(resources)
         }
     }
 

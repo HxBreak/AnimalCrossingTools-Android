@@ -7,37 +7,28 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.RunnerType
 import com.hxbreak.animalcrossingtools.combinedLiveData
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
-import com.hxbreak.animalcrossingtools.extensions.ControlledRunner
 import com.hxbreak.animalcrossingtools.i18n.ResourceLanguageSettingDialogFragment
 import com.hxbreak.animalcrossingtools.theme.ThemeSettingDialogFragment
 import com.hxbreak.animalcrossingtools.ui.settings.prefs.ui.HemisphereChooseDialogFragment
 import com.hxbreak.animalcrossingtools.ui.settings.prefs.ui.TimeZeroChooseDialogFragment
+import com.hxbreak.animalcrossingtools.ui.settings.prefs.ui.toLocalizationString
 import dagger.hilt.android.AndroidEntryPoint
 
 import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.text.DateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.time.temporal.TemporalField
-import java.time.temporal.TemporalUnit
 import javax.inject.Inject
-import kotlin.concurrent.timerTask
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -104,7 +95,7 @@ class SettingsFragment : Fragment() {
             locale_value.text = it.getDisplayName(it)
         }
         preference.observableHemisphere.observe(viewLifecycleOwner){
-            hemisphere.text = it.toString()
+            hemisphere.text = it.toLocalizationString(resources)
         }
         val stream : LiveData<Unit> = combinedLiveData(viewLifecycleOwner.lifecycleScope.coroutineContext,
             x = preference.dateTimeFormatter,
@@ -123,11 +114,11 @@ class SettingsFragment : Fragment() {
                 }
             }
         }
-        val datetime = getString(resources.getIdentifier("build_date", "string", requireContext().packageName)).toLong()
+        val datetime = getString(resources.getIdentifier("_build_date", "string", requireContext().packageName)).toLong()
         val instant = Instant.ofEpochMilli(datetime)
 
-        settings_build_version.text = "Build Version: ${getString(resources.getIdentifier("internal_version", "string", requireContext().packageName))}"
-        settings_build_date.text = "Build Date: ${DateTimeFormatter.ISO_LOCAL_DATE.format(instant.atOffset(ZoneOffset.UTC))}"
+        settings_build_version.text = getString(R.string.build_version_hash, getString(resources.getIdentifier("_internal_version", "string", requireContext().packageName)))
+        settings_build_date.text = getString(R.string.build_date, DateTimeFormatter.ISO_LOCAL_DATE.format(instant.atOffset(ZoneOffset.UTC)))
         ViewCompat.setTransitionName(settings_data_usage, "settings_data_usage_transition")
         settings_data_usage.setOnClickListener {
             navigator.navigate(SettingsFragmentDirections.actionSettingsFragmentToDataUsageFragment(),

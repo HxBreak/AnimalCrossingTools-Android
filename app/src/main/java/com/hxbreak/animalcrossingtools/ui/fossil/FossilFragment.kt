@@ -64,10 +64,10 @@ class FossilFragment : EditBackAbleAppbarFragment(){
         viewModel.selected.testChanged().observe(viewLifecycleOwner){
             val title = requireToolbarTitle()
             if (it.collection.isNullOrEmpty()){
-                title.setText("Fossil", it.inc)
+                title.setText(getString(R.string.fossil_catalog), it.inc)
                 title.clearLastSelected()
             }else{
-                title.setText("${it.collection.size} Selected", it.inc)
+                title.setText(getString(R.string.numbers_of_fossil_select, it.collection.size), it.inc)
             }
         }
         viewModel.selected.observe(viewLifecycleOwner){ selected ->
