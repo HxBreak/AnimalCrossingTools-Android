@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">动物之森 新地平线 工具</string>
+    <string name="app_name">动森 工具</string>
     <string name="retry">重试</string>
     <string name="notification_channel_description">展示当前播放的音乐</string>
     <string name="notification_channel">当前播放</string>
@@ -9,7 +9,7 @@
     <string name="settings_theme_battery">基于省电策略</string>
     <string name="settings_theme_system">系统默认</string>
     <string name="settings_theme_title">选择主题</string>
-    <string name="title_activity_main">动物之森 新地平线 工具</string>
+    <string name="title_activity_main">动森 工具</string>
     <string name="source">来源: %s</string>
     <string name="source_detail">来源详情: %s</string>
     <string name="houseware_size">大小: %s</string>
