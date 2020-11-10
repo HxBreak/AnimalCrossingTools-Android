@@ -90,9 +90,12 @@ class _AboutScreenState extends State<AboutScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 8),
               ),
-              Text(
-                "This is a app to help player view collect mark things of animal crossing.",
-                style: Theme.of(context).textTheme.caption,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "This is a app to help player view collect mark things of animal crossing.",
+                  style: Theme.of(context).textTheme.caption,
+                ),
               ),
             ]),
           ),
