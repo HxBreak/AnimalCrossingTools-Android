@@ -41,6 +41,7 @@ class VillagerViewBinder(val viewModel: VillagerViewModel, val viewLifecycleOwne
                 strokeWidth = 5f
                 centerRadius = 50f
                 progressRotation = 0.75f
+                setColorSchemeColors(containerView.context.resources.getColor(R.color.circularProgressColor1))
             }
             GlideApp.with(villager_avatar)
                 .load(villager.image_uri)

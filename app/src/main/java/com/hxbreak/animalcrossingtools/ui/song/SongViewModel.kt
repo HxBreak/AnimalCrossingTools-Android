@@ -90,7 +90,7 @@ class SongViewModel @ViewModelInject constructor(
                 if (sort) {
                     postValue(ret?.sortedBy { it.songSaved?.owned ?: false })
                 } else {
-                    postValue(ret)
+                    postValue(ret.orEmpty())
                 }
             }
         }

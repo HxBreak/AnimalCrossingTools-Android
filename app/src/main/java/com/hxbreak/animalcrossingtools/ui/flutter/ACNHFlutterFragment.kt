@@ -49,6 +49,8 @@ class ACNHFlutterFragment : FlutterFragment(){
                 }
             }
         }
+
+//        UrlLauncherPlugin.registerWith()
     }
 
     override fun onDestroyView() {

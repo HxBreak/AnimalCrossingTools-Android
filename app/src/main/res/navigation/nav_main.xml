@@ -153,7 +153,7 @@
             android:name="should_attach_engine_to_activity"
             app:argType="boolean"
             app:nullable="false"
-            android:defaultValue="false"
+            android:defaultValue="true"
             />
     </fragment>
 

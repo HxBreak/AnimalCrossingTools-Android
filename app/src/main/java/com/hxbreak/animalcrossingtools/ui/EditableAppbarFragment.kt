@@ -102,7 +102,7 @@ open class EditableAppbarFragment : AppbarFragment() {
         super.onViewCreated(view, savedInstanceState)
         val resources = requireContext().resources
         val drawable = AnimatedColorDrawable(
-            resources.getColor(R.color.colorPrimary),
+            resources.getColor(R.color.primaryColor),
             resources.getColor(R.color.colorAccent), 200)
         requireToolbar().background = drawable
 

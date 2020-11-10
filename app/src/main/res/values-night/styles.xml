@@ -2,8 +2,8 @@
 <resources xmlns:ns2="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/primaryDarkColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorOnPrimary">#FFFFFF</item>
         <item name="toolbarStyle">@style/AppTheme.Widget.Toolbar</item>

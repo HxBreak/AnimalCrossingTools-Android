@@ -11,14 +11,14 @@ class InstantMessageController {
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
 
-    private val _lastException = MutableLiveData<Throwable>()
+    private val _lastException = MutableLiveData<Throwable?>()
     private val _authorized = MutableLiveData(false)
     private val _lobbyList = MutableLiveData<List<BackendPacket.NetUserEntity>>()
 
     val authorized: LiveData<Boolean>
         get() = _authorized
 
-    val lastException: LiveData<Throwable>
+    val lastException: LiveData<Throwable?>
         get() = _lastException
 
     val lobbyList: LiveData<List<BackendPacket.NetUserEntity>>
@@ -34,7 +34,7 @@ class InstantMessageController {
             serviceScope.launch {
                 if (_authorized.value != false){
                     //clear up
-                    _lobbyList.value = null
+                    _lobbyList.value = emptyList()
                     _authorized.value = false
                 }
             }

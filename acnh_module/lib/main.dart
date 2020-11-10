@@ -14,23 +14,6 @@ void main() async {
   ));
 }
 
-class CustomTicker extends Ticker {
-  CustomTicker(onTick) : super(onTick);
-  @override
-  void absorbTicker(Ticker originalTicker) {
-    // super.absorbTicker(originalTicker);
-  }
-}
-
-class CustomTickerProvider extends TickerProvider {
-  @override
-  Ticker createTicker(TickerCallback onTick) {
-    final ticker = Ticker(onTick);
-    onTick(Duration(seconds: 1));
-    return ticker;
-  }
-}
-
 class CustomMaterialPageRoute<T> extends PageRoute<T>
     with MaterialRouteTransitionMixin<T> {
   CustomMaterialPageRoute({
@@ -75,7 +58,7 @@ class CustomMaterialPageRoute<T> extends PageRoute<T>
       controller.reverseDuration = Duration.zero;
       if (controller.isAnimating) {
         controller.stop();
-        controller.forward();
+        controller.forward(from: 1);
       }
     }
     print([settings, 'didChangePrevious', previousRoute?.settings]);
@@ -84,7 +67,9 @@ class CustomMaterialPageRoute<T> extends PageRoute<T>
   @override
   void didPopNext(Route<dynamic> nextRoute) {
     super.didPopNext(nextRoute);
-    if (settings.name == '/') controller.duration = Duration.zero;
+    if (settings.name == '/') {
+      controller.duration = Duration.zero;
+    }
     print([settings, 'didPopNext']);
   }
 
@@ -133,37 +118,7 @@ class SimpleRouteDelegate extends RouterDelegate<RouteInformation>
       key: _navigatorKey,
       onGenerateInitialRoutes: Navigator.defaultGenerateInitialRoutes,
       onUnknownRoute: (settings) => CustomMaterialPageRoute(
-          builder: (context) => Scaffold(
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Builder(
-                        builder: (context) => Text.rich(TextSpan(
-                            text: "Unknown Route Path ",
-                            style: Theme.of(context).textTheme.headline5,
-                            children: [
-                              TextSpan(
-                                text: settings.name,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    .copyWith(
-                                      color: Colors.red,
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                              )
-                            ])),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      BackButton(),
-                    ],
-                  ),
-                ),
-              )),
+          builder: (context) => UnknownScreen(settings)),
       onPopPage: (Route<dynamic> route, result) {
         final _result = route.didPop(result);
         if (_result) {
@@ -276,71 +231,47 @@ class _MyThemedAppState extends State<MyThemedApp> {
       routeInformationParser: SimpleRouteInfoParser(),
       routerDelegate: SimpleRouteDelegate({
         "/": (c) => SizedBox(),
-        "/about": (c) => MyHomePage(title: "about"),
+        "/about": (c) => AboutScreen(),
       }, _navigatorKey),
       title: "Flutter Demo",
       theme: ThemeData(
-        platform: TargetPlatform.iOS,
-        primarySwatch: Colors.purple,
+        platform: TargetPlatform.android,
+        primarySwatch: MaterialColor(
+          0xFF1565c0,
+          <int, Color>{
+            50: Color(0xFFE3F2FD),
+            100: Color(0xFFBBDEFB),
+            200: Color(0xFF90CAF9),
+            300: Color(0xFF64B5F6),
+            400: Color(0xFF42A5F5),
+            500: Color(0xFF1565c0),
+            600: Color(0xFF1E88E5),
+            700: Color(0xFF1976D2),
+            800: Color(0xFF1565C0),
+            900: Color(0xFF0D47A1),
+          },
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       darkTheme: ThemeData.dark().copyWith(
-        primaryColorDark: Colors.red,
-      ),
-      backButtonDispatcher: CustomRootBackButtonDispatcher(_navigatorKey),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title, this.skip = false}) : super(key: key);
-
-  final bool skip;
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times: ${Navigator.of(context).canPop()}',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        primaryColor: Color(0xFF003c8f),
+        primaryColorDark: MaterialColor(
+          0xFF003c8f,
+          <int, Color>{
+            50: Color(0xFFE3F2FD),
+            100: Color(0xFFBBDEFB),
+            200: Color(0xFF90CAF9),
+            300: Color(0xFF64B5F6),
+            400: Color(0xFF42A5F5),
+            500: Color(0xFF003c8f),
+            600: Color(0xFF1E88E5),
+            700: Color(0xFF1976D2),
+            800: Color(0xFF1565C0),
+            900: Color(0xFF0D47A1),
+          },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+      backButtonDispatcher: CustomRootBackButtonDispatcher(_navigatorKey),
     );
   }
 }
