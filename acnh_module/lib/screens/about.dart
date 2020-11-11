@@ -120,6 +120,16 @@ class _AboutScreenState extends State<AboutScreen> {
           SliverList(
             delegate: SliverChildListDelegate.fixed([
               Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  "THIS IS NOT AN OFFICIAL APPLICATION.",
+                  style: Theme.of(context)
+                      .textTheme
+                      .overline
+                      .copyWith(color: Colors.red),
+                ),
+              ),
+              Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Wrap(
                   children: [

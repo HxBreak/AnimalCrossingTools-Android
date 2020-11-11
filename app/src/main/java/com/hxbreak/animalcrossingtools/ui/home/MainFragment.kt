@@ -74,7 +74,7 @@ class MainFragment : AppbarFragment() {
             }
             putExtras(bundle)
         }
-        requireContext().startService(intent)
+//        requireContext().startService(intent)
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         postponeEnterTransition()

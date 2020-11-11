@@ -31,6 +31,6 @@ open class App : Application() {
             }
             putExtras(bundle)
         }
-        startService(intent)
+//        startService(intent)
     }
 }
