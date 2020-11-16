@@ -103,6 +103,7 @@
             <com.hxbreak.animalcrossingtools.view.CommonStatusGroup
                 app:errorLayout="@layout/layout_error"
                 app:emptyLayout="@layout/layout_empty"
+                android:tag="scroll"
                 android:id="@+id/common_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">

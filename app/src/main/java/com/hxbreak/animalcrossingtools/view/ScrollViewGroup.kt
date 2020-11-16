@@ -71,7 +71,7 @@ class ScrollViewGroup @JvmOverloads constructor(
             val view = get(i)
             if (view.tag is String && "pin" == view.tag) {
                 mPinnedView = view
-            } else if (view is ScrollingView) {
+            } else if (view is ScrollingView || view.tag == "scroll") {
                 mScrollView = view;
             }
         }
@@ -117,11 +117,16 @@ class ScrollViewGroup @JvmOverloads constructor(
             if (child == mPinnedView) {
                 mPinnedView.layout(0, -scroll, child.measuredWidth, child.measuredHeight - scroll)
             } else {
+                val top = mPinnedView.measuredHeight - scroll
+                child.measure(
+                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST),
+                    MeasureSpec.makeMeasureSpec(measuredHeight - top, MeasureSpec.AT_MOST)
+                )
                 child.layout(
                     0,
-                    mPinnedView.measuredHeight - scroll,
+                    top,
                     child.measuredWidth,
-                    measuredHeight
+                    top + child.measuredHeight
                 )
             }
         }
