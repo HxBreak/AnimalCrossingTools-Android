@@ -88,13 +88,13 @@ class FishFragment : EditBackAbleAppbarFragment() {
         refresh_layout.setOnRefreshListener {
             viewModel.refresh.value = true
         }
-        viewModel.error.observe(viewLifecycleOwner, Observer {
-            val bar = Snackbar.make(coordinator, it.first.toString(), Snackbar.LENGTH_LONG)
-            bar.setAction(getString(R.string.retry)) { v ->
-                it.second()
+        viewModel.error.observe(viewLifecycleOwner){
+            if (it == null){
+                common_layout.clearState()
+            }else{
+                common_layout.setException(it.first, it.second)
             }
-            bar.show()
-        })
+        }
         viewModel.selected.observe(viewLifecycleOwner) {
             val enable = !it.isNullOrEmpty()
             arrayOf(donate, found).forEach {

@@ -58,6 +58,7 @@ class CommonStatusGroup @JvmOverloads constructor(
         /**
          * BindErrorInfo To UI
          */
+
         setState(STATE_SHOW_ERROR)
     }
     private var fromState: Int = 0

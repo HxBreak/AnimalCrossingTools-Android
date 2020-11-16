@@ -36,7 +36,7 @@ class FishViewModel @ViewModelInject constructor(
 
     val refresh = MutableLiveData(false)
     val loading = MutableLiveData(false)
-    val error = MutableLiveData<Pair<Exception, () -> Unit>>()
+    val error = MutableLiveData<Pair<Exception, () -> Unit>?>()
 
 
     private val items = refresh.switchMap { forceUpdate ->
@@ -47,6 +47,9 @@ class FishViewModel @ViewModelInject constructor(
 
             when (result) {
                 is Result.Success -> {
+                    withContext(Dispatchers.Main){
+                        error.value = null
+                    }
                     result.data.forEach {
                         it.fish.localeName = it.fish.name.toLocaleName(locale)
                     }
@@ -55,7 +58,6 @@ class FishViewModel @ViewModelInject constructor(
                 is Result.Error -> handleError(result.exception) {
                     refresh.postValue(forceUpdate)
                 }
-                else -> throw IllegalStateException("Unsupported State $result")
             }
         }
     }
