@@ -17,4 +17,9 @@
         <attr name="alphabetTextSize" format="reference|dimension" />
         <attr name="alphabetTextColor" format="reference|color" />
     </declare-styleable>
+
+    <declare-styleable name="CommonStatusGroup">
+        <attr name="emptyLayout" format="reference"/>
+        <attr name="errorLayout" format="reference"/>
+    </declare-styleable>
 </resources>

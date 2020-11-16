@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Scroller
 import androidx.core.view.*
-import timber.log.Timber
 
 
 class ScrollViewGroup @JvmOverloads constructor(
@@ -73,27 +72,26 @@ class ScrollViewGroup @JvmOverloads constructor(
             if (view.tag is String && "pin" == view.tag) {
                 mPinnedView = view
             } else if (view is ScrollingView) {
-                mScrollView = view
+                mScrollView = view;
             }
         }
     }
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
         val oldScroll: Int
-        val unConsumedY = dy - consumed[1]
-        val left = if (unConsumedY > 0) {
+        val left = if (dy > 0) {
             dispatchNestedPreScroll(dx, dy, consumed, null, type)
             oldScroll = mScroller.finalY
-            unConsumedY - consumed[1]
+            dy - consumed[1]
         } else {
             oldScroll = mScroller.finalY
-            unConsumedY
+            dy
         }
         effectScroll(left)
         val scrolled = mScroller.finalY - oldScroll
         consumed[1] += scrolled
-        if (unConsumedY < 0) {
-            dispatchNestedPreScroll(dx, unConsumedY - consumed[1], consumed, null, type)
+        if (dy < 0) {
+            dispatchNestedPreScroll(dx, dy - consumed[1], consumed, null, type)
         }
         mScroller.forceFinished(true)
         updateLayout()

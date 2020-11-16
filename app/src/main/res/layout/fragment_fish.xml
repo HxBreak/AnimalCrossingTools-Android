@@ -100,14 +100,21 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-            <com.hxbreak.animalcrossingtools.view.IndexedRecyclerView
-                android:id="@+id/recycler_view"
-                app:alphabetTextColor="?android:attr/textColorPrimary"
-                app:alphabetTextSize="14sp"
-                app:indicatorTextColor="@android:color/white"
-                app:indicatorBgColor="?attr/colorAccent"
+            <com.hxbreak.animalcrossingtools.view.CommonStatusGroup
+                app:errorLayout="@layout/layout_error"
+                app:emptyLayout="@layout/layout_empty"
+                android:id="@+id/common_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+                <com.hxbreak.animalcrossingtools.view.IndexedRecyclerView
+                    android:id="@+id/recycler_view"
+                    app:alphabetTextColor="?android:attr/textColorPrimary"
+                    app:alphabetTextSize="14sp"
+                    app:indicatorTextColor="@android:color/white"
+                    app:indicatorBgColor="?attr/colorAccent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.hxbreak.animalcrossingtools.view.CommonStatusGroup>
         </com.hxbreak.animalcrossingtools.view.ScrollViewGroup>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
