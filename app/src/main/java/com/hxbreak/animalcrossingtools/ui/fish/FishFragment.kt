@@ -51,10 +51,7 @@ class FishFragment : EditBackAbleAppbarFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireToolbar().setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         arrayOf(donate, found).forEach { it.alpha = 0f }
         val enableIndicator = viewModel.locale.language == "zh"
         requireToolbar().title = null

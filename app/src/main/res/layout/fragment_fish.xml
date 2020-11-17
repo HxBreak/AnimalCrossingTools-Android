@@ -13,110 +13,109 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.hxbreak.animalcrossingtools.view.ScrollViewGroup
+        <com.hxbreak.animalcrossingtools.view.CommonStatusGroup
+            app:errorLayout="@layout/layout_error"
+            app:emptyLayout="@layout/layout_empty"
+            android:id="@+id/common_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <androidx.cardview.widget.CardView
-                android:tag="pin"
+            <com.hxbreak.animalcrossingtools.view.ScrollViewGroup
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <androidx.cardview.widget.CardView
+                    android:tag="pin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/donated_slash_all"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView2"
-                        app:layout_constraintEnd_toStartOf="@+id/textView3"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/textView2"
-                        app:layout_constraintTop_toTopOf="@+id/textView2" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="@string/found_slash_all"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        app:layout_constraintBottom_toTopOf="@+id/founded_summary"
-                        app:layout_constraintEnd_toStartOf="@+id/textView"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/donated_slash_all"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                            app:layout_constraintEnd_toStartOf="@+id/textView3"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/textView2"
+                            app:layout_constraintTop_toTopOf="@+id/textView2" />
 
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/actived_slash_all"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/textView"
-                        app:layout_constraintTop_toTopOf="@+id/textView" />
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/found_slash_all"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            app:layout_constraintBottom_toTopOf="@+id/founded_summary"
+                            app:layout_constraintEnd_toStartOf="@+id/textView"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/founded_summary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="@string/waiting"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/textView2"
-                        app:layout_constraintStart_toStartOf="@+id/textView2"
-                        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/actived_slash_all"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            app:layout_constraintBottom_toBottomOf="@+id/textView"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/textView"
+                            app:layout_constraintTop_toTopOf="@+id/textView" />
 
-                    <TextView
-                        android:id="@+id/donated_summary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/waiting"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintBottom_toBottomOf="@+id/founded_summary"
-                        app:layout_constraintEnd_toEndOf="@+id/textView"
-                        app:layout_constraintStart_toStartOf="@+id/textView"
-                        app:layout_constraintTop_toTopOf="@+id/founded_summary" />
+                        <TextView
+                            android:id="@+id/founded_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="@string/waiting"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/textView2"
+                            app:layout_constraintStart_toStartOf="@+id/textView2"
+                            app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-                    <TextView
-                        android:id="@+id/active_summary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/waiting"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                        app:layout_constraintBottom_toBottomOf="@+id/donated_summary"
-                        app:layout_constraintEnd_toEndOf="@+id/textView3"
-                        app:layout_constraintStart_toStartOf="@+id/textView3"
-                        app:layout_constraintTop_toTopOf="@+id/donated_summary" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:id="@+id/donated_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/waiting"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintBottom_toBottomOf="@+id/founded_summary"
+                            app:layout_constraintEnd_toEndOf="@+id/textView"
+                            app:layout_constraintStart_toStartOf="@+id/textView"
+                            app:layout_constraintTop_toTopOf="@+id/founded_summary" />
 
-            <com.hxbreak.animalcrossingtools.view.CommonStatusGroup
-                app:errorLayout="@layout/layout_error"
-                app:emptyLayout="@layout/layout_empty"
-                android:tag="scroll"
-                android:id="@+id/common_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <com.hxbreak.animalcrossingtools.view.IndexedRecyclerView
-                    android:id="@+id/recycler_view"
-                    app:alphabetTextColor="?android:attr/textColorPrimary"
-                    app:alphabetTextSize="14sp"
-                    app:indicatorTextColor="@android:color/white"
-                    app:indicatorBgColor="?attr/colorAccent"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </com.hxbreak.animalcrossingtools.view.CommonStatusGroup>
-        </com.hxbreak.animalcrossingtools.view.ScrollViewGroup>
+                        <TextView
+                            android:id="@+id/active_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/waiting"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintBottom_toBottomOf="@+id/donated_summary"
+                            app:layout_constraintEnd_toEndOf="@+id/textView3"
+                            app:layout_constraintStart_toStartOf="@+id/textView3"
+                            app:layout_constraintTop_toTopOf="@+id/donated_summary" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                    <com.hxbreak.animalcrossingtools.view.IndexedRecyclerView
+                        android:id="@+id/recycler_view"
+                        app:alphabetTextColor="?android:attr/textColorPrimary"
+                        app:alphabetTextSize="14sp"
+                        app:indicatorTextColor="@android:color/white"
+                        app:indicatorBgColor="?attr/colorAccent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+            </com.hxbreak.animalcrossingtools.view.ScrollViewGroup>
+        </com.hxbreak.animalcrossingtools.view.CommonStatusGroup>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

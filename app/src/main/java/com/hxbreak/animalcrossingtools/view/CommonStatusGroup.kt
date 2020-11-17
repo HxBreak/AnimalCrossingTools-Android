@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Scroller
+import android.widget.TextView
 import androidx.annotation.IntDef
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.*
@@ -58,12 +60,17 @@ class CommonStatusGroup @JvmOverloads constructor(
         /**
          * BindErrorInfo To UI
          */
-
+        errorView.findViewById<TextView>(R.id.error_information)?.let {
+            it.text = "出错了"
+        }
+        errorView.findViewById<Button>(R.id.retry_area)?.let {
+            it.setOnClickListener{ retry.run() }
+        }
         setState(STATE_SHOW_ERROR)
     }
     private var fromState: Int = 0
 
-    fun setState(@State newState: Int){
+    private fun setState(@State newState: Int){
         if (!isLaidOut) return
 
         if (mState != newState){
