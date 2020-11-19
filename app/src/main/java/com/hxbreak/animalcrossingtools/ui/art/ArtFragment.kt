@@ -14,6 +14,7 @@ import com.hxbreak.animalcrossingtools.extensions.testChanged
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_art.*
+import java.lang.Exception
 
 @AndroidEntryPoint
 class ArtFragment : EditBackAbleAppbarFragment(){
@@ -86,6 +87,13 @@ class ArtFragment : EditBackAbleAppbarFragment(){
             if (edit_mode.isSelected != it){ edit_mode.morph() }
             requireAdapter().editMode = it
             if (!it){ viewModel.clearSelected() }
+        }
+        viewModel.error.observe(viewLifecycleOwner){
+            if (it is Exception){
+                common_layout.setException(it){ viewModel.refresh.value = true }
+            }else{
+                common_layout.clearState()
+            }
         }
     }
 

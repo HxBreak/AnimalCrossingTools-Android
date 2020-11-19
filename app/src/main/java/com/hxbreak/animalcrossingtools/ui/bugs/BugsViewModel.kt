@@ -27,15 +27,17 @@ class BugsViewModel @ViewModelInject constructor(
 
     val editMode = MutableLiveData(false)
     val refresh = MutableLiveData(false)
-    val error = MutableLiveData<Exception>()
+    val error = MutableLiveData<Exception?>()
     val loading = MutableLiveData<Boolean>()
 
     private val bugEntity = refresh.switchMap {
         loading.value = true
         liveData (viewModelScope.coroutineContext + Dispatchers.IO){
-            val result = repository.repoSource().allBugs()
-            when(result){
-                is Result.Success -> emit(result.data)
+            when(val result = repository.repoSource().allBugs()){
+                is Result.Success -> {
+                    error.postValue(null)
+                    emit(result.data)
+                }
                 is Result.Error -> error.postValue(result.exception)
             }
             loading.postValue(false)

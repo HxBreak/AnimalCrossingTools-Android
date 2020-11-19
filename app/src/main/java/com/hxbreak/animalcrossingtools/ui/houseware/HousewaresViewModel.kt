@@ -35,9 +35,9 @@ class HousewaresViewModel @ViewModelInject constructor(
     val locale = preferenceStorage.selectedLocale
     val loading = MutableLiveData(false)
     val refresh = MutableLiveData(false)
-    val error = MutableLiveData<Event<Throwable>>()
     val database = MutableLiveData<Event<String>>()
     val filter = MutableLiveData<String?>()
+    private val error = MutableLiveData<Throwable?>()
 
     private val usagePolicy by lazy(LazyThreadSafetyMode.PUBLICATION) {
         dataUsageStorage.selectStorableDataRefreshDuration
@@ -51,18 +51,21 @@ class HousewaresViewModel @ViewModelInject constructor(
                 val cache = repository.local().housewaresDao().all().groupBy {
                     it.seriesId
                 }.map { HousewareVariants(it.value) }
-                emit(cache)
+                emit(ProjectDataSource.newDatabaseSource(cache))
             }
             val block = suspend {
-                when (val result = repository.repoSource().allHousewares()){
+                val result = repository.repoSource().allHousewares()
+                queryJob.join()// make sure database result return
+                when (result){
                     is Result.Success -> {
-                        emit(result.data.second.map { HousewareVariants(it) })
+                        emit(ProjectDataSource.newNetworkSource(result.data.second.map { HousewareVariants(it) }))
                         result.data.first.join()
                         dataUsageStorage.lastFurnitureRefreshDateTime = Instant.now()
                         database.postValue(Event("Database updated"))
+                        error.postValue(null)
                     }
                     is Result.Error -> {
-                        error.postValue(Event(result.exception))
+                        error.postValue(result.exception)
                     }
                 }
             }
@@ -97,7 +100,7 @@ class HousewaresViewModel @ViewModelInject constructor(
                 val filtered = repository.local().housewaresDao().filterViaQuery(query).groupBy {
                     it.seriesId
                 }.map { HousewareVariants(it.value) }
-                emit(filtered)
+                emit(ProjectDataSource.newDatabaseSource(filtered))
             }else{
                 emit(null)
             }
@@ -113,6 +116,21 @@ class HousewaresViewModel @ViewModelInject constructor(
         }else{
             emit(x)
         }
+    }
+
+    val unpackedScreenData = screenData.map {
+        it?.data
+    }
+
+    val screenStatus = combinedLiveData(viewModelScope.coroutineContext + Dispatchers.Default,
+        x = error, y = screenData, runCheck = { x, y -> x || y }){ x, y ->
+        val result = when {
+            y != null && y.type == ProjectDataSource.SOURCE_DATABASE && (!y.data.isNullOrEmpty()) -> UiStatus.Success
+            x != null -> UiStatus.Error(x)
+            y != null && y.data.isNullOrEmpty() -> UiStatus.Empty
+            else -> UiStatus.Success
+        }
+        emit(result)
     }
 
     val searchSuggestionKeywords = MutableLiveData<Event<String?>>()
@@ -158,7 +176,6 @@ class HousewaresViewModel @ViewModelInject constructor(
                 throw e.targetException
             }
         }
-
     }
 }
 
@@ -166,4 +183,21 @@ data class HousewareVariants(
     val variants: List<HousewareEntity>
 ): ItemComparable<String> {
     override fun id() = variants.first().seriesId
+}
+
+sealed class UiStatus {
+    data class Error(val exception: Throwable) : UiStatus()
+    object Success : UiStatus()
+    object Empty : UiStatus()
+}
+
+data class ProjectDataSource<out R>(val data: R, val type: Int) {
+
+    companion object{
+        const val SOURCE_NETWORK = 0
+        const val SOURCE_DATABASE = 1
+
+        fun <T> newNetworkSource(data: T) = ProjectDataSource(data, SOURCE_NETWORK)
+        fun <T> newDatabaseSource(data: T) = ProjectDataSource(data, SOURCE_DATABASE)
+    }
 }

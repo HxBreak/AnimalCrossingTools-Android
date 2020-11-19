@@ -22,15 +22,17 @@ class VillagerViewModel @ViewModelInject constructor(
 
     val refresh = MutableLiveData(false)
     val loading = MutableLiveData(false)
-    val erro = MutableLiveData<Event<Exception>>()
+    val error = MutableLiveData<Exception?>()
 
     val villagers = refresh.switchMap {
         loading.value = true
         liveData (viewModelScope.coroutineContext + Dispatchers.IO){
             when(val result = repository.repoSource().allVillagers()){
-                is Result.Success -> emit(result.data)
-                is Result.Error -> erro.postValue(Event(result.exception))
-                else -> throw IllegalStateException("other state is not allow")
+                is Result.Success -> {
+                    error.postValue(null)
+                    emit(result.data)
+                }
+                is Result.Error -> error.postValue(result.exception)
             }
             loading.postValue(false)
         }

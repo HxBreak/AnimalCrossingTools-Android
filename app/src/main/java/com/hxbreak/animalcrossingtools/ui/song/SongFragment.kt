@@ -4,14 +4,10 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialSharedAxis
@@ -20,11 +16,10 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.SelectionAdapter
 import com.hxbreak.animalcrossingtools.extensions.testChanged
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
-import com.hxbreak.animalcrossingtools.fragment.useOnce
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_song.*
-import javax.inject.Inject
+import java.lang.Exception
 
 @AndroidEntryPoint
 class SongFragment : EditBackAbleAppbarFragment() {
@@ -103,9 +98,13 @@ class SongFragment : EditBackAbleAppbarFragment() {
             donate.isEnabled = !it.isNullOrEmpty()
         }
 
-        viewModel.erro.observe(viewLifecycleOwner, EventObserver {
-            Toast.makeText(requireContext(), "$it", Toast.LENGTH_SHORT).show()
-        })
+        viewModel.error.observe(viewLifecycleOwner){
+            if(it is Exception){
+                common_layout.setException(it){ viewModel.refresh.value = true }
+            }else{
+                common_layout.clearState()
+            }
+        }
 
         viewModel.selected.testChanged().observe(viewLifecycleOwner){
             if (it.collection.isNullOrEmpty()){

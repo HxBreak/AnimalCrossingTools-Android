@@ -78,7 +78,7 @@ class HousewaresFragment : BackAbleAppbarFragment(), SearchView.OnSuggestionList
         }
         val recycledViewPool = RecyclerView.RecycledViewPool()
         requireAdapter().register(HousewaresViewBinder(typed, recycledViewPool, viewModel))
-        viewModel.screenData.observe(viewLifecycleOwner) {
+        viewModel.unpackedScreenData.observe(viewLifecycleOwner) {
             requireAdapter().submitList(it) {
                 returnElement?.getContentIfNotHandled()?.let { element ->
                     recycler_view.doOnNextLayout { _ ->
@@ -111,12 +111,13 @@ class HousewaresFragment : BackAbleAppbarFragment(), SearchView.OnSuggestionList
         }
         refresh_layout.setOnRefreshListener { viewModel.refresh.value = true }
         requireToolbarTitle().setText(getString(R.string.furniture_catalog))
-        viewModel.error.observe(viewLifecycleOwner, EventObserver {
-            Snackbar.make(requireView(), "Error $it", Snackbar.LENGTH_LONG)
-                .setAction(res.getText(R.string.retry)) {
-                    viewModel.refresh.value = true
-                }.show()
-        })
+        viewModel.screenStatus.observe(viewLifecycleOwner){
+            when(it){
+                is UiStatus.Error -> common_layout.setException(it.exception){ viewModel.refresh.value = true }
+                is UiStatus.Empty -> common_layout.setEmpty()
+                is UiStatus.Success -> common_layout.clearState()
+            }
+        }
         viewModel.database.observe(viewLifecycleOwner, EventObserver {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
         })
@@ -147,9 +148,9 @@ class HousewaresFragment : BackAbleAppbarFragment(), SearchView.OnSuggestionList
                 sharedElements: MutableMap<String, View>?
             ) {
                 returnElement?.peekContent()?.let { element ->
-                    val item = viewModel.screenData.value.orEmpty().find { it.variants.any { it.fileName == element.returnFilename } }
+                    val item = viewModel.unpackedScreenData.value.orEmpty().find { it.variants.any { it.fileName == element.returnFilename } }
                     val viewHolder = recycler_view.findViewHolderForAdapterPosition(
-                        viewModel.screenData.value.orEmpty().indexOf(item)
+                        viewModel.unpackedScreenData.value.orEmpty().indexOf(item)
                     ) as? HousewaresViewBinder.ViewHolder
                     viewHolder?.let nest@{
                         if ((item?.variants?.size ?: 0) > 1){

@@ -2,7 +2,6 @@ package com.hxbreak.animalcrossingtools.ui.song
 
 import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
-import android.view.View
 import androidx.core.os.bundleOf
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
@@ -14,7 +13,6 @@ import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.SongSaved
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.entity.SongMix
-import com.hxbreak.animalcrossingtools.extensions.previousValue
 import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import com.hxbreak.animalcrossingtools.livedata.CombinedLiveData
@@ -23,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.lang.ref.WeakReference
-import javax.inject.Inject
 
 class SongViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
@@ -34,7 +31,7 @@ class SongViewModel @ViewModelInject constructor(
     val refresh = MutableLiveData(false)
     val loading = MutableLiveData(false)
     val editMode = MutableLiveData(false)
-    val erro = MutableLiveData<Event<Exception>>()
+    val error = MutableLiveData<Exception?>()
     val selected = MutableLiveData<MutableList<Int>>(mutableListOf())
     internal val lunchNowPlayingEvent = MutableLiveData<Event<WeakReference<Pair<Song, SongItemView>>>>()
     val locale = preferenceStorage.selectedLocale
@@ -132,11 +129,12 @@ class SongViewModel @ViewModelInject constructor(
     private fun filterSongs(data: Result<Map<String, Song>>): LiveData<List<Song>> {
         val result = MutableLiveData<List<Song>>()
         if (data is Result.Success) {
+            error.postValue(null)
             viewModelScope.launch {
                 result.postValue(data.data.values.toList())
             }
         } else if (data is Result.Error) {
-            erro.value = Event(data.exception)
+            error.value = data.exception
         }
         loading.value = false
         return result

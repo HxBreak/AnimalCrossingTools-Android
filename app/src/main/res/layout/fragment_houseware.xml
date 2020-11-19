@@ -12,12 +12,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:transitionGroup="true"
-            tools:listitem="@layout/item_fish"
+        <com.hxbreak.animalcrossingtools.view.CommonStatusGroup
+            android:id="@+id/common_layout"
+            app:errorLayout="@layout/layout_error"
+            app:emptyLayout="@layout/layout_empty"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:transitionGroup="true"
+                tools:listitem="@layout/item_fish"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.hxbreak.animalcrossingtools.view.CommonStatusGroup>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

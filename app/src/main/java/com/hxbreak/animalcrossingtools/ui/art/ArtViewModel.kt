@@ -10,13 +10,9 @@ import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.ArtEntity
 import com.hxbreak.animalcrossingtools.data.source.entity.ArtEntityMix
-import com.hxbreak.animalcrossingtools.fragment.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.lang.Exception
-import java.lang.IllegalStateException
-import javax.inject.Inject
 
 class ArtViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
@@ -27,7 +23,7 @@ class ArtViewModel @ViewModelInject constructor(
 
     val refresh = MutableLiveData<Boolean>(false)
     val loading = MutableLiveData(false)
-    val erro = MutableLiveData<Event<Exception>>()
+    val error = MutableLiveData<Exception?>()
     val editMode = MutableLiveData(false)
     private val savedChange = MutableLiveData<Boolean>(false)
 
@@ -35,9 +31,11 @@ class ArtViewModel @ViewModelInject constructor(
         loading.value = true
         liveData (viewModelScope.coroutineContext + Dispatchers.IO){
             when(val result = repository.repoSource().allArts()){
-                is Result.Success -> emit(result.data)
-                is Result.Error -> erro.value = Event(result.exception)
-                else -> throw IllegalStateException("other state is not allow")
+                is Result.Success -> {
+                    error.postValue(null)
+                    emit(result.data)
+                }
+                is Result.Error -> error.postValue(result.exception)
             }
             loading.postValue(false)
         }

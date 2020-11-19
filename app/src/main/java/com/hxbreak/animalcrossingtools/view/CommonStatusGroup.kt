@@ -12,6 +12,7 @@ import androidx.annotation.IntDef
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.*
 import com.hxbreak.animalcrossingtools.R
+import timber.log.Timber
 
 class CommonStatusGroup @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -31,9 +32,21 @@ class CommonStatusGroup @JvmOverloads constructor(
     private val mScrollChildHelper = NestedScrollingChildHelper(this)
     private val mScroller = Scroller(context)
     private val errorViewScroller = Scroller(context)
-
+    private var errorLayoutValue: Int = -1
     private val emptyView: View
-    private val errorView: View
+    private val errorView = lazy {
+        if (errorLayoutValue < 0) error("errorLayout value is not set or incorrect.")
+        Timber.e("Create Error View")
+        val view = LayoutInflater.from(context).inflate(errorLayoutValue, this, false)
+        addView(view)
+        requestLayout()
+        return@lazy view
+    }
+
+    private fun runIfErrorViewInitialized(block: View.() -> Unit){
+        if (errorView.isInitialized()) errorView.value.block()
+    }
+
     lateinit var content: View
     @State
     private var  mState: Int = STATE_HIDE
@@ -41,10 +54,10 @@ class CommonStatusGroup @JvmOverloads constructor(
     init {
         mScrollChildHelper.isNestedScrollingEnabled = true
         val typedValue = context.obtainStyledAttributes(attrs, R.styleable.CommonStatusGroup, defStyleAttr, 0)
-        val errorLayoutValue = typedValue.getResourceIdOrThrow(R.styleable.CommonStatusGroup_errorLayout)
+        errorLayoutValue = typedValue.getResourceIdOrThrow(R.styleable.CommonStatusGroup_errorLayout)
         val emptyLayoutValue = typedValue.getResourceIdOrThrow(R.styleable.CommonStatusGroup_emptyLayout)
         emptyView = LayoutInflater.from(context).inflate(emptyLayoutValue, this, false)
-        errorView = LayoutInflater.from(context).inflate(errorLayoutValue, this, false)
+//        errorView = LayoutInflater.from(context).inflate(errorLayoutValue, this, false)
         typedValue.recycle()
     }
 
@@ -56,14 +69,14 @@ class CommonStatusGroup @JvmOverloads constructor(
         setState(STATE_HIDE)
     }
 
-    fun setException(exception: Exception, retry: Runnable){
+    fun setException(exception: Throwable, retry: Runnable){
         /**
          * BindErrorInfo To UI
          */
-        errorView.findViewById<TextView>(R.id.error_information)?.let {
+        errorView.value.findViewById<TextView>(R.id.error_information)?.let {
             it.text = "出错了"
         }
-        errorView.findViewById<Button>(R.id.retry_area)?.let {
+        errorView.value.findViewById<Button>(R.id.retry_area)?.let {
             it.setOnClickListener{ retry.run() }
         }
         setState(STATE_SHOW_ERROR)
@@ -117,8 +130,10 @@ class CommonStatusGroup @JvmOverloads constructor(
         content.measure(widthMeasureSpec, heightMeasureSpec)
         emptyView.measure(MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY),
             MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY))
-        errorView.measure(MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY))
+        runIfErrorViewInitialized {
+            measure(MeasureSpec.makeMeasureSpec(this@CommonStatusGroup.measuredWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(this@CommonStatusGroup.measuredHeight, MeasureSpec.EXACTLY))
+        }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -139,7 +154,6 @@ class CommonStatusGroup @JvmOverloads constructor(
         if (childCount != 1) error("childCount Must Be 1")
         content = get(0)
         addView(emptyView)
-        addView(errorView)
     }
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
@@ -209,7 +223,7 @@ class CommonStatusGroup @JvmOverloads constructor(
             STATE_HIDE -> {
                 content.isGone = false
                 if (errorViewScroller.isFinished){
-                    errorView.isGone = true
+                    runIfErrorViewInitialized { isGone = true }
                     emptyView.isGone = true
                 }else{
                     layoutEmptyViews = true
@@ -226,14 +240,14 @@ class CommonStatusGroup @JvmOverloads constructor(
             val r = width
             val l = width - (if (errorViewScroller.isFinished) errorViewScroller.finalX else errorViewScroller.currX)
             val layoutErrorViewBlock = {
-                errorView.isGone = false
-                errorView.layout(l, 0, r, height)
+                errorView.value.isGone = false
+                errorView.value.layout(l, 0, r, height)
                 emptyView.isGone = true
             }
             val layoutEmptyViewBlock = {
                 emptyView.isGone = false
                 emptyView.layout(l, 0, r, height)
-                errorView.isGone = true
+                runIfErrorViewInitialized { isGone = true }
             }
             when(mState){
                 STATE_SHOW_ERROR -> layoutErrorViewBlock()

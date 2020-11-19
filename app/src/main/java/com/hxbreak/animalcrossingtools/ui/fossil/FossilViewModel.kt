@@ -24,14 +24,17 @@ class FossilViewModel @ViewModelInject constructor(
 
     val editMode = MutableLiveData(false)
     val refresh = MutableLiveData(false)
-    val error = MutableLiveData<Exception>()
+    val error = MutableLiveData<Exception?>()
     val loading = MutableLiveData<Boolean>()
 
     private val fossilEntity = refresh.switchMap {
         loading.value = true
         liveData (viewModelScope.coroutineContext + Dispatchers.IO){
             when(val result = repository.repoSource().allFossils()){
-                is Result.Success -> emit(result.data)
+                is Result.Success -> {
+                    error.postValue(null)
+                    emit(result.data)
+                }
                 is Result.Error -> error.postValue(result.exception)
             }
             loading.postValue(false)

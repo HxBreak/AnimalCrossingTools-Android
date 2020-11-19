@@ -13,15 +13,7 @@ import com.hxbreak.animalcrossingtools.extensions.testChanged
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_bugs.*
-import kotlinx.android.synthetic.main.fragment_bugs.active_summary
-import kotlinx.android.synthetic.main.fragment_bugs.donate
-import kotlinx.android.synthetic.main.fragment_bugs.donated_summary
-import kotlinx.android.synthetic.main.fragment_bugs.edit_mode
-import kotlinx.android.synthetic.main.fragment_bugs.found
-import kotlinx.android.synthetic.main.fragment_bugs.founded_summary
-import kotlinx.android.synthetic.main.fragment_bugs.recycler_view
-import kotlinx.android.synthetic.main.fragment_bugs.refresh_layout
-import kotlinx.android.synthetic.main.fragment_fish.*
+import java.lang.Exception
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
@@ -96,6 +88,13 @@ class BugsFragment : EditBackAbleAppbarFragment(){
             if (edit_mode.isSelected != it){ edit_mode.morph() }
             if (!it) viewModel.clearSelected()
             requireAdapter().editMode = it
+        }
+        viewModel.error.observe(viewLifecycleOwner){
+            if (it is Exception){
+                common_layout.setException(it) { viewModel.refresh.value = true }
+            }else{
+                common_layout.clearState()
+            }
         }
     }
 

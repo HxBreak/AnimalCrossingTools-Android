@@ -19,6 +19,10 @@ import com.hxbreak.animalcrossingtools.adapter.SelectionAdapter
 import com.hxbreak.animalcrossingtools.ui.BackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_chat.*
+import kotlinx.android.synthetic.main.fragment_chat.recycler_view
+import kotlinx.android.synthetic.main.fragment_chat.refresh_layout
+import kotlinx.android.synthetic.main.fragment_villager.*
+import java.lang.Exception
 
 @AndroidEntryPoint
 class VillagerFragment : BackAbleAppbarFragment(){
@@ -63,9 +67,11 @@ class VillagerFragment : BackAbleAppbarFragment(){
             refresh_layout.isRefreshing = it == true
         }
         refresh_layout.setOnRefreshListener { viewModel.refresh.value = true }
-        viewModel.erro.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let {
-                Toast.makeText(requireContext(), "$it", Toast.LENGTH_SHORT).show()
+        viewModel.error.observe(viewLifecycleOwner) {
+            if (it is Exception){
+                common_layout.setException(it){ viewModel.refresh.value = true }
+            }else{
+                common_layout.clearState()
             }
         }
         requireAdapter().register(VillagerViewBinder(viewModel, viewLifecycleOwner))
