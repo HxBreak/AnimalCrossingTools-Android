@@ -2,17 +2,18 @@ package com.hxbreak.animalcrossingtools.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.Scroller
 import android.widget.TextView
 import androidx.annotation.IntDef
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.*
+import androidx.navigation.findNavController
 import com.hxbreak.animalcrossingtools.R
 import timber.log.Timber
+import kotlin.experimental.and
+import kotlin.math.abs
 
 class CommonStatusGroup @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -34,6 +35,7 @@ class CommonStatusGroup @JvmOverloads constructor(
     private val errorViewScroller = Scroller(context)
     private var errorLayoutValue: Int = -1
     private val emptyView: View
+    private var mAxes = -1
     private val errorView = lazy {
         if (errorLayoutValue < 0) error("errorLayout value is not set or incorrect.")
         Timber.e("Create Error View")
@@ -42,6 +44,8 @@ class CommonStatusGroup @JvmOverloads constructor(
         requestLayout()
         return@lazy view
     }
+
+    private val mTouchSlop = ViewConfiguration.get(context).scaledTouchSlop
 
     private fun runIfErrorViewInitialized(block: View.() -> Unit){
         if (errorView.isInitialized()) errorView.value.block()
@@ -57,7 +61,6 @@ class CommonStatusGroup @JvmOverloads constructor(
         errorLayoutValue = typedValue.getResourceIdOrThrow(R.styleable.CommonStatusGroup_errorLayout)
         val emptyLayoutValue = typedValue.getResourceIdOrThrow(R.styleable.CommonStatusGroup_emptyLayout)
         emptyView = LayoutInflater.from(context).inflate(emptyLayoutValue, this, false)
-//        errorView = LayoutInflater.from(context).inflate(errorLayoutValue, this, false)
         typedValue.recycle()
     }
 
@@ -156,7 +159,16 @@ class CommonStatusGroup @JvmOverloads constructor(
         addView(emptyView)
     }
 
+    override fun canScrollHorizontally(direction: Int): Boolean {
+        return direction < 0
+    }
+
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
+        if ((mAxes and ViewCompat.SCROLL_AXIS_HORIZONTAL) == ViewCompat.SCROLL_AXIS_HORIZONTAL){
+            dispatchNestedPreScroll(dx, dy, consumed, null, type)
+        }else{
+            dispatchNestedPreScroll(dx, dy, consumed, null, type)
+        }
 //        if (dy > 0){//Scroll Down
 //            val scrollView = content
 //            if (scrollView is RecyclerView){
@@ -211,7 +223,45 @@ class CommonStatusGroup @JvmOverloads constructor(
 //                dispatchNestedPreScroll(dx, dy, consumed, null, type)
 //            }
 //        }
-        dispatchNestedPreScroll(dx, dy, consumed, null, type)
+    }
+
+    var moveX = 0f
+    var moveY = 0f
+    var lastX = 0f
+    var lastY = 0f
+
+    var isGestureProcessingMode = false
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        when(ev?.action){
+            MotionEvent.ACTION_DOWN -> {
+                isGestureProcessingMode = false
+                moveX = 0f
+                moveY = 0f
+                lastX = ev.rawX
+                lastY = ev.rawY
+            }
+            MotionEvent.ACTION_UP -> {
+
+            }
+            MotionEvent.ACTION_MOVE -> {
+                moveX += ev.rawX - lastX
+                moveY += ev.rawY - lastY
+                if (abs(moveX) > mTouchSlop && abs(moveX) > abs(moveY)){
+                    if (!isGestureProcessingMode){
+                        isGestureProcessingMode = true
+                        val upEvent = MotionEvent.obtain(ev)
+                        upEvent.action = MotionEvent.ACTION_CANCEL
+                        super.dispatchTouchEvent(upEvent)
+                        upEvent.recycle()
+                        requestDisallowInterceptTouchEvent(true)
+                    }
+                }
+                lastX = ev.rawX
+                lastY = ev.rawY
+            }
+        }
+        return if (!isGestureProcessingMode) super.dispatchTouchEvent(ev) else true
     }
 
     private fun updateLayout(){
@@ -300,7 +350,8 @@ class CommonStatusGroup @JvmOverloads constructor(
     }
 
     override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
-        return axes and ViewCompat.SCROLL_AXIS_VERTICAL != 0
+        mAxes = axes
+        return true
     }
 
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {

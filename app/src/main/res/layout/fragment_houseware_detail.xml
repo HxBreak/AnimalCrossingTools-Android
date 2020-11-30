@@ -6,89 +6,94 @@
     android:id="@+id/coordinator"
     tools:context=".ui.fish.FishFragment"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.hxbreak.animalcrossingtools.view.CommonStatusGroup
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:errorLayout="@layout/layout_error"
+        app:emptyLayout="@layout/layout_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <androidx.viewpager2.widget.ViewPager2
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/viewpager"
-            app:layout_constraintDimensionRatio="H,16:9"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"/>
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            app:tabMode="scrollable"
-            app:layout_constraintTop_toBottomOf="@id/viewpager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/item_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tab_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            tools:text="火箭"
-            />
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/buyPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/spacing_normal"
-            android:paddingEnd="0dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            app:layout_constraintTop_toTopOf="@id/item_title"
-            app:layout_constraintBottom_toBottomOf="@+id/item_title"
-            app:layout_constraintStart_toEndOf="@id/item_title"
-            tools:text="$3360" />
+            <androidx.viewpager2.widget.ViewPager2
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/viewpager"
+                app:layout_constraintDimensionRatio="H,16:9"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"/>
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                app:tabMode="scrollable"
+                app:layout_constraintTop_toBottomOf="@id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/item_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/tab_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                tools:text="火箭"
+                />
 
-        <TextView
-            android:id="@+id/source"
-            android:layout_marginTop="@dimen/margin_small"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-            tools:text="Source: Crafting\ndetail: Trade 3 insects to receive a model in the mail the next day"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/margin_small"
-            app:layout_constraintTop_toBottomOf="@id/item_title"
-            app:layout_constraintStart_toStartOf="@id/item_title"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/buyPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/spacing_normal"
+                android:paddingEnd="0dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                app:layout_constraintTop_toTopOf="@id/item_title"
+                app:layout_constraintBottom_toBottomOf="@+id/item_title"
+                app:layout_constraintStart_toEndOf="@id/item_title"
+                tools:text="$3360" />
 
-        <TextView
-            android:id="@+id/item_size"
-            android:layout_marginTop="@dimen/margin_small"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-            tools:text="Size: 1x1"
-            app:layout_constraintTop_toBottomOf="@id/source"
-            app:layout_constraintStart_toStartOf="@id/item_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/source"
+                android:layout_marginTop="@dimen/margin_small"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                tools:text="Source: Crafting\ndetail: Trade 3 insects to receive a model in the mail the next day"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/margin_small"
+                app:layout_constraintTop_toBottomOf="@id/item_title"
+                app:layout_constraintStart_toStartOf="@id/item_title"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chip_group"
-            android:transitionGroup="true"
-            app:layout_constraintTop_toBottomOf="@id/item_size"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/margin_small"
-            android:layout_marginStart="@dimen/margin_small"
-            android:layout_marginEnd="@dimen/margin_small"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_chip"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/item_size"
+                android:layout_marginTop="@dimen/margin_small"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                tools:text="Size: 1x1"
+                app:layout_constraintTop_toBottomOf="@id/source"
+                app:layout_constraintStart_toStartOf="@id/item_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/chip_group"
+                android:transitionGroup="true"
+                app:layout_constraintTop_toBottomOf="@id/item_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/margin_small"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_chip"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.hxbreak.animalcrossingtools.view.CommonStatusGroup>
     <com.google.android.material.appbar.AppBarLayout
         android:id="@id/appbar"
         android:layout_width="match_parent"

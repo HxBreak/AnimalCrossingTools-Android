@@ -110,7 +110,7 @@ android {
     }
 
     lintOptions {
-        disable "EnsureInitializerMetadata"
+        disable "EnsureInitializerMetadata", "NullSafeMutableLiveData"
     }
 
     packagingOptions {

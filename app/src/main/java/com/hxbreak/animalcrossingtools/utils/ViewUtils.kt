@@ -2,6 +2,8 @@ package com.hxbreak.animalcrossingtools.utils
 
 import android.content.Context
 import android.content.res.Resources
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 
 object ViewUtils {
 
@@ -10,7 +12,7 @@ object ViewUtils {
         return (px / scale + .5).toInt()
     }
 
-    inline fun dp2px(context: Context, dp: Float): Int {
+    fun dp2px(context: Context, dp: Float): Int {
         return dp2px(
             context.resources,
             dp
@@ -20,6 +22,14 @@ object ViewUtils {
     fun dp2px(resources: Resources, dp: Float): Int {
         val scale = resources.displayMetrics.density
         return (dp * scale + .5).toInt()
+    }
+
+    fun View.safetyHideSoftKeyboard(){
+        (context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.run {
+            try {
+                hideSoftInputFromWindow(windowToken, 0)
+            }catch (e: Exception){ }
+        }
     }
 
 }

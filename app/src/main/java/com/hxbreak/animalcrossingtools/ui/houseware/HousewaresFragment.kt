@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.SharedElementCallback
@@ -26,6 +27,8 @@ import com.hxbreak.animalcrossingtools.adapter.Typer
 import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.fragment.EventObserver
 import com.hxbreak.animalcrossingtools.ui.BackAbleAppbarFragment
+import com.hxbreak.animalcrossingtools.utils.ViewUtils
+import com.hxbreak.animalcrossingtools.utils.ViewUtils.safetyHideSoftKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_houseware.*
 import kotlinx.coroutines.launch
@@ -183,6 +186,7 @@ class HousewaresFragment : BackAbleAppbarFragment(), SearchView.OnSuggestionList
 
     override fun onDestroyView() {
         super.onDestroyView()
+        requireView().safetyHideSoftKeyboard()
         suggestionsAdapter?.changeCursor(null)
         suggestionsAdapter = null
         adapter = null
