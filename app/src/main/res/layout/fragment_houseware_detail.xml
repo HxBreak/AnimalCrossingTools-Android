@@ -8,8 +8,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <com.hxbreak.animalcrossingtools.view.CommonStatusGroup
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/common_layout"
         app:errorLayout="@layout/layout_error"
         app:emptyLayout="@layout/layout_empty"
+        app:gestureMode="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout

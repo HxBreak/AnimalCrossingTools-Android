@@ -11,8 +11,8 @@ import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.*
 import androidx.navigation.findNavController
 import com.hxbreak.animalcrossingtools.R
+import com.hxbreak.animalcrossingtools.utils.ViewUtils
 import timber.log.Timber
-import kotlin.experimental.and
 import kotlin.math.abs
 
 class CommonStatusGroup @JvmOverloads constructor(
@@ -51,17 +51,36 @@ class CommonStatusGroup @JvmOverloads constructor(
         if (errorView.isInitialized()) errorView.value.block()
     }
 
+    var listener: Function0<Unit>? = null
+
     lateinit var content: View
+
+    var gestureMode: Int = -1
+
     @State
     private var  mState: Int = STATE_HIDE
+
+    var moveX = 0f
+    var moveY = 0f
+    var lastX = 0f
+    var lastY = 0f
+
+    var isGestureProcessingMode = false
+    
+    val gestureDistance = ViewUtils.dp2px(context, 52f)
 
     init {
         mScrollChildHelper.isNestedScrollingEnabled = true
         val typedValue = context.obtainStyledAttributes(attrs, R.styleable.CommonStatusGroup, defStyleAttr, 0)
         errorLayoutValue = typedValue.getResourceIdOrThrow(R.styleable.CommonStatusGroup_errorLayout)
         val emptyLayoutValue = typedValue.getResourceIdOrThrow(R.styleable.CommonStatusGroup_emptyLayout)
+        gestureMode = typedValue.getInt(R.styleable.CommonStatusGroup_gestureMode, 0)
         emptyView = LayoutInflater.from(context).inflate(emptyLayoutValue, this, false)
         typedValue.recycle()
+        listener = {
+            findNavController().navigateUp()
+            Unit
+        }
     }
 
     fun setEmpty(){
@@ -156,6 +175,14 @@ class CommonStatusGroup @JvmOverloads constructor(
         super.onFinishInflate()
         if (childCount != 1) error("childCount Must Be 1")
         content = get(0)
+//        gestureMode = content.run {
+//            when (this) {
+//                is NestedScrollingChild -> {
+//                    if ((this as NestedScrollingChild).isNestedScrollingEnabled) 1 else gestureMode
+//                }
+//                else -> gestureMode
+//            }
+//        }
         addView(emptyView)
     }
 
@@ -163,8 +190,34 @@ class CommonStatusGroup @JvmOverloads constructor(
         return direction < 0
     }
 
+    override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
+        mAxes = axes
+        when(gestureMode){
+            1 -> {
+                moveX = 0f
+                moveY = 0f
+            }
+        }
+        return true
+    }
+
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
         if ((mAxes and ViewCompat.SCROLL_AXIS_HORIZONTAL) == ViewCompat.SCROLL_AXIS_HORIZONTAL){
+            val canMoveX = target.canScrollHorizontally(-1)
+            if (canMoveX){
+                isGestureProcessingMode = false
+            }else{
+                isGestureProcessingMode = true
+                if (target is ScrollingView){
+                    val offset = target.computeHorizontalScrollOffset()
+                    val scrollExtent = target.computeHorizontalScrollExtent()
+                    val range = target.computeHorizontalScrollRange()
+                    moveX += dx
+                    if (abs(moveX) > gestureDistance){
+                        triggerOnBackGesture()
+                    }
+                }
+            }
             dispatchNestedPreScroll(dx, dy, consumed, null, type)
         }else{
             dispatchNestedPreScroll(dx, dy, consumed, null, type)
@@ -225,14 +278,12 @@ class CommonStatusGroup @JvmOverloads constructor(
 //        }
     }
 
-    var moveX = 0f
-    var moveY = 0f
-    var lastX = 0f
-    var lastY = 0f
-
-    var isGestureProcessingMode = false
+    fun triggerOnBackGesture(){
+        listener?.invoke()
+    }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (gestureMode == 1) return super.dispatchTouchEvent(ev)
         when(ev?.action){
             MotionEvent.ACTION_DOWN -> {
                 isGestureProcessingMode = false
@@ -242,26 +293,37 @@ class CommonStatusGroup @JvmOverloads constructor(
                 lastY = ev.rawY
             }
             MotionEvent.ACTION_UP -> {
-
+                if (moveX > gestureDistance && isGestureProcessingMode){
+                    triggerOnBackGesture()
+                }
             }
             MotionEvent.ACTION_MOVE -> {
-                moveX += ev.rawX - lastX
-                moveY += ev.rawY - lastY
-                if (abs(moveX) > mTouchSlop && abs(moveX) > abs(moveY)){
-                    if (!isGestureProcessingMode){
-                        isGestureProcessingMode = true
-                        val upEvent = MotionEvent.obtain(ev)
-                        upEvent.action = MotionEvent.ACTION_CANCEL
-                        super.dispatchTouchEvent(upEvent)
-                        upEvent.recycle()
-                        requestDisallowInterceptTouchEvent(true)
+                when (gestureMode){
+                    0 -> {
+                        moveX += ev.rawX - lastX
+                        moveY += ev.rawY - lastY
+                        if (abs(moveX) > mTouchSlop && abs(moveX) > abs(moveY)){
+                            if (!isGestureProcessingMode){
+                                isGestureProcessingMode = true
+                                val upEvent = MotionEvent.obtain(ev)
+                                upEvent.action = MotionEvent.ACTION_CANCEL
+                                super.dispatchTouchEvent(upEvent)
+                                upEvent.recycle()
+                                requestDisallowInterceptTouchEvent(true)
+                            }
+                        }
+                        lastX = ev.rawX
+                        lastY = ev.rawY
                     }
                 }
-                lastX = ev.rawX
-                lastY = ev.rawY
             }
         }
-        return if (!isGestureProcessingMode) super.dispatchTouchEvent(ev) else true
+        return if (!isGestureProcessingMode) {
+            val value = super.dispatchTouchEvent(ev)
+            value
+        } else {
+            true
+        }
     }
 
     private fun updateLayout(){
@@ -349,11 +411,6 @@ class CommonStatusGroup @JvmOverloads constructor(
         stopNestedScroll(type)
     }
 
-    override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
-        mAxes = axes
-        return true
-    }
-
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
         mScrollParentHelper.onNestedScrollAccepted(child, target, axes, type)
         startNestedScroll(axes, type)
@@ -367,6 +424,7 @@ class CommonStatusGroup @JvmOverloads constructor(
         dyUnconsumed: Int,
         type: Int
     ) {
+        Timber.e("onNestedScroll")
         dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, null, type)
     }
 

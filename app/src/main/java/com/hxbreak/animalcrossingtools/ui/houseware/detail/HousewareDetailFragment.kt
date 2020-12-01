@@ -146,6 +146,9 @@ class HousewareDetailFragment : BackAbleAppbarFragment(){
 
             nav.navigateUp()
         }
+
+        common_layout.listener = {
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

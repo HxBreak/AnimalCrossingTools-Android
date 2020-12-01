@@ -16,6 +16,7 @@
             android:id="@+id/common_layout"
             app:errorLayout="@layout/layout_error"
             app:emptyLayout="@layout/layout_empty"
+            app:gestureMode="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <androidx.recyclerview.widget.RecyclerView
