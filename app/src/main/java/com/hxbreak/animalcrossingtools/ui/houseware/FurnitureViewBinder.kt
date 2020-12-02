@@ -10,7 +10,7 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.ItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
 import com.hxbreak.animalcrossingtools.adapter.Typer
-import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
+import com.hxbreak.animalcrossingtools.data.source.entity.FurnitureEntity
 import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
 import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import kotlinx.android.extensions.LayoutContainer
@@ -19,12 +19,12 @@ import kotlinx.android.synthetic.main.item_housewares_variants.*
 
 
 class HousewareItemViewBinder(
-    val listener: (View, HousewareEntity) -> Unit
-): ItemViewDelegate<HousewareEntity, HousewareItemViewBinder.ViewHolder> {
+    val listener: (View, FurnitureEntity) -> Unit
+): ItemViewDelegate<FurnitureEntity, HousewareItemViewBinder.ViewHolder> {
 
     inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
         LayoutContainer {
-        fun bind(entity: HousewareEntity) {
+        fun bind(entity: FurnitureEntity) {
             ViewCompat.setTransitionName(houseware_image, "${entity.fileName}-container")
             GlideApp.with(houseware_image)
                 .load(entity.image_uri)
@@ -42,7 +42,7 @@ class HousewareItemViewBinder(
             .inflate(R.layout.item_houseware_item, parent, false)
     )
 
-    override fun onBindViewHolder(data: HousewareEntity?, vh: ViewHolder) {
+    override fun onBindViewHolder(data: FurnitureEntity?, vh: ViewHolder) {
         data?.let { vh.bind(it) }
     }
 }

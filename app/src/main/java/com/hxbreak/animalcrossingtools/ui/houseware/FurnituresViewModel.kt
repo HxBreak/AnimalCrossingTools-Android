@@ -12,18 +12,16 @@ import com.hxbreak.animalcrossingtools.data.prefs.DataUsageStorage
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.prefs.StorableDuration
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
-import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
+import com.hxbreak.animalcrossingtools.data.source.entity.FurnitureEntity
 import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.animalcrossingtools.i18n.toDatabaseNameColumn
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
-import java.time.Duration
 import java.time.Instant
 
 class HousewaresViewModel @ViewModelInject constructor(
@@ -46,9 +44,9 @@ class HousewaresViewModel @ViewModelInject constructor(
     val housewares = refresh.switchMap {
         loading.value = true
         liveData (viewModelScope.coroutineContext + Dispatchers.IO){
-            val cachedCount = repository.local().housewaresDao().count()
+            val cachedCount = repository.local().furnitureDao().count()
             val queryJob = viewModelScope.launch (viewModelScope.coroutineContext + Dispatchers.IO){
-                val cache = repository.local().housewaresDao().all().groupBy {
+                val cache = repository.local().furnitureDao().all().groupBy {
                     it.seriesId
                 }.map { HousewareVariants(it.value) }
                 emit(ProjectDataSource.newDatabaseSource(cache))
@@ -97,7 +95,7 @@ class HousewaresViewModel @ViewModelInject constructor(
                     "SELECT * FROM HOUSEWARES WHERE ${locale.toDatabaseNameColumn()} LIKE ?",
                     arrayOf("%$it%")
                 )
-                val filtered = repository.local().housewaresDao().filterViaQuery(query).groupBy {
+                val filtered = repository.local().furnitureDao().filterViaQuery(query).groupBy {
                     it.seriesId
                 }.map { HousewareVariants(it.value) }
                 emit(ProjectDataSource.newDatabaseSource(filtered))
@@ -142,7 +140,7 @@ class HousewaresViewModel @ViewModelInject constructor(
                     "SELECT * FROM HOUSEWARES WHERE ${locale.toDatabaseNameColumn()} LIKE ?",
                     arrayOf("%$key%")
                 )
-                val cursor = repository.local().housewaresDao().getCursorViaQuery(query)
+                val cursor = repository.local().furnitureDao().getCursorViaQuery(query)
                 emit(Proxy.newProxyInstance(
                     SQLiteCursor::class.java.classLoader,
                     arrayOf(Cursor::class.java),
@@ -180,7 +178,7 @@ class HousewaresViewModel @ViewModelInject constructor(
 }
 
 data class HousewareVariants(
-    val variants: List<HousewareEntity>
+    val variants: List<FurnitureEntity>
 ): ItemComparable<String> {
     override fun id() = variants.first().seriesId
 }

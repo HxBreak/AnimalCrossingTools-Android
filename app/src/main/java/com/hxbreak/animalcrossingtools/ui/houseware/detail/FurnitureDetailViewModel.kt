@@ -8,7 +8,7 @@ import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 
-class HousewareDetailViewModel @AssistedInject constructor(
+class FurnitureDetailViewModel @AssistedInject constructor(
     private val repository: DataRepository,
     private val preference: PreferenceStorage,
     @Assisted private val filename: String,
@@ -18,7 +18,7 @@ class HousewareDetailViewModel @AssistedInject constructor(
     val locale = preference.selectedLocale
 
     val dao by lazy {
-        repository.local().housewaresDao()
+        repository.local().furnitureDao()
     }
 
     val item = MutableLiveData(filename)
@@ -33,7 +33,7 @@ class HousewareDetailViewModel @AssistedInject constructor(
 
     @AssistedInject.Factory
     interface AssistedFactory {
-        fun create(filename: String, housewareId: Long): HousewareDetailViewModel
+        fun create(filename: String, housewareId: Long): FurnitureDetailViewModel
     }
 
     companion object {

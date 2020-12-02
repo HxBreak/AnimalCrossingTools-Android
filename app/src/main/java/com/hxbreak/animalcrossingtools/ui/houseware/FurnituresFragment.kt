@@ -68,7 +68,7 @@ class HousewaresFragment : BackAbleAppbarFragment(), SearchView.OnSuggestionList
                 root to ViewCompat.getTransitionName(root)!!,
             )
             nav.navigate(
-                HousewaresFragmentDirections.actionHousewaresFragmentToHousewareDetailFragment(
+                HousewaresFragmentDirections.actionHousewaresFragmentToFurnitureDetailFragment(
                     entity.fileName,
                     entity.internalId.toLong()
                 ), extras
@@ -249,7 +249,7 @@ class HousewaresFragment : BackAbleAppbarFragment(), SearchView.OnSuggestionList
             val id = it.getString(it.getColumnIndexOrThrow("_id"))
             val filename = it.getString(it.getColumnIndexOrThrow("filename"))
             nav.navigate(
-                HousewaresFragmentDirections.actionHousewaresFragmentToHousewareDetailFragment(
+                HousewaresFragmentDirections.actionHousewaresFragmentToFurnitureDetailFragment(
                     filename,
                     id.toLong()
                 )

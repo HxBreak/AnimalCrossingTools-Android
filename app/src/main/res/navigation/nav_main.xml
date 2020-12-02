@@ -131,8 +131,8 @@
         android:name="com.hxbreak.animalcrossingtools.ui.houseware.HousewaresFragment"
         android:label="HousewaresFragment" >
         <action
-            android:id="@+id/action_housewaresFragment_to_housewareDetailFragment"
-            app:destination="@id/housewareDetailFragment"
+            android:id="@+id/action_housewaresFragment_to_furnitureDetailFragment"
+            app:destination="@id/furnitureDetailFragment"
             app:launchSingleTop="true" />
     </fragment>
 
@@ -164,9 +164,9 @@
 
     </action>
     <fragment
-        android:id="@+id/housewareDetailFragment"
-        android:name="com.hxbreak.animalcrossingtools.ui.houseware.detail.HousewareDetailFragment"
-        android:label="HousewareDetailFragment" >
+        android:id="@+id/furnitureDetailFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.houseware.detail.FurnitureDetailFragment"
+        android:label="FurnitureDetailFragment" >
         <argument
             android:name="filename"
             app:argType="string" />

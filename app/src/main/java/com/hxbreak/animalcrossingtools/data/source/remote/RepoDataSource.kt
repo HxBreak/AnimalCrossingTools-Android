@@ -46,14 +46,14 @@ class RepoDataSource(
         is Result.Error -> result
     }
 
-    suspend fun allHousewares(): Result<Pair<Job, List<List<HousewareEntity>>>> = when (val result = service.allHousewares()){
+    suspend fun allHousewares(): Result<Pair<Job, List<List<FurnitureEntity>>>> = when (val result = service.allHousewares()){
         is Result.Success -> {
             result.data.entries.forEach { entity ->
                 entity.value.forEach { it.seriesId = entity.key }
             }
             val job = serviceScope.launch {
                 val insertDatabaseTime = measureTime {
-                    database.housewaresDao().insert(result.data.values.flatten())
+                    database.furnitureDao().insert(result.data.values.flatten())
                 }.inMilliseconds
                 Timber.e("use $insertDatabaseTime to Insert All Data")
             }

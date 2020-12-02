@@ -12,7 +12,6 @@ import androidx.core.view.*
 import androidx.navigation.findNavController
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.utils.ViewUtils
-import timber.log.Timber
 import kotlin.math.abs
 
 class CommonStatusGroup @JvmOverloads constructor(
@@ -38,7 +37,6 @@ class CommonStatusGroup @JvmOverloads constructor(
     private var mAxes = -1
     private val errorView = lazy {
         if (errorLayoutValue < 0) error("errorLayout value is not set or incorrect.")
-        Timber.e("Create Error View")
         val view = LayoutInflater.from(context).inflate(errorLayoutValue, this, false)
         addView(view)
         requestLayout()
@@ -67,7 +65,7 @@ class CommonStatusGroup @JvmOverloads constructor(
 
     var isGestureProcessingMode = false
     
-    val gestureDistance = ViewUtils.dp2px(context, 52f)
+    private val gestureDistance = ViewUtils.dp2px(context, 52f)
 
     init {
         mScrollChildHelper.isNestedScrollingEnabled = true
@@ -214,6 +212,7 @@ class CommonStatusGroup @JvmOverloads constructor(
                     val range = target.computeHorizontalScrollRange()
                     moveX += dx
                     if (abs(moveX) > gestureDistance){
+                        (target as? NestedScrollingChild)?.stopNestedScroll()
                         triggerOnBackGesture()
                     }
                 }
@@ -278,7 +277,7 @@ class CommonStatusGroup @JvmOverloads constructor(
 //        }
     }
 
-    fun triggerOnBackGesture(){
+    private fun triggerOnBackGesture(){
         listener?.invoke()
     }
 
@@ -424,7 +423,6 @@ class CommonStatusGroup @JvmOverloads constructor(
         dyUnconsumed: Int,
         type: Int
     ) {
-        Timber.e("onNestedScroll")
         dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, null, type)
     }
 

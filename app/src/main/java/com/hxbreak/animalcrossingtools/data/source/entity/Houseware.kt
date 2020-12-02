@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 
 @Entity(tableName = "housewares")
-data class HousewareEntity(
+data class FurnitureEntity(
 
     @Embedded
     val name: LocalizationName,

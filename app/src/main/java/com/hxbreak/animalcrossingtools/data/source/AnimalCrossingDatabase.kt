@@ -3,7 +3,7 @@ package com.hxbreak.animalcrossingtools.data.source
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.hxbreak.animalcrossingtools.data.*
-import com.hxbreak.animalcrossingtools.data.source.entity.HousewareEntity
+import com.hxbreak.animalcrossingtools.data.source.entity.FurnitureEntity
 import com.hxbreak.animalcrossingtools.data.source.local.*
 
 @Database(entities = [
@@ -13,7 +13,7 @@ import com.hxbreak.animalcrossingtools.data.source.local.*
     BugSaved::class,
     SeaCreatureSaved::class,
     FossilSaved::class,
-    HousewareEntity::class,
+    FurnitureEntity::class,
 ], version = 1, exportSchema = false)
 abstract class AnimalCrossingDatabase : RoomDatabase() {
 
@@ -29,6 +29,6 @@ abstract class AnimalCrossingDatabase : RoomDatabase() {
 
     abstract fun fossilDao(): FossilDao
 
-    abstract fun housewaresDao(): HousewaresDao
+    abstract fun furnitureDao(): FurnitureDao
 
 }
