@@ -153,7 +153,7 @@ class FishFragment : EditBackAbleAppbarFragment() {
         }
 
         viewModel.clickedFish.observe(viewLifecycleOwner){
-            effectBottomSheet(it.getContentIfNotHandled())
+//            effectBottomSheet(it.getContentIfNotHandled())
         }
     }
 

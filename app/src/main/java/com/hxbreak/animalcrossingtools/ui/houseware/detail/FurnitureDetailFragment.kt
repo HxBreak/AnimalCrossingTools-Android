@@ -53,6 +53,16 @@ class FurnitureDetailFragment : BackAbleAppbarFragment(){
             FurnitureDetailViewModel.provideFactory(viewModelFactory, args.filename, args.housewareId)
         })
 
+    fun setResult(s: String){
+        setFragmentResult(HousewaresFragment.KEY_DETAIL_SELECT,
+            bundleOf(
+                HousewaresFragment.ARGUMENT_FILENAME to s,
+            )
+        )
+    }
+
+    fun requireRecyclerView() = (viewpager[0] as RecyclerView)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         commonStatus?.disableGestureDetector = true
@@ -69,15 +79,11 @@ class FurnitureDetailFragment : BackAbleAppbarFragment(){
         viewModel.current.observe(viewLifecycleOwner, EventObserver {
             viewpager.setCurrentItem(it, false)
             viewpager.doOnPreDraw { view ->
-                (viewpager[0] as RecyclerView).layoutManager?.findViewByPosition(it)?.let {
+                requireRecyclerView().layoutManager?.findViewByPosition(it)?.let {
                     ViewCompat.setTransitionName(it.findViewById(R.id.image), "${args.filename}-container")
                 }
 
-                setFragmentResult(HousewaresFragment.KEY_DETAIL_SELECT,
-                    bundleOf(
-                        HousewaresFragment.ARGUMENT_FILENAME to args.filename,
-                    )
-                )
+                setResult(args.filename)
                 startPostponedEnterTransition()
             }
         })
@@ -88,14 +94,10 @@ class FurnitureDetailFragment : BackAbleAppbarFragment(){
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.position?.let {
                     val item = viewModel.items.value?.get(it)
-                    (viewpager[0] as RecyclerView).layoutManager?.findViewByPosition(it)?.let {
+                    requireRecyclerView().layoutManager?.findViewByPosition(it)?.let {
                         ViewCompat.setTransitionName(it.findViewById(R.id.image), "${item?.fileName}-container")
                     }
-                    setFragmentResult(HousewaresFragment.KEY_DETAIL_SELECT,
-                        bundleOf(
-                            HousewaresFragment.ARGUMENT_FILENAME to item?.fileName,
-                        )
-                    )
+                    item?.fileName?.let { setResult(it) }
                 }
             }
 
@@ -168,7 +170,7 @@ class FurnitureDetailFragment : BackAbleAppbarFragment(){
                 names: MutableList<String>?,
                 sharedElements: MutableMap<String, View>?
             ) {
-                val view = (viewpager[0] as RecyclerView).layoutManager
+                val view = requireRecyclerView().layoutManager
                     ?.findViewByPosition(viewpager.currentItem)?.findViewById<ImageView>(R.id.image)
                 val item = viewModel.items.value.orEmpty()[viewpager.currentItem]
                 val s = "${item.fileName}-container"

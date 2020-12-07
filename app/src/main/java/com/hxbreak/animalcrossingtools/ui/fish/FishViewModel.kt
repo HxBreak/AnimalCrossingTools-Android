@@ -13,13 +13,8 @@ import com.hxbreak.animalcrossingtools.data.prefs.Hemisphere
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
-import com.hxbreak.animalcrossingtools.extensions.previousValue
 import com.hxbreak.animalcrossingtools.fragment.Event
-import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import kotlinx.coroutines.*
-import java.lang.IllegalStateException
-import java.util.*
-import javax.inject.Inject
 
 data class SelectableFishEntity(var selected: Boolean, val fish: FishEntityMix): ItemComparable<Int>{
     override fun id() = fish.fish.id
@@ -47,12 +42,7 @@ class FishViewModel @ViewModelInject constructor(
 
             when (result) {
                 is Result.Success -> {
-                    withContext(Dispatchers.Main){
-                        error.value = null
-                    }
-                    result.data.forEach {
-                        it.fish.localeName = it.fish.name.toLocaleName(locale)
-                    }
+                    error.postValue(null)
                     emit(result.data)
                 }
                 is Result.Error -> handleError(result.exception) {

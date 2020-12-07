@@ -12,6 +12,7 @@ import com.hxbreak.animalcrossingtools.adapter.SelectionItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.SelectionViewHolder
 import com.hxbreak.animalcrossingtools.data.source.entity.monthArray
 import com.hxbreak.animalcrossingtools.extensions.littleCircleWaitAnimation
+import com.hxbreak.animalcrossingtools.i18n.toLocaleName
 import com.hxbreak.animalcrossingtools.view.SlideSection
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_fish.*
@@ -72,7 +73,7 @@ class FishViewBinder(val viewModel: FishViewModel, val viewLifecycleOwner: Lifec
                 if (fishEntity.fish.saved?.donated == true) View.VISIBLE else View.GONE
             found_icon.visibility =
                 if (fishEntity.fish.saved?.owned == true) View.VISIBLE else View.GONE
-            title.setText("${fishEntity.fish.fish.localeName}-\$${fishEntity.fish.fish.price}")
+            title.setText("${fishEntity.fish.fish.name.toLocaleName(viewModel.locale)}-\$${fishEntity.fish.fish.price}")
             subtitle.setText(
                 "${
                     if (entity.availability.isAllDay) "All Day" else
