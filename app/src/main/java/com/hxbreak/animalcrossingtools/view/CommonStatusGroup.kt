@@ -9,11 +9,13 @@ import android.widget.TextView
 import androidx.annotation.IntDef
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.*
-import androidx.navigation.findNavController
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.utils.ViewUtils
 import kotlin.math.abs
 
+/**
+ * Provide Gesture Detector, Common Screen Display
+ */
 class CommonStatusGroup @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr), NestedScrollingParent3, NestedScrollingChild3 {
@@ -64,6 +66,8 @@ class CommonStatusGroup @JvmOverloads constructor(
     var lastY = 0f
 
     var isGestureProcessingMode = false
+
+    var disableGestureDetector = false
     
     private val gestureDistance = ViewUtils.dp2px(context, 52f)
 
@@ -75,10 +79,6 @@ class CommonStatusGroup @JvmOverloads constructor(
         gestureMode = typedValue.getInt(R.styleable.CommonStatusGroup_gestureMode, 0)
         emptyView = LayoutInflater.from(context).inflate(emptyLayoutValue, this, false)
         typedValue.recycle()
-        listener = {
-            findNavController().navigateUp()
-            Unit
-        }
     }
 
     fun setEmpty(){
@@ -126,25 +126,6 @@ class CommonStatusGroup @JvmOverloads constructor(
         }
     }
 
-    override fun generateDefaultLayoutParams(): ViewGroup.LayoutParams {
-        return LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-    }
-
-    override fun checkLayoutParams(p: ViewGroup.LayoutParams?): Boolean {
-        return super.checkLayoutParams(p) && p is LayoutParams
-    }
-
-    override fun generateLayoutParams(attrs: AttributeSet?): ViewGroup.LayoutParams {
-        return LayoutParams(context, attrs)
-    }
-
-    override fun generateLayoutParams(p: ViewGroup.LayoutParams?): ViewGroup.LayoutParams {
-        return LayoutParams(p)
-    }
-
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         content.measure(widthMeasureSpec, heightMeasureSpec)
@@ -160,27 +141,10 @@ class CommonStatusGroup @JvmOverloads constructor(
         updateLayout()
     }
 
-    class LayoutParams : MarginLayoutParams {
-
-        constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs)
-
-        constructor(width: Int, height: Int) : super(width, height)
-
-        constructor(source: ViewGroup.LayoutParams?) : super(source) {}
-    }
-
     override fun onFinishInflate() {
         super.onFinishInflate()
         if (childCount != 1) error("childCount Must Be 1")
         content = get(0)
-//        gestureMode = content.run {
-//            when (this) {
-//                is NestedScrollingChild -> {
-//                    if ((this as NestedScrollingChild).isNestedScrollingEnabled) 1 else gestureMode
-//                }
-//                else -> gestureMode
-//            }
-//        }
         addView(emptyView)
     }
 
@@ -189,6 +153,9 @@ class CommonStatusGroup @JvmOverloads constructor(
     }
 
     override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
+        if (disableGestureDetector) {
+            return false;
+        }
         mAxes = axes
         when(gestureMode){
             1 -> {
@@ -207,9 +174,6 @@ class CommonStatusGroup @JvmOverloads constructor(
             }else{
                 isGestureProcessingMode = true
                 if (target is ScrollingView){
-                    val offset = target.computeHorizontalScrollOffset()
-                    val scrollExtent = target.computeHorizontalScrollExtent()
-                    val range = target.computeHorizontalScrollRange()
                     moveX += dx
                     if (abs(moveX) > gestureDistance){
                         (target as? NestedScrollingChild)?.stopNestedScroll()
@@ -221,60 +185,6 @@ class CommonStatusGroup @JvmOverloads constructor(
         }else{
             dispatchNestedPreScroll(dx, dy, consumed, null, type)
         }
-//        if (dy > 0){//Scroll Down
-//            val scrollView = content
-//            if (scrollView is RecyclerView){
-//                val currentBottom = scrollView.computeVerticalScrollOffset() + scrollView.computeVerticalScrollExtent()
-//
-//                /**
-//                 * 滚动组件剩余可滚动距离
-//                 */
-//                val currentLeft = scrollView.computeVerticalScrollRange() - currentBottom
-//                if (currentLeft >= 0 || mScroller.finalY >= emptyView.measuredHeight){
-//                    if (dy > currentLeft){
-//                        //scrollSome
-//                        val hideAreaWantScrollY = dy - currentLeft
-//                        val hideAreaMaxScrollY = min(emptyView.measuredHeight - mScroller.finalY, hideAreaWantScrollY)
-//                        val parentScrollY = dy - hideAreaMaxScrollY
-//                        val parentConsumed = intArrayOf(0, 0)
-//                        dispatchNestedPreScroll(dx, parentScrollY - 1, parentConsumed, null, type)
-//                        mScroller.finalY += hideAreaMaxScrollY
-//                        consumed[1] = hideAreaMaxScrollY + 1
-//                        updateLayout()
-//                        Timber.e("sp1 currentLeft: $currentLeft childScrollY: $parentScrollY, Scroller: ${mScroller.finalY}")
-//                        Timber.e("sp1 $dy $currentLeft $hideAreaWantScrollY $hideAreaMaxScrollY $parentScrollY ${consumed[1]}")
-//                    }else{
-//                        Timber.e("sp2")
-//                        dispatchNestedPreScroll(dx, dy, consumed, null, type)
-//                    }
-//                }else{
-//                    Timber.e("sp4")
-//                    mScroller.finalY += dy
-//                    dispatchNestedPreScroll(dx, 0, consumed, null, type)
-//                    consumed[1] = dy
-//                    updateLayout()
-//                }
-//            }else{
-//                if (!content.canScrollVertically(1) && mScroller.finalY < emptyView.measuredHeight){
-//                    mScroller.finalY += dy
-//                    dispatchNestedPreScroll(dx, dy, consumed, null, type)
-//                    consumed[1] = dy
-//                    updateLayout()
-//                }else{
-//                    dispatchNestedPreScroll(dx, dy, consumed, null, type)
-//                }
-//            }
-//        } else {
-//            if (mScroller.finalY > 0){
-//                val willConsume = min(mScroller.finalY, abs(dy))
-//                mScroller.finalY -= willConsume
-//                dispatchNestedPreScroll(dx, dy + willConsume, consumed, null, type)
-//                consumed[1] = -willConsume
-//                updateLayout()
-//            }else{
-//                dispatchNestedPreScroll(dx, dy, consumed, null, type)
-//            }
-//        }
     }
 
     private fun triggerOnBackGesture(){
@@ -282,7 +192,7 @@ class CommonStatusGroup @JvmOverloads constructor(
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        if (gestureMode == 1) return super.dispatchTouchEvent(ev)
+        if (disableGestureDetector || gestureMode == 1) return super.dispatchTouchEvent(ev)
         when(ev?.action){
             MotionEvent.ACTION_DOWN -> {
                 isGestureProcessingMode = false
@@ -487,5 +397,33 @@ class CommonStatusGroup @JvmOverloads constructor(
 
     override fun startNestedScroll(axes: Int, type: Int): Boolean {
         return mScrollChildHelper.startNestedScroll(axes, type)
+    }
+
+    override fun generateDefaultLayoutParams(): ViewGroup.LayoutParams {
+        return LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+    }
+
+    override fun checkLayoutParams(p: ViewGroup.LayoutParams?): Boolean {
+        return super.checkLayoutParams(p) && p is LayoutParams
+    }
+
+    override fun generateLayoutParams(attrs: AttributeSet?): ViewGroup.LayoutParams {
+        return LayoutParams(context, attrs)
+    }
+
+    override fun generateLayoutParams(p: ViewGroup.LayoutParams?): ViewGroup.LayoutParams {
+        return LayoutParams(p)
+    }
+
+    class LayoutParams : MarginLayoutParams {
+
+        constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs)
+
+        constructor(width: Int, height: Int) : super(width, height)
+
+        constructor(source: ViewGroup.LayoutParams?) : super(source) {}
     }
 }

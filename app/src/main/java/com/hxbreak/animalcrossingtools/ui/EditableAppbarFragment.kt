@@ -1,34 +1,21 @@
 package com.hxbreak.animalcrossingtools.ui
 
 import android.animation.ObjectAnimator
-import android.content.SharedPreferences
-import android.graphics.Color
-import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
-import androidx.core.content.edit
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
-import androidx.transition.TransitionManager
 import com.google.android.material.appbar.AppBarLayout
 import com.hxbreak.animalcrossingtools.R
-import com.hxbreak.animalcrossingtools.extensions.previousValue
-import com.hxbreak.animalcrossingtools.utils.ViewUtils
 import com.hxbreak.animalcrossingtools.view.AnimatedTextView
+import com.hxbreak.animalcrossingtools.view.CommonStatusGroup
 import com.hxbreak.animalcrossingtools.view.drawable.AnimatedColorDrawable
-import timber.log.Timber
 import java.lang.NullPointerException
-import java.util.*
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -56,6 +43,8 @@ open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
         override fun handleOnBackPressed() { onBackPressed() }
     }
 
+    var commonStatus: CommonStatusGroup? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireToolbar().setNavigationIcon(navigationIcon())
@@ -66,6 +55,10 @@ open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
         backPressedDispatcher.addCallback(viewLifecycleOwner, handleBackPressed)
         uiSelectModeMutableLiveData.observe(viewLifecycleOwner){
             handleBackPressed.isEnabled = it
+        }
+        commonStatus = view.findViewById<CommonStatusGroup?>(R.id.common_layout)
+        commonStatus?.listener = {
+            onBackPressed()
         }
     }
 
@@ -112,6 +105,7 @@ open class EditableAppbarFragment : AppbarFragment() {
                 if (it == true){ forward() }else{ reverse() }
             }
         }
+
     }
 
     open fun animateIconList(): List<View> = emptyList() //dummy function

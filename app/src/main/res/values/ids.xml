@@ -6,4 +6,6 @@
 
     <item name="retry_area" type="id"/>
     <item name="error_information" type="id"/>
+
+    <item name="common_layout" type="id"/>
 </resources>

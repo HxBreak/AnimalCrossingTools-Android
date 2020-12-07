@@ -55,6 +55,7 @@ class FurnitureDetailFragment : BackAbleAppbarFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        commonStatus?.disableGestureDetector = true
         adapter = LightAdapter()
         chipAdapter = LightAdapter().also {
             it.register(ChipViewBinder())
@@ -136,10 +137,6 @@ class FurnitureDetailFragment : BackAbleAppbarFragment(){
                 return@observe
             }
 
-            nav.navigateUp()
-        }
-
-        common_layout.listener = {
             nav.navigateUp()
         }
     }
