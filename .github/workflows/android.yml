@@ -1,10 +1,10 @@
-name: Android CI
+name: Android Dev CI
 
 on:
   push:
-    branches: [ digger ]
+    branches: [ dev ]
   pull_request:
-    branches: [ digger ]
+    branches: [ dev ]
 
 jobs:
   build:
@@ -17,6 +17,22 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Clone Flutter repository with dev channel
+      uses: actions/checkout@v2
+      with:
+        repository: 'flutter/flutter'
+        ref: 'dev'
+        path: 'flutter'
+        fetch-depth: 0
+    - name: Add Flutter to the PATH
+      run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
+    - name: Run Flutter doctor
+      run: flutter doctor -v
+    - name: Get packages for the Flutter project
+      run: cd acnh_module && flutter pub get && cd ..
+    - name: build flutter project
+      run: flutter build aar
+      working-directory: acnh_module
     - name: Build with Gradle
       run: bash gradlew assembleDebug
     - name: upload apk
