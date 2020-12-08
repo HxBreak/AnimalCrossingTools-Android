@@ -88,7 +88,7 @@ class IndexedRecyclerView @JvmOverloads constructor(
             c to layout
         }
         blockHeight = pairs.sumBy { it.second.height }
-        boxWidth = pairs.map { it.second.wrapWidth() }.maxBy { it }!! + ViewUtils.dp2px(context, 8f)
+        boxWidth = pairs.map { it.second.wrapWidth() }.maxByOrNull { it }!! + ViewUtils.dp2px(context, 8f)
         indicator = FastScrollPopup(context.resources, this).apply {
             setBgColor(indicatorBgColor)
             setTextColor(indicatorTextColor)
@@ -124,15 +124,19 @@ class IndexedRecyclerView @JvmOverloads constructor(
         invalidate()
     }
 
+    private val marginEnd by lazy {
+        ViewUtils.dp2px(context, 4f)
+    }
+
     override fun draw(c: Canvas?) {
         super.draw(c)
         if (mEnableAlphabet){
             val yStart = indexStart()
             indicator.draw(c)
 
-            c?.withTranslation(x = (width - boxWidth).toFloat(), y = yStart.toFloat()) {
+            c?.withTranslation(x = (width - boxWidth - marginEnd).toFloat(), y = yStart.toFloat()) {
                 pairs.forEachIndexed { index, pair ->
-//                drawRect(Rect(1, 0, boxWidth, pair.second.height), boxPaint)
+//                    drawRect(Rect(1, 0, boxWidth, pair.second.height), boxPaint)
                     val bias = (boxWidth - pair.second.wrapWidth()) / 2
                     c.withTranslation(x = bias.toFloat()) {
                         (if (index == currentSelectedIndex) heightLightList[index] else pair).second.draw(
@@ -153,10 +157,13 @@ class IndexedRecyclerView @JvmOverloads constructor(
     private var isDragging: Boolean = false
 
     override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
-        val result = super.onInterceptTouchEvent(e);
+        val result = super.onInterceptTouchEvent(e)
         if (e?.action == MotionEvent.ACTION_DOWN && mEnableAlphabet) {
             val rect = getAlphabetRect()
             if (rect.contains(e.x.toInt(), e.y.toInt())) {
+                if (!isDragging){
+                    requestDisallowInterceptTouchEvent(true)
+                }
                 isDragging = true
                 calcCurrentSelect(e)
                 return true
@@ -253,7 +260,7 @@ class IndexedRecyclerView @JvmOverloads constructor(
     }
 
     private fun getAlphabetRect() = Rect(width - boxWidth, 0, width, blockHeight).apply {
-        offset(0, (height - blockHeight) / 2)
+        offset(-marginEnd, (height - blockHeight) / 2)
     }
 
     override fun onTouchEvent(e: MotionEvent?): Boolean {

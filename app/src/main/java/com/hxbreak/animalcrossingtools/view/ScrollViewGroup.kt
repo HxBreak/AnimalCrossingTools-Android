@@ -4,10 +4,12 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Scroller
 import androidx.core.view.*
+import timber.log.Timber
 
 
 class ScrollViewGroup @JvmOverloads constructor(
@@ -102,6 +104,11 @@ class ScrollViewGroup @JvmOverloads constructor(
         if (mScroller.computeScrollOffset()) {
             requestLayout()
         }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        Timber.e("$ev")
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun updateLayout() {

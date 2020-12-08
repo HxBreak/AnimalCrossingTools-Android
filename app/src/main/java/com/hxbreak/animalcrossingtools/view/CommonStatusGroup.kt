@@ -11,6 +11,7 @@ import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.*
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.utils.ViewUtils
+import timber.log.Timber
 import kotlin.math.abs
 
 /**
@@ -191,48 +192,59 @@ class CommonStatusGroup @JvmOverloads constructor(
         listener?.invoke()
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        if (disableGestureDetector || gestureMode == 1) return super.dispatchTouchEvent(ev)
+    override fun onTouchEvent(ev: MotionEvent?): Boolean {
+        Timber.e("onTouchEvent")
         when(ev?.action){
-            MotionEvent.ACTION_DOWN -> {
-                isGestureProcessingMode = false
-                moveX = 0f
-                moveY = 0f
-                lastX = ev.rawX
-                lastY = ev.rawY
-            }
             MotionEvent.ACTION_UP -> {
                 if (moveX > gestureDistance && isGestureProcessingMode){
                     triggerOnBackGesture()
                 }
             }
             MotionEvent.ACTION_MOVE -> {
-                when (gestureMode){
-                    0 -> {
-                        moveX += ev.rawX - lastX
-                        moveY += ev.rawY - lastY
+                ev.onTouchPointMove()
+            }
+        }
+        return true
+    }
+
+    private fun MotionEvent.onTouchPointMove(block: (() -> Unit)? = null){
+        moveX += rawX - lastX
+        moveY += rawY - lastY
+        block?.invoke()
+        lastX = rawX
+        lastY = rawY
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        Timber.e("onInterceptTouchEvent")
+        var value = super.onInterceptTouchEvent(ev)
+        if (!disableGestureDetector && gestureMode == 0)
+            when(ev?.action){
+                MotionEvent.ACTION_DOWN -> {
+                    isGestureProcessingMode = false
+                    moveX = 0f
+                    moveY = 0f
+                    lastX = ev.rawX
+                    lastY = ev.rawY
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    ev.onTouchPointMove {
                         if (abs(moveX) > mTouchSlop && abs(moveX) > abs(moveY)){
                             if (!isGestureProcessingMode){
                                 isGestureProcessingMode = true
-                                val upEvent = MotionEvent.obtain(ev)
-                                upEvent.action = MotionEvent.ACTION_CANCEL
-                                super.dispatchTouchEvent(upEvent)
-                                upEvent.recycle()
                                 requestDisallowInterceptTouchEvent(true)
+                                value = true
                             }
                         }
-                        lastX = ev.rawX
-                        lastY = ev.rawY
                     }
                 }
             }
-        }
-        return if (!isGestureProcessingMode) {
-            val value = super.dispatchTouchEvent(ev)
-            value
-        } else {
-            true
-        }
+
+        return value
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun updateLayout(){
