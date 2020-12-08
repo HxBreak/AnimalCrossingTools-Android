@@ -35,8 +35,8 @@ jobs:
       working-directory: acnh_module
     - name: Build with Gradle
       run: bash gradlew assembleDebug
-    - name: upload apk
-      uses: actions/upload-artifact@v2
-      with:
-        name: build
-        path: app/build/outputs/apk/debug/
+#    - name: upload apk
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: build
+#        path: app/build/outputs/apk/debug/
