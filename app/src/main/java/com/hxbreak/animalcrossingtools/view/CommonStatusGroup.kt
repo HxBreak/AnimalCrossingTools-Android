@@ -193,7 +193,6 @@ class CommonStatusGroup @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(ev: MotionEvent?): Boolean {
-        Timber.e("onTouchEvent")
         when(ev?.action){
             MotionEvent.ACTION_UP -> {
                 if (moveX > gestureDistance && isGestureProcessingMode){
@@ -216,7 +215,6 @@ class CommonStatusGroup @JvmOverloads constructor(
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        Timber.e("onInterceptTouchEvent")
         var value = super.onInterceptTouchEvent(ev)
         if (!disableGestureDetector && gestureMode == 0)
             when(ev?.action){

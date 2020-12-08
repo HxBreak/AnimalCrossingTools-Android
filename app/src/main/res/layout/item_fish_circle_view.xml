@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.imageview.ShapeableImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:shapeAppearance="@style/AppTheme.Widget.FishCircleView"
+    app:strokeColor="#00ff00"
+    app:strokeWidth="2dp"
+    android:padding="2dp"
+    android:layout_width="32dp"
+    android:layout_height="32dp">
+
+</com.google.android.material.imageview.ShapeableImageView>

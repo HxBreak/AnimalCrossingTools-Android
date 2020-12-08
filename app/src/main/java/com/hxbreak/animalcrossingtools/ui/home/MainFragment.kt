@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.*
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -19,6 +20,7 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.adapter.ItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
+import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.services.InstantMessageServices
 import com.hxbreak.animalcrossingtools.services.handler.InstantMessageController
 import com.hxbreak.animalcrossingtools.ui.AppbarFragment
@@ -27,6 +29,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.item_navigation_menu.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -34,8 +38,12 @@ class MainFragment : AppbarFragment() {
 
     private var adapter: LightAdapter? = null
     private var messageAdapter: InstantMessageNotificationAdapter? = null
+
     @Inject
     lateinit var controller: InstantMessageController
+
+    @Inject
+    lateinit var repository: DataRepository
 
     private fun requireAdapter() = adapter ?: throw IllegalStateException("adapter == null")
 
@@ -80,6 +88,15 @@ class MainFragment : AppbarFragment() {
         postponeEnterTransition()
         recycler_view.layoutManager = LinearLayoutManager(requireContext())
         adapter = LightAdapter()
+        val viewBinder = NavigationMenuViewBinder {
+            if (it.resId != null){
+                navigator.navigate(it.resId, it.arguments, it.options, FragmentNavigatorExtras())
+            } else if (it.direction != null){
+                navigator.navigate(it.direction)
+            }
+        }
+        val fishAdapter = LightAdapter()
+        fishAdapter.register(viewBinder)
 
         messageAdapter = InstantMessageNotificationAdapter(controller, onNavigateToLobbyList)
         controller.authorized.observe(viewLifecycleOwner){
@@ -88,17 +105,24 @@ class MainFragment : AppbarFragment() {
         controller.lobbyList.observe(viewLifecycleOwner){
             messageAdapter?.notifyItemChanged(0)
         }
+        val cachedFish = CachedFishPreviewAdapter()
 
-        recycler_view.adapter = ConcatAdapter(messageAdapter, adapter)
-        requireAdapter().register(NavigationMenuViewBinder {
-            if (it.resId != null){
-                navigator.navigate(it.resId, it.arguments, it.options, FragmentNavigatorExtras())
-            } else if (it.direction != null){
-                navigator.navigate(it.direction)
+        recycler_view.adapter = ConcatAdapter(messageAdapter, fishAdapter, cachedFish, adapter)
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            withContext(Dispatchers.IO){
+                if (repository.local().fishDao().countFishEntity() > 4){
+                    val result = repository.local().fishDao().allFishEntity().slice(IntRange(0, 4))
+                    withContext(Dispatchers.Main){
+                        cachedFish.list = result
+                    }
+                }
             }
-        })
-        requireAdapter().submitList(listOf(
+        }
+        requireAdapter().register(viewBinder)
+        fishAdapter.submitList(listOf(
             NavigationMenu(getString(R.string.fish_catalog), R.id.action_mainFragment_to_fishFragment),
+        ))
+        requireAdapter().submitList(listOf(
             NavigationMenu(getString(R.string.bug_catalog), R.id.action_mainFragment_to_bugsFragment),
             NavigationMenu(getString(R.string.sea_creature_catalog), R.id.action_mainFragment_to_seaCreatureFragment),
             NavigationMenu(getString(R.string.fossil_catalog), R.id.action_mainFragment_to_fossilFragment),

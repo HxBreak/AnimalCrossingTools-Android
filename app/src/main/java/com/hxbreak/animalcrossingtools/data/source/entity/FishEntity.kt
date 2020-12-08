@@ -1,10 +1,8 @@
 package com.hxbreak.animalcrossingtools.data.source.entity
 
-import androidx.room.ColumnInfo
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.google.gson.annotations.SerializedName
+import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 
 @Entity(tableName = "fish_entity")
 data class FishEntity(
@@ -29,4 +27,7 @@ data class FishEntity(
     val museumphrase: String,
     val image_uri: String,
     val icon_uri: String,
-)
+): ItemComparable<Int>{
+    @Ignore
+    override fun id() = id
+}
