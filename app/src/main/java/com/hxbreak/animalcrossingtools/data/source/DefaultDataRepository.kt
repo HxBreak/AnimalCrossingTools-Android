@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.SongSaved
 import com.hxbreak.animalcrossingtools.data.source.entity.Song
-import com.hxbreak.animalcrossingtools.data.source.local.FishDataSource
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -14,10 +13,6 @@ class DefaultDataRepository @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DataRepository() {
     override fun local() = localDatabase
-
-    override fun fishSource(): FishDataSource {
-        return source.fishSource()
-    }
 
     override fun repoSource() = source.repoSource()
 

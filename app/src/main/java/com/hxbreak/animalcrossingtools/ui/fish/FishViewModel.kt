@@ -9,12 +9,15 @@ import com.hxbreak.animalcrossingtools.character.CharUtil
 import com.hxbreak.animalcrossingtools.combinedLiveData
 import com.hxbreak.animalcrossingtools.data.FishSaved
 import com.hxbreak.animalcrossingtools.data.Result
+import com.hxbreak.animalcrossingtools.data.prefs.DataUsageStorage
 import com.hxbreak.animalcrossingtools.data.prefs.Hemisphere
 import com.hxbreak.animalcrossingtools.data.prefs.PreferenceStorage
+import com.hxbreak.animalcrossingtools.data.prefs.StorableDuration
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
 import com.hxbreak.animalcrossingtools.fragment.Event
 import kotlinx.coroutines.*
+import java.time.Instant
 
 data class SelectableFishEntity(var selected: Boolean, val fish: FishEntityMix): ItemComparable<Int>{
     override fun id() = fish.fish.id
@@ -23,6 +26,7 @@ data class SelectableFishEntity(var selected: Boolean, val fish: FishEntityMix):
 class FishViewModel @ViewModelInject constructor(
     private val repository: DataRepository,
     val preferenceStorage: PreferenceStorage,
+    private val dataUsageStorage: DataUsageStorage,
     val collector: GlideProgressCollector,
 ) : ViewModel() {
 
@@ -33,22 +37,49 @@ class FishViewModel @ViewModelInject constructor(
     val loading = MutableLiveData(false)
     val error = MutableLiveData<Pair<Exception, () -> Unit>?>()
 
+    private val usagePolicy by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        dataUsageStorage.selectStorableDataRefreshDuration
+    }
 
     private val items = refresh.switchMap { forceUpdate ->
         loading.value = true
         liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-            val result = repository.fishSource().allFish()
-            loading.postValue(false)
-
-            when (result) {
-                is Result.Success -> {
-                    error.postValue(null)
-                    emit(result.data)
+            val cachedCount = repository.local().fishDao().countFishEntity()
+            val databaseQuery = viewModelScope.launch (viewModelScope.coroutineContext + Dispatchers.IO){
+                emit(repository.repoSource().allLocalFish())
+            }
+            val block = suspend {
+                val operation = repository.repoSource().allFish()
+                when (val result = operation.second) {
+                    is Result.Success -> {
+                        error.postValue(null)
+                        emit(result.data)
+                    }
+                    is Result.Error -> handleError(result.exception) {
+                        refresh.postValue(forceUpdate)
+                    }
                 }
-                is Result.Error -> handleError(result.exception) {
-                    refresh.postValue(forceUpdate)
+                operation.first?.join()
+                dataUsageStorage.lastFishEntityRefreshDateTime = Instant.now()
+            }
+            when(val policy = usagePolicy){
+                is StorableDuration.DOWNLOAD_ALWAYS -> {
+                    block()
+                }
+                is StorableDuration.DOWNLOAD_WHEN_EMPTY -> {
+                    if (cachedCount < 40){
+                        block()
+                    }
+                }
+                is StorableDuration.InTime -> {
+                    val refreshTime = dataUsageStorage.lastFishEntityRefreshDateTime.epochSecond + policy.duration.seconds
+                    if (Instant.now().epochSecond > refreshTime){
+                        block()
+                    }
                 }
             }
+            databaseQuery.join()
+            loading.postValue(false)
         }
     }
 
@@ -56,7 +87,7 @@ class FishViewModel @ViewModelInject constructor(
 
     private val savedList = localChanged.switchMap {
         liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-            emit(repository.fishSource().loadAllSaved())
+            emit(repository.repoSource().allFishSaved())
         }
     }
 
@@ -175,7 +206,7 @@ class FishViewModel @ViewModelInject constructor(
                     it.saved?.quantity ?: 0
                 )
             }
-            repository.fishSource().updateFish(modifyStatus)
+            repository.local().fishDao().insertFish(modifyStatus)
             localChanged.postValue(true)
         }
     }
@@ -193,7 +224,7 @@ class FishViewModel @ViewModelInject constructor(
                     it.saved?.quantity ?: 0
                 )
             }
-            repository.fishSource().updateFish(modifyStatus)
+            repository.local().fishDao().insertFish(modifyStatus)
             localChanged.postValue(true)
         }
     }

@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.data.source.remote
 
+import com.hxbreak.animalcrossingtools.data.FishSaved
 import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.services.AnimalCrossingServiceV2
 import com.hxbreak.animalcrossingtools.data.source.AnimalCrossingDatabase
@@ -61,5 +62,35 @@ class RepoDataSource(
         }
         is Result.Error -> Result.Error(result.exception)
         else -> throw IllegalStateException("The result from service shouldn\'t using loading")
+    }
+
+    suspend fun allLocalFish(): List<FishEntityMix> {
+        val savedList = database.fishDao().getAllFish()
+        return database.fishDao().allFishEntity().map {
+            FishEntityMix(it, savedList.firstOrNull { x -> x.id == it.id })
+        }
+    }
+
+    suspend fun allFish(): Pair<Job?, Result<List<FishEntityMix>>> {
+        when (val result = service.allFish()) {
+            is Result.Success -> {
+                val job = serviceScope.launch {
+                    val insertDatabaseTime = measureTime {
+                        database.fishDao().insertAllFishEntity(result.data.values.toList())
+                    }.inMilliseconds
+                    Timber.e("use $insertDatabaseTime to Insert All Data")
+                }
+                val savedList = database.fishDao().getAllFish()
+                val data = Result.Success(result.data.map {
+                    FishEntityMix(it.value, savedList.firstOrNull { x -> x.id == it.value.id })
+                })
+                return job to data
+            }
+            is Result.Error -> return null to result
+        }
+    }
+
+    suspend fun allFishSaved(): List<FishSaved> {
+        return database.fishDao().getAllFish()
     }
 }

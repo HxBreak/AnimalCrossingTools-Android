@@ -10,5 +10,7 @@ interface DataUsageStorage : ApplicationPreference {
 
     var lastFurnitureRefreshDateTime: Instant
 
+    var lastFishEntityRefreshDateTime: Instant
+
     val selectStorableDataRefreshDurationLiveData: LiveData<StorableDuration>
 }

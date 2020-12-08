@@ -2,7 +2,10 @@ package com.hxbreak.animalcrossingtools.data.source
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.hxbreak.animalcrossingtools.data.*
+import com.hxbreak.animalcrossingtools.data.source.converters.CommonConverter
+import com.hxbreak.animalcrossingtools.data.source.entity.FishEntity
 import com.hxbreak.animalcrossingtools.data.source.entity.FurnitureEntity
 import com.hxbreak.animalcrossingtools.data.source.local.*
 
@@ -14,7 +17,9 @@ import com.hxbreak.animalcrossingtools.data.source.local.*
     SeaCreatureSaved::class,
     FossilSaved::class,
     FurnitureEntity::class,
+    FishEntity::class,
 ], version = 1, exportSchema = false)
+@TypeConverters(value = [CommonConverter::class])
 abstract class AnimalCrossingDatabase : RoomDatabase() {
 
     abstract fun fishDao(): FishDao

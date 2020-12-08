@@ -36,6 +36,10 @@ class SharedDataUsageStorage constructor(context: Context) : DataUsageStorage {
         prefs, LAST_FURNITURES_REFRESH_DATETIME, Instant.MIN
     )
 
+    override var lastFishEntityRefreshDateTime: Instant by InstantPreference(
+        prefs, LAST_FISHENTITY_REFRESH_DATETIME, Instant.MIN
+    )
+
     private val selectDataRefreshDurationLiveData = MutableLiveData<StorableDuration>(selectStorableDataRefreshDuration)
 
     override val selectStorableDataRefreshDurationLiveData: LiveData<StorableDuration> by lazy {
@@ -45,6 +49,7 @@ class SharedDataUsageStorage constructor(context: Context) : DataUsageStorage {
 
     companion object {
         const val LAST_FURNITURES_REFRESH_DATETIME = "LAST_FURNITURES_REFRESH_DATETIME"
+        const val LAST_FISHENTITY_REFRESH_DATETIME = "LAST_FISHENTITY_REFRESH_DATETIME"
         const val PREFS_NAME = "setting_datausage"
         const val STORABLE_REFRESH_TYPE = "STORABLE_REFRESH_TYPE"
         const val STORABLE_REFRESH_TIME = "STORABLE_REFRESH_TIME"

@@ -16,8 +16,6 @@ import com.hxbreak.animalcrossingtools.data.prefs.SharedPreferenceStorage
 import com.hxbreak.animalcrossingtools.data.services.AnimalCrossingServiceV2
 import com.hxbreak.animalcrossingtools.data.services.AnimalCrossingServices
 import com.hxbreak.animalcrossingtools.data.source.*
-import com.hxbreak.animalcrossingtools.data.source.local.FishDataSource
-import com.hxbreak.animalcrossingtools.data.source.local.FishLocalDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.RepoDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.SongDataSource
 import com.hxbreak.animalcrossingtools.data.source.remote.SongRemoteDataSource
@@ -30,7 +28,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -55,9 +52,6 @@ object ApplicationModule {
         serviceV2: AnimalCrossingServiceV2
     ): AnimalCrossingDataSource {
         return object : AnimalCrossingDataSource {
-            override fun fishSource(): FishDataSource {
-                return FishLocalDataSource(database.fishDao(), serviceV2)
-            }
 
             override fun songSource(): SongDataSource {
                 return SongRemoteDataSource(
@@ -158,17 +152,6 @@ object ApplicationModule {
     @Provides
     fun provideServicsV2(@ApiV2 retrofit: Retrofit) =
         retrofit.create(AnimalCrossingServiceV2::class.java)
-
-
-    @Singleton
-    @Provides
-    fun providerFishLocalDataSource(
-        database: AnimalCrossingDatabase,
-        serviceV2: AnimalCrossingServiceV2,
-        ioDispatcher: CoroutineDispatcher
-    ): FishLocalDataSource {
-        return FishLocalDataSource(database.fishDao(), serviceV2, ioDispatcher)
-    }
 
     @Singleton
     @Provides
