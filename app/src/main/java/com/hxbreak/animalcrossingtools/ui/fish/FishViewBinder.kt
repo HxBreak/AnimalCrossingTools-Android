@@ -5,7 +5,10 @@ import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.lifecycle.LifecycleOwner
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
 import com.hxbreak.animalcrossingtools.GlideApp
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.SelectionItemViewDelegate
@@ -37,6 +40,16 @@ class FishViewBinder(val viewModel: FishViewModel, val viewLifecycleOwner: Lifec
     inner class ViewHolder(val view: View): SelectionViewHolder(view), LayoutContainer{
         override val containerView: View
             get() = view
+        private val badgeDrawable: BadgeDrawable = BadgeDrawable.create(containerView.context)
+
+        init {
+            badgeDrawable.isVisible = true
+            badgeDrawable.badgeGravity = BadgeDrawable.TOP_END
+
+            image.doOnLayout {
+                BadgeUtils.attachBadgeDrawable(badgeDrawable, image, image_container)
+            }
+        }
 
         fun bindData(fishEntity: SelectableFishEntity) {
             requireSection().setState(if (isSelected) SlideSection.EXPANDED else SlideSection.COLLAPSED)
@@ -64,10 +77,14 @@ class FishViewBinder(val viewModel: FishViewModel, val viewLifecycleOwner: Lifec
             availability.background = ColorDrawable(Color.TRANSPARENT)
             if (monthValue.toShort() in i.availability.monthArray(viewModel.hemisphere)){
                 if (i.availability.timeArray.orEmpty().contains(hour.toShort())){
-                    availability.background = ColorDrawable(Color.GREEN)
+                    badgeDrawable.backgroundColor = Color.GREEN
                 }else{
-                    availability.background = ColorDrawable(Color.BLUE)
+                    badgeDrawable.backgroundColor = Color.BLUE
                 }
+                badgeDrawable.alpha = 255
+            }else{
+                badgeDrawable.backgroundColor = Color.RED
+                badgeDrawable.alpha = 0
             }
             donated_icon.visibility =
                 if (fishEntity.fish.saved?.donated == true) View.VISIBLE else View.GONE

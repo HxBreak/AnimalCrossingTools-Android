@@ -65,7 +65,7 @@ class RepoDataSource(
     }
 
     suspend fun allLocalFish(): List<FishEntityMix> {
-        val savedList = database.fishDao().getAllFish()
+        val savedList = database.fishDao().allFishSaved()
         return database.fishDao().allFishEntity().map {
             FishEntityMix(it, savedList.firstOrNull { x -> x.id == it.id })
         }
@@ -80,7 +80,7 @@ class RepoDataSource(
                     }.inMilliseconds
                     Timber.e("use $insertDatabaseTime to Insert All Data")
                 }
-                val savedList = database.fishDao().getAllFish()
+                val savedList = database.fishDao().allFishSaved()
                 val data = Result.Success(result.data.map {
                     FishEntityMix(it.value, savedList.firstOrNull { x -> x.id == it.value.id })
                 })
@@ -91,6 +91,6 @@ class RepoDataSource(
     }
 
     suspend fun allFishSaved(): List<FishSaved> {
-        return database.fishDao().getAllFish()
+        return database.fishDao().allFishSaved()
     }
 }

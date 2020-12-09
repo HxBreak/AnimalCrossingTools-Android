@@ -20,7 +20,9 @@ import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.adapter.ItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
+import com.hxbreak.animalcrossingtools.data.Result
 import com.hxbreak.animalcrossingtools.data.source.DataRepository
+import com.hxbreak.animalcrossingtools.domain.home.LoadCachedFishUseCase
 import com.hxbreak.animalcrossingtools.services.InstantMessageServices
 import com.hxbreak.animalcrossingtools.services.handler.InstantMessageController
 import com.hxbreak.animalcrossingtools.ui.AppbarFragment
@@ -43,7 +45,7 @@ class MainFragment : AppbarFragment() {
     lateinit var controller: InstantMessageController
 
     @Inject
-    lateinit var repository: DataRepository
+    lateinit var loadCachedFishUseCase: LoadCachedFishUseCase
 
     private fun requireAdapter() = adapter ?: throw IllegalStateException("adapter == null")
 
@@ -109,12 +111,9 @@ class MainFragment : AppbarFragment() {
 
         recycler_view.adapter = ConcatAdapter(messageAdapter, fishAdapter, cachedFish, adapter)
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            withContext(Dispatchers.IO){
-                if (repository.local().fishDao().countFishEntity() > 4){
-                    val result = repository.local().fishDao().allFishEntity().slice(IntRange(0, 4))
-                    withContext(Dispatchers.Main){
-                        cachedFish.list = result
-                    }
+            when(val result = loadCachedFishUseCase(Unit)){
+                is Result.Success -> {
+                    cachedFish.list = result.data
                 }
             }
         }

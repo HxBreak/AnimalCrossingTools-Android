@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
+import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
+import com.hxbreak.animalcrossingtools.extensions.removeAllItemDecorations
 import com.hxbreak.animalcrossingtools.extensions.testChanged
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
 import com.hxbreak.animalcrossingtools.ui.LazyMutableBooleanProperty
@@ -56,21 +58,17 @@ class FishFragment : EditBackAbleAppbarFragment() {
         val enableIndicator = viewModel.locale.language == "zh"
         requireToolbar().title = null
         requireToolbarTitle().setText(res.getString(R.string.fish_catalog))
-        viewModel.data.observe(viewLifecycleOwner){
-            requireAdapter().submitList(it)
+        viewModel.data.observe(viewLifecycleOwner){ fishList ->
+            requireAdapter().submitList(fishList)
             recycler_view.doOnPreDraw { _ ->
                 recycler_view.run {
-                    if (itemDecorationCount > 0) {
-                        for (i in itemDecorationCount - 1 downTo 0) {
-                            removeItemDecorationAt(i)
-                        }
-                    }
-                    if (it != null) {
+                    if (fishList != null) {
+                        removeAllItemDecorations()
                         if (enableIndicator) {
                             addItemDecoration(
                                 FishHeadDecoration(
                                     requireContext(),
-                                    it.map { it.fish.fish },
+                                    fishList.map { it.fish.fish },
                                     recycler_view.width
                                 )
                             )

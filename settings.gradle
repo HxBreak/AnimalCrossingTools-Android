@@ -1,3 +1,4 @@
+include ':shared'
 rootProject.name='AnimalCrossingTools'
 include ':app'
 include ':tracker_proto'

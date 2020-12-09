@@ -110,7 +110,7 @@ android {
     }
 
     lintOptions {
-        disable "EnsureInitializerMetadata", "NullSafeMutableLiveData"
+        disable "EnsureInitializerMetadata", "NullSafeMutableLiveData", "UnsafeExperimentalUsageError"
     }
 
     packagingOptions {
@@ -213,4 +213,5 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.53.Final'
 
+    implementation(project(":shared"))
 }

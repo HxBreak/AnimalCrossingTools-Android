@@ -9,7 +9,7 @@ import com.hxbreak.animalcrossingtools.data.source.entity.FishEntity
 interface FishDao {
 
     @Query("select * from fish")
-    suspend fun getAllFish(): List<FishSaved>
+    suspend fun allFishSaved(): List<FishSaved>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFish(fish: List<FishSaved>)

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.hxbreak.animalcrossingtools.GlideRequest
 import com.hxbreak.animalcrossingtools.R
@@ -32,4 +33,10 @@ fun GlideRequest<*>.littleCircleWaitAnimation(context: Context) = this.let {
     }
 //    this.placeholder(drawable)
     this
+}
+
+fun RecyclerView.removeAllItemDecorations(){
+    repeat(itemDecorationCount){
+        removeItemDecorationAt(it)
+    }
 }
