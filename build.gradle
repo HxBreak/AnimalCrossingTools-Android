@@ -1,9 +1,45 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.4.10'
-    ext.ktlintVersion = '0.35.0'
-    ext.navigationVersion = '2.3.1'
+    ext{
+        kotlin_version = '1.4.10'
+        ktlintVersion = '0.35.0'
+        navigationVersion = '2.3.1'
+        coreTestingVersion = '2.0.0'
+        hiltVersion = '2.28.3-alpha'
+        hiltViewModelVersion = '1.0.0-alpha02'
+        junitVersion = '4.12'
+        testExtJunit = '1.1.0'
+        uiAutomatorVersion = '2.2.0'
+        truthVersion = '0.42'
+        assistedInjectVersion = '0.6.0'
+        recyclerViewVersion = '1.2.0-alpha06'
+
+
+        androidXVersion = '1.0.0'
+        androidXTestCoreVersion = '1.2.0'
+        androidXTestExtKotlinRunnerVersion = '1.1.1'
+        androidXTestRulesVersion = '1.2.0'
+        androidXAnnotations = '1.1.0'
+        androidXLegacySupport = '1.0.0'
+        appCompatVersion = '1.1.0'
+        archLifecycleVersion = '2.2.0'
+        archTestingVersion = '2.2.0'
+        cardVersion = '1.0.0'
+        coroutinesVersion = '1.3.7'
+        dexMakerVersion = '2.12.1'
+        espressoVersion = '3.3.0'
+        fragmentVersion = '1.2.0-rc02'
+        fragmentKtxVersion = '1.1.0-rc01'
+        hamcrestVersion = '1.3'
+        materialVersion = '1.3.0-alpha04'
+        mockitoVersion = '2.19.0'
+        robolectricVersion = '4.3.1'
+        roomVersion = '2.2.5'
+        rulesVersion = '1.0.1'
+        timberVersion = '4.7.1'
+
+    }
     repositories {
         google()
         jcenter()
@@ -14,7 +50,7 @@ buildscript {
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.9'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
-        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.28.1-alpha'
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -43,37 +79,3 @@ allprojects {
         }
     }
 }
-
-ext {
-    androidXVersion = '1.0.0'
-    androidXTestCoreVersion = '1.2.0'
-    androidXTestExtKotlinRunnerVersion = '1.1.1'
-    androidXTestRulesVersion = '1.2.0'
-    androidXAnnotations = '1.1.0'
-    androidXLegacySupport = '1.0.0'
-    appCompatVersion = '1.1.0'
-    archLifecycleVersion = '2.2.0'
-    archTestingVersion = '2.2.0'
-    cardVersion = '1.0.0'
-    coroutinesVersion = '1.3.7'
-    dexMakerVersion = '2.12.1'
-    espressoVersion = '3.3.0'
-    fragmentVersion = '1.2.0-rc02'
-    fragmentKtxVersion = '1.1.0-rc01'
-    hamcrestVersion = '1.3'
-    junitVersion = '4.12'
-    materialVersion = '1.0.0'
-    mockitoVersion = '2.19.0'
-    recyclerViewVersion = '1.2.0-alpha06'
-    robolectricVersion = '4.3.1'
-    roomVersion = '2.2.5'
-    rulesVersion = '1.0.1'
-    timberVersion = '4.7.1'
-    preference_version = "1.1.1"
-    truthVersion = '1.0'
-    assistedInjectVersion = '0.6.0'
-}
-
-//task clean(type: Delete) {
-//    delete rootProject.buildDir
-//}

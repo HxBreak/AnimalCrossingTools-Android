@@ -4,6 +4,7 @@ import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -20,10 +21,10 @@ import java.lang.reflect.Proxy
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), FlutterEngineConfigurator {
 
-
     private val viewModel by viewModels<MainActivityViewModel>()
 
-    private val navigator by lazy {
+    @VisibleForTesting
+    val navigator by lazy {
         nav_host_fragment.findNavController()
     }
 
