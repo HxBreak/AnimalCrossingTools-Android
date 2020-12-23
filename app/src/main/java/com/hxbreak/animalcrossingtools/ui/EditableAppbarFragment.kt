@@ -67,6 +67,10 @@ open class EditBackAbleAppbarFragment : EditableAppbarFragment() {
             uiSelectMode = !uiSelectMode
         } else {
             handleBackPressed.isEnabled = false
+            /**
+             * Remove Listener When Back Action Trigger
+             */
+            commonStatus?.listener = null
             backPressedDispatcher.onBackPressed()
         }
     }

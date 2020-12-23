@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.*
@@ -192,15 +193,18 @@ class CommonStatusGroup @JvmOverloads constructor(
         listener?.invoke()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent?): Boolean {
         when(ev?.action){
             MotionEvent.ACTION_UP -> {
-                if (moveX > gestureDistance && isGestureProcessingMode){
-                    triggerOnBackGesture()
-                }
+
             }
             MotionEvent.ACTION_MOVE -> {
                 ev.onTouchPointMove()
+                if (moveX > gestureDistance && isGestureProcessingMode){
+                    triggerOnBackGesture()
+                    isGestureProcessingMode = false
+                }
             }
         }
         return true
