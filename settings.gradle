@@ -1,8 +1,8 @@
+include ':stun'
 include ':shared'
 rootProject.name='AnimalCrossingTools'
 include ':app'
 include ':tracker_proto'
-include ':ratingbar'
 
 setBinding(new Binding([gradle: this]))
 evaluate(new File(settingsDir, "acnh_module/.android/include_flutter.groovy"))

@@ -180,7 +180,6 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
-    implementation project(path: ':ratingbar')
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 
