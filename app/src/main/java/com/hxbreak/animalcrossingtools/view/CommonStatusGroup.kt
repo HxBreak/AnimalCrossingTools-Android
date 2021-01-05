@@ -106,7 +106,12 @@ class CommonStatusGroup @JvmOverloads constructor(
     private var fromState: Int = 0
 
     private fun setState(@State newState: Int){
-        if (!isLaidOut) return
+        if (!isLaidOut) {
+            doOnPreDraw {
+                setState(newState)
+            }
+            return
+        }
 
         if (mState != newState){
             when(mState){
