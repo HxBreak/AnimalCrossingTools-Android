@@ -21,17 +21,21 @@ data class TestResult1(
     val needTest3: Boolean? = null,
 )
 
+enum class NatType{
+    UNKNOWN,
+    NO_NAT,
+    FULL_CONE,
+    SYMMETRIC_NAT,
+    RESTRICTED_CONE,
+    RESTRICTED_PORT
+}
+
 data class DiscoverInfo(
     val publicIP: InetAddress? = null,
     val publicPort: Int? = null,
     val errorCode: Int? = null,
     val errorReason: String? = null,
-    val natNet: Boolean? = null,
-    val openAccess: Boolean? = null,
-    val fullCone: Boolean? = null,
-    val symmetricNat: Boolean? = null,
-    val restrictedCone: Boolean? = null,
-    val restrictedPort: Boolean? = null
+    val natType: NatType? = NatType.UNKNOWN,
 )
 
 class StunHelperTest {
@@ -102,7 +106,7 @@ class StunHelperTest {
                     if (ma.port == udp.localPort && ma.address.bytes.contentEquals(udp.inetAddress.address)) {
                         return TestResult1(
                             DiscoverInfo(
-                                natNet = false
+                                natType = NatType.NO_NAT
                             )
                         )
                     } else {
@@ -123,7 +127,7 @@ class StunHelperTest {
                                 TestResult1(
                                     DiscoverInfo(
                                         ma.address.inetAddress,
-                                        symmetricNat = true
+                                        natType = NatType.SYMMETRIC_NAT
                                     ),
                                     changedAddress = ca,
                                     mappedAddress = ma,
@@ -259,13 +263,13 @@ class StunHelperTest {
                         errorReason = errCode.reason
                     )
                 }
-                if (test1Result.natNet == false) {
+                if (test1Result.natType == NatType.NO_NAT) {
                     return test1Result.copy(
-                        openAccess = true
+                        natType = NatType.NO_NAT
                     )
                 } else {
                     return test1Result.copy(
-                        fullCone = true
+                        natType = NatType.FULL_CONE
                     )
                 }
             } catch (e: Exception) {
@@ -334,7 +338,7 @@ class StunHelperTest {
                         errorReason = errCode.reason
                     )
                 }
-                return test1Result.copy(restrictedCone = true)
+                return test1Result.copy(natType = NatType.RESTRICTED_CONE)
             } catch (e: Exception) {
                 if (e is SocketTimeoutException) {
                     timeExceed += System.currentTimeMillis() - start
@@ -349,7 +353,7 @@ class StunHelperTest {
             }
         }while (timeExceed < 7900)
         return test1Result.copy(
-            restrictedPort = true
+            natType = NatType.RESTRICTED_PORT
         )
     }
 }
