@@ -32,6 +32,10 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.5"
 
+    buildFeatures {
+        viewBinding { enabled true }
+    }
+
     defaultConfig {
         applicationId "com.hxbreak.animalcrossingtools"
         minSdkVersion 19

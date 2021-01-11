@@ -15,7 +15,6 @@ private data class TestResult1(
     val changedAddress: ChangedAddress? = null,
     val mappedAddress: MappedAddress? = null,
     val needTest3: Boolean? = null,
-    val localPort: Int? = null,
 )
 
 enum class NatType {
@@ -30,6 +29,7 @@ enum class NatType {
 data class DiscoverInfo(
     val publicIP: InetAddress? = null,
     val publicPort: Int? = null,
+    val localPort: Int? = null,
     val errorCode: Int? = null,
     val errorReason: String? = null,
     val natType: NatType? = NatType.UNKNOWN,
@@ -41,15 +41,15 @@ object StunHelper {
         flow {
             val test1Result = test1(localPort, stunServer, stunServerPort, timeout)
             emit(test1Result.discoverInfo)
-            test1Result.localPort ?: return@flow
-            val test2Result = test2(test1Result.localPort, stunServer, stunServerPort,
+            test1Result.discoverInfo.localPort ?: return@flow
+            val test2Result = test2(test1Result.discoverInfo.localPort, stunServer, stunServerPort,
                 test1Result.discoverInfo, test1Result.changedAddress!!, timeout)
             emit(test2Result)
             if (test2Result.errorCode != null){
-                val result1redo = test1(test1Result.localPort, stunServer, stunServerPort, timeout, test1Result.mappedAddress)
+                val result1redo = test1(test1Result.discoverInfo.localPort, stunServer, stunServerPort, timeout, test1Result.mappedAddress)
                 emit(result1redo.discoverInfo)
                 if (result1redo.needTest3 == true){
-                    val test3result = test3(test1Result.localPort, stunServer, stunServerPort,
+                    val test3result = test3(test1Result.discoverInfo.localPort, stunServer, stunServerPort,
                         test1Result.discoverInfo, test1Result.changedAddress, timeout)
                     emit(test3result)
                 }
@@ -119,9 +119,9 @@ object StunHelper {
                             DiscoverInfo(
                                 ma.address.inetAddress,
                                 ma.port,
-                                natType = NatType.NO_NAT
+                                natType = NatType.NO_NAT,
+                                localPort = udp.localPort
                             ),
-                            localPort = udp.localPort
                         )
                     } else {
                         if (mappedAddress != null) {
@@ -132,32 +132,32 @@ object StunHelper {
                                     DiscoverInfo(
                                         ma.address.inetAddress,
                                         ma.port,
+                                        localPort = udp.localPort
                                     ),
                                     changedAddress = ca,
                                     mappedAddress = ma,
                                     needTest3 = true,
-                                    localPort = udp.localPort
                                 )
                             } else {
                                 TestResult1(
                                     DiscoverInfo(
                                         ma.address.inetAddress,
-                                        natType = NatType.SYMMETRIC_NAT
+                                        natType = NatType.SYMMETRIC_NAT,
+                                        localPort = udp.localPort,
                                     ),
                                     changedAddress = ca,
                                     mappedAddress = ma,
-                                    localPort = udp.localPort,
                                 )
                             }
                         }
                         return TestResult1(
                             DiscoverInfo(
                                 ma.address.inetAddress,
-                                ma.port
+                                ma.port,
+                                localPort = udp.localPort
                             ),
                             changedAddress = ca,
                             mappedAddress = ma,
-                            localPort = udp.localPort
                         )
 
                     }

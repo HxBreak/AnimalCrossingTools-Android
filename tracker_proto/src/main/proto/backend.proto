@@ -4,46 +4,62 @@ option java_package = "com.hxbreak.backend";
 option java_outer_classname = "BackendPacket";
 
 message LoginEntity {
-    string id = 1;
-    string key = 2;
+  string id = 1;
+  string key = 2;
 }
 
 message ChatMessageEntity{
-    string to_id = 1;
-    string from_id = 2;
-    string msg = 3;
+  string to_id = 1;
+  string from_id = 2;
+  string msg = 3;
+}
+
+message StunRequest{
+  string to_id = 1;
+  string from_id = 2;
+}
+
+message StunResponse{
+  string to_id = 1;
+  string from_id = 2;
+  bool result = 3;
 }
 
 message NetUserEntity {
-    string id = 1;
-    int32 ip = 2;
-    int32 port = 3;
+  string id = 1;
+  int32 ip = 2;
+  int32 port = 3;
 }
 
 enum BackendMessageType {
-    LOGIN = 0;
-    TEXT = 1;
-    PHOTO = 2;
-    RENAME = 3;
-    LIST = 4;
-    AUTHORIZED = 5;
-    LOGOUT = -1;
+  LOGIN = 0;
+  TEXT = 1;
+  PHOTO = 2;
+  RENAME = 3;
+  LIST = 4;
+  AUTHORIZED = 5;
+  STUN_REQUEST = 6;
+  STUN_RESPONSE = 7;
+  LOGOUT = -1;
 }
 
 message ToServerPacket {
-    reserved 5 to 6;
-    BackendMessageType message_type = 1;
+//  reserved 5 to 6;
+  BackendMessageType message_type = 1;
 
-    oneof entity {
-        LoginEntity loginEntity = 3;
-        ChatMessageEntity chatTextEntity = 4;
-    }
+  oneof entity {
+    LoginEntity loginEntity = 3;
+    ChatMessageEntity chatTextEntity = 4;
+    StunRequest stunRequest = 5;
+  }
 }
 
 message ToClientPacket {
-    BackendMessageType message_type = 1;
-    oneof entity {
-        ChatMessageEntity chatTextEntity = 2;
-    }
-    repeated NetUserEntity userEntity = 3;
+  BackendMessageType message_type = 1;
+  repeated NetUserEntity userEntity = 2;
+  oneof entity {
+    ChatMessageEntity chatTextEntity = 3;
+    StunRequest stunRequest = 4;
+    StunResponse stunResponse = 5;
+  }
 }

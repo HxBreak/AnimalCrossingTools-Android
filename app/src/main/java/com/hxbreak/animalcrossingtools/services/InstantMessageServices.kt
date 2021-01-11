@@ -73,6 +73,7 @@ class InstantMessageServices : LifecycleService(){
             try {
                 return@async b.connect(host, port).sync()
             }catch (e: Exception){
+                e.printStackTrace()
                 return@async null
             }
         }

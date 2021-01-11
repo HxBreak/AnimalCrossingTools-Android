@@ -41,17 +41,44 @@ class InstantMessageController {
         }
     }
 
-    suspend fun sendMessageTo(toId: String, msg: String): Boolean {
+    private suspend fun authorizedBlock(block: (Channel) -> Unit) : Boolean{
         return withContext(serviceScope.coroutineContext){
             if ((mainChannel?.isActive == true) && (mainChannel?.isOpen == true)){
                 if (_authorized.value == true){
+                    block(mainChannel!!)
                     return@withContext true
                 }else{
                     handleException(Exception("User Is Not Authorized"))
-                    return@withContext false
                 }
+            }else{
+                handleException(Exception("Not Connected"))
             }
-            false
+            return@withContext false
+        }
+    }
+
+    suspend fun sendStunRequest(toId: String): Boolean {
+        return authorizedBlock {
+            val packet = BackendPacket.ToClientPacket.newBuilder().apply {
+                messageType = BackendPacket.BackendMessageType.STUN_REQUEST
+                stunRequest = BackendPacket.StunRequest.newBuilder().apply {
+                    setToId(toId)
+                }.build()
+            }.build()
+            mainChannel!!.writeAndFlush(packet)
+        }
+    }
+
+    suspend fun sendMessageTo(toId: String, msg: String): Boolean {
+        return authorizedBlock {
+            val packet = BackendPacket.ToClientPacket.newBuilder().apply {
+                messageType = BackendPacket.BackendMessageType.TEXT
+                chatTextEntity = BackendPacket.ChatMessageEntity.newBuilder().apply {
+                    setToId(toId)
+                    setMsg(msg)
+                }.build()
+            }.build()
+            mainChannel!!.writeAndFlush(packet)
         }
     }
 

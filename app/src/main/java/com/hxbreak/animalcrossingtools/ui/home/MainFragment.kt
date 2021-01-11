@@ -60,6 +60,15 @@ class MainFragment : AppbarFragment() {
 
         val forward = MaterialSharedAxis(MaterialSharedAxis.X, true)
         exitTransition = forward
+
+        val intent = Intent(requireContext(), InstantMessageServices::class.java).apply {
+            val bundle = Bundle().apply {
+                putString("host", "120.53.22.183")
+                putInt("port", 19999)
+            }
+            putExtras(bundle)
+        }
+        requireContext().startService(intent)
     }
 
     override fun onCreateView(
@@ -71,20 +80,12 @@ class MainFragment : AppbarFragment() {
     }
 
     private val onNavigateToLobbyList = View.OnClickListener {
-        Toast.makeText(requireContext(), "Navigate To Lobby", Toast.LENGTH_SHORT).show()
+        nav.navigate(R.id.action_mainFragment_to_userListFragment)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val intent = Intent(requireContext(), InstantMessageServices::class.java).apply {
-            val bundle = Bundle().apply {
-                putString("host", "192.168.0.105")
-                putInt("port", 19999)
-            }
-            putExtras(bundle)
-        }
-//        requireContext().startService(intent)
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         postponeEnterTransition()
@@ -142,10 +143,6 @@ class MainFragment : AppbarFragment() {
         super.onDestroyView()
         adapter = null
         messageAdapter = null
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

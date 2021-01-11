@@ -16,8 +16,8 @@
             android:id="@+id/action_mainFragment_to_songFragment"
             app:destination="@id/songFragment"/>
         <action
-            android:id="@+id/action_mainFragment_to_trackerFragment"
-            app:destination="@id/trackerFragment"
+            android:id="@+id/action_mainFragment_to_userListFragment"
+            app:destination="@id/userListFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -67,13 +67,12 @@
         android:label="ChatFragment">
     </fragment>
     <fragment
-        android:id="@+id/trackerFragment"
-        android:name="com.hxbreak.animalcrossingtools.ui.TrackerFragment"
-        android:label="tracker_fragment"
-        tools:layout="@layout/fragment_tracker">
+        android:id="@+id/userListFragment"
+        android:name="com.hxbreak.animalcrossingtools.ui.UserListFragment"
+        tools:layout="@layout/fragment_user_list">
 
         <action
-            android:id="@+id/action_trackerFragment_to_chatFragment"
+            android:id="@+id/action_userListFragment_to_chatFragment"
             app:destination="@id/chatFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"

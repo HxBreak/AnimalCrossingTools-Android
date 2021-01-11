@@ -4,30 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import com.hxbreak.animalcrossingtools.R
-import com.hxbreak.animalcrossingtools.ui.TrackerViewModel
-import kotlinx.android.synthetic.main.fragment_chat.*
-import kotlinx.android.synthetic.main.fragment_chat.edit_mode
-import kotlinx.android.synthetic.main.fragment_chat.refresh_layout
-import kotlinx.android.synthetic.main.fragment_chat.toolbar
-import java.util.*
-import javax.inject.Inject
 
 class ChatFragment : Fragment() {
 
     companion object {
         fun newInstance() = ChatFragment()
     }
-    private val viewModel by activityViewModels<TrackerViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
