@@ -1,6 +1,7 @@
 package com.hxbreak.animalcrossingtools.view
 
 import android.content.Context
+import android.graphics.Canvas
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
@@ -8,6 +9,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IntDef
+import androidx.core.graphics.withTranslation
+import androidx.core.view.doOnAttach
+import androidx.core.view.doOnLayout
+import androidx.core.view.doOnPreDraw
+import androidx.core.view.isGone
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.FloatValueHolder
 import androidx.dynamicanimation.animation.SpringAnimation
@@ -33,6 +39,15 @@ open class SlideSection : ViewGroup {
 
     var bounceAnimation: SpringAnimation? = null
     private var mState: Int = COLLAPSED
+        set(value) {
+            if (value == COLLAPSED){
+                child.isGone = true
+            }
+            if ( value == EXPANDING || value == EXPANDED ){
+                child.isGone = false
+            }
+            field = value
+        }
 
     private var currentProgress: Int = 0
 
@@ -79,11 +94,9 @@ open class SlideSection : ViewGroup {
         }
         measureChild(child, widthMeasureSpec, MeasureSpec.makeMeasureSpec(underViewSize, MeasureSpec.EXACTLY))
         measureChild(maskView, widthMeasureSpec, MeasureSpec.makeMeasureSpec(underViewSize, MeasureSpec.EXACTLY))
-//        Timber.e("onMeasure $measuredWidth $measuredHeight ${child.measuredHeight}")
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-//        Timber.e("onLayout ${maskView.measuredWidth}, ${maskView.measuredHeight}")
         if (mState == EXPANDED){
             currentProgress = movingWidth()
         }else if (mState == COLLAPSED){
@@ -95,25 +108,62 @@ open class SlideSection : ViewGroup {
     private fun moveChild(offset: Int) {
         maskView.layout(offset, 0, maskView.measuredWidth + offset, maskView.measuredHeight)
         child.layout(0, 0, offset, child.measuredHeight)
-//        Timber.e("${child.measuredHeight} ${child.measuredWidth}")
     }
 
     private fun movingWidth() = child.measuredWidth
 
-    val endAnimationListener = DynamicAnimation.OnAnimationEndListener { animation, canceled, value, velocity ->
+    private val endAnimationListener = DynamicAnimation.OnAnimationEndListener { animation, canceled, value, velocity ->
         currentProgress = value.toInt()
         mState = when (mState) {
             EXPANDING -> EXPANDED
             COLLAPSING -> COLLAPSED
             else -> throw IllegalStateException("Internal Error State $mState EndListener")
         }
-        requestLayout()
+//        requestLayout()
+    }
+
+    private fun forceAnimateTo(@State state: Int){
+        val result = when(state){
+            COLLAPSED -> {
+                when(mState){
+                    COLLAPSED -> {
+                        mState = EXPANDED
+                        true
+                    }
+                    else -> false
+                }
+            }
+            EXPANDED -> {
+                when(mState){
+                    EXPANDED -> {
+                        mState = COLLAPSED
+                        true
+                    }
+                    else -> false
+                }
+            }
+            else -> false
+        }
+        if (result){
+            setState(state)
+        }
     }
 
     /**
      * 设置组件状态
      */
-    fun setState(@State state: Int) {
+    fun setState(@State state: Int, animate: Boolean = true) {
+        if (!animate){
+            mState = state
+            requestLayout()
+            return
+        }
+        if (!isLaidOut){
+            doOnPreDraw {
+                setState(state)
+            }
+            return
+        }
         /**
          * 判断将要变更的状态，即使当前状态为animating也取消当前动画准备进行反向动画
          */

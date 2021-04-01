@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/public_ip_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/public_ip"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/nat_type_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/nat_type"
+        app:layout_constraintStart_toStartOf="@+id/public_ip_label"
+        app:layout_constraintTop_toBottomOf="@+id/error_reason_label" />
+
+    <TextView
+        android:id="@+id/error_code_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/error_code"
+        app:layout_constraintStart_toStartOf="@+id/nat_type_label"
+        app:layout_constraintTop_toBottomOf="@+id/public_ip_label" />
+
+    <TextView
+        android:id="@+id/error_reason_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/error_reason"
+        app:layout_constraintStart_toStartOf="@+id/nat_type_label"
+        app:layout_constraintTop_toBottomOf="@+id/error_code_label" />
+
+    <TextView
+        android:id="@+id/public_ip_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        tools:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/public_ip_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/public_ip_label" />
+
+    <TextView
+        android:id="@+id/error_code_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/error_code_label"
+        app:layout_constraintEnd_toEndOf="@+id/public_ip_value"
+        app:layout_constraintTop_toTopOf="@+id/error_code_label" />
+
+    <TextView
+        android:id="@+id/error_reason_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/error_reason_label"
+        app:layout_constraintEnd_toEndOf="@+id/error_code_value"
+        app:layout_constraintTop_toTopOf="@+id/error_reason_label" />
+
+    <TextView
+        android:id="@+id/nat_type_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/nat_type_label"
+        app:layout_constraintEnd_toEndOf="@+id/error_reason_value"
+        app:layout_constraintTop_toTopOf="@+id/nat_type_label" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nat_type_label" />
+
+    <Button
+        android:id="@+id/cancel_action"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        />
+
+    <Button
+        android:id="@+id/connect_action"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect"
+        android:enabled="false"
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

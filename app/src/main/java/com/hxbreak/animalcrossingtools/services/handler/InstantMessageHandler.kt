@@ -30,16 +30,20 @@ class InstantMessageHandler @Inject constructor(
                     controller.updateOnlineList(msg.userEntityList.orEmpty())
                     controller.userAuthorized()
                 }
-                else -> {
-
+                BackendPacket.BackendMessageType.STUN_RESPONSE -> {
+                    controller.handleStunResponse(msg.stunResponse)
                 }
+                BackendPacket.BackendMessageType.STUN_REQUEST -> {
+                    controller.handleStunRequest(msg.stunRequest)
+                }
+                else -> { }
             }
         }
     }
 
     override fun channelActive(ctx: ChannelHandlerContext?) {
         super.channelActive(ctx)
-        controller.mainChannel = ctx?.channel()
+        controller.mainChannel = ctx
         val login = BackendPacket.LoginEntity.newBuilder().apply {
             id = androidId.get()
             key = "testkey"

@@ -167,7 +167,8 @@ object ApplicationModule {
             context.applicationContext,
             AnimalCrossingDatabase::class.java, "ACNH.db"
         ).build()
-        return result
+        val mem = Room.inMemoryDatabaseBuilder(context.applicationContext, AnimalCrossingDatabase::class.java).build()
+        return mem
     }
 
     @Qualifier

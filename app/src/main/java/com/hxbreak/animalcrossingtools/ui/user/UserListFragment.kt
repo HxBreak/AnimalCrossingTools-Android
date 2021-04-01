@@ -1,4 +1,4 @@
-package com.hxbreak.animalcrossingtools.ui
+package com.hxbreak.animalcrossingtools.ui.user
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,24 +12,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.map
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.SimpleNetUser
 import com.hxbreak.animalcrossingtools.adapter.ItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
 import com.hxbreak.animalcrossingtools.databinding.FragmentUserListBinding
-import com.hxbreak.animalcrossingtools.services.handler.InstantMessageController
 import com.hxbreak.animalcrossingtools.toSimpleNetUser
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class UserListFragment : Fragment() {
-
-    @Inject
-    lateinit var controller: InstantMessageController
 
     private val viewModel by activityViewModels<UserListViewModel>()
     private var binding: FragmentUserListBinding? = null
@@ -56,12 +52,32 @@ class UserListFragment : Fragment() {
         adapter = LightAdapter()
         adapter!!.register(SimpleNetUserViewBinder{
             lifecycleScope.launch {
-                controller.sendStunRequest(it.id)
+                viewModel.controller.sendStunRequest(it.id)
             }
         })
         binding.recyclerView.adapter = adapter
-        controller.lobbyList.map { it.map { it.toSimpleNetUser() } }.observe(viewLifecycleOwner){
+        viewModel.controller.lobbyList.map { it.map { it.toSimpleNetUser() } }.observe(viewLifecycleOwner){
             adapter!!.submitList(it)
+        }
+        viewModel.controller.stunRequest.observe(viewLifecycleOwner){
+            it.getContentIfNotHandled()?.let {
+                val builder = MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.alert)
+                    .setMessage(resources.getString(R.string.stun_request_message, it.fromId))
+                    .setNegativeButton(R.string.reject){ dialog, _ ->
+
+                    }
+                    .setPositiveButton(R.string.allow){ dialog, _ ->
+                        lifecycleScope.launch {
+                            viewModel.controller.sendStunRequest(it.fromId)
+                        }
+                        Toast.makeText(requireContext(), "Allowed", Toast.LENGTH_SHORT).show()
+                    }
+                builder.show()
+            }
+        }
+        viewModel.controller.stunResponse.observe(viewLifecycleOwner){
+            StunTestDialogFragment().show(childFragmentManager, null)
         }
     }
 

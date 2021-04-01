@@ -2,6 +2,7 @@ package com.hxbreak.animalcrossingtools.extensions
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
@@ -22,15 +23,14 @@ fun AppCompatActivity.updateForTheme(theme: Theme) = when (theme) {
     Theme.SYSTEM -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     Theme.BATTERY_SAVER -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
 }
-
 fun GlideRequest<*>.littleCircleWaitAnimation(context: Context) = this.let {
     val color = context.resources.getColor(R.color.colorAccent)
-    val drawable = CircularProgressDrawable(context).apply {
-        strokeWidth = ViewUtils.dp2px(context, 2f).toFloat()
-        centerRadius = ViewUtils.dp2px(context, 16f).toFloat()
-        setColorSchemeColors(color)
-        start()
-    }
+//    val drawable = CircularProgressDrawable(context).apply {
+//        strokeWidth = ViewUtils.dp2px(context, 2f).toFloat()
+//        centerRadius = ViewUtils.dp2px(context, 16f).toFloat()
+//        setColorSchemeColors(color)
+//        start()
+//    }
 //    this.placeholder(drawable)
     this
 }

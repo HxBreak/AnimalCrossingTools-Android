@@ -25,7 +25,6 @@ import okhttp3.*
 import okio.*
 import java.io.IOException
 import java.io.InputStream
-import javax.inject.Inject
 
 @GlideModule
 class GlideModule : AppGlideModule() {
@@ -41,7 +40,8 @@ class GlideModule : AppGlideModule() {
         super.applyOptions(context, builder)
         builder.setDefaultRequestOptions {
             RequestOptions()
-                .skipMemoryCache(true)
+                .placeholder(R.drawable.ic_baseline_image_24)
+                .error(R.drawable.ic_baseline_broken_image_24)
         }
     }
 
@@ -54,7 +54,6 @@ class GlideModule : AppGlideModule() {
             ProgressiveOkHttpUrlLoader.Factory(entryPoint.okHttpClient(), entryPoint.collector())
         )
     }
-
 }
 
 class ProgressiveOkHttpUrlLoader(

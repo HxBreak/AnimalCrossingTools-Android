@@ -90,6 +90,15 @@ class RepoDataSource(
         }
     }
 
+    suspend fun allNetworkFish(): Result<List<FishEntity>> {
+        when (val result = service.allFish()) {
+            is Result.Success -> {
+                return Result.Success(result.data.values.toList())
+            }
+            is Result.Error -> return result
+        }
+    }
+
     suspend fun allFishSaved(): List<FishSaved> {
         return database.fishDao().allFishSaved()
     }

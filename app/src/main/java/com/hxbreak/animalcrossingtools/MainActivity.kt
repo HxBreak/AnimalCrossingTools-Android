@@ -1,14 +1,18 @@
 package com.hxbreak.animalcrossingtools
 
+import android.content.ComponentName
 import android.content.Intent
+import android.content.ServiceConnection
 import android.media.AudioManager
 import android.os.Bundle
+import android.os.IBinder
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.hxbreak.animalcrossingtools.extensions.updateForTheme
+import com.hxbreak.animalcrossingtools.services.InstantMessageServices
 import dagger.hilt.android.AndroidEntryPoint
 import io.flutter.embedding.android.FlutterEngineConfigurator
 import io.flutter.embedding.android.FlutterFragment
@@ -28,8 +32,15 @@ class MainActivity : AppCompatActivity(), FlutterEngineConfigurator {
         nav_host_fragment.findNavController()
     }
 
+    private val serviceIntent by lazy { Intent(this, InstantMessageServices::class.java) }
+    private val conn = object : ServiceConnection{
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {}
+        override fun onServiceDisconnected(name: ComponentName?) {}
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        bindService(serviceIntent, conn, BIND_IMPORTANT)
         updateForTheme(viewModel.currentTheme)
         viewModel.theme.observe(this, Observer(::updateForTheme))
         viewModel.connection.nowPlaying.observe(this, {})
@@ -46,7 +57,8 @@ class MainActivity : AppCompatActivity(), FlutterEngineConfigurator {
         val field = flutterEngine.platformChannel.javaClass.getDeclaredField("platformMessageHandler")
         .apply { isAccessible = true }
         val handler = field.get(flutterEngine.platformChannel) as PlatformChannel.PlatformMessageHandler
-        val proxy = Proxy.newProxyInstance(flutterEngine.platformChannel.javaClass.classLoader,
+        val proxy = Proxy.newProxyInstance(
+            flutterEngine.platformChannel.javaClass.classLoader,
             handler.javaClass.interfaces
         ) { _, method, args ->
             if (method.name == "popSystemNavigator"){
@@ -92,11 +104,20 @@ class MainActivity : AppCompatActivity(), FlutterEngineConfigurator {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        callIfFlutterFragment { this.onRequestPermissionsResult(requestCode, permissions, grantResults) }
+        callIfFlutterFragment { this.onRequestPermissionsResult(
+            requestCode,
+            permissions,
+            grantResults
+        ) }
     }
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         callIfFlutterFragment { onUserLeaveHint() }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(conn)
     }
 }

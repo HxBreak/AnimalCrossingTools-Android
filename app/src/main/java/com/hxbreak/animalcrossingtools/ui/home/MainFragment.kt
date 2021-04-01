@@ -1,9 +1,7 @@
 package com.hxbreak.animalcrossingtools.ui.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
@@ -15,24 +13,18 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialSharedAxis
-import com.hxbreak.animalcrossingtools.MainNavDirections
 import com.hxbreak.animalcrossingtools.R
 import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.adapter.ItemViewDelegate
 import com.hxbreak.animalcrossingtools.adapter.LightAdapter
 import com.hxbreak.animalcrossingtools.data.Result
-import com.hxbreak.animalcrossingtools.data.source.DataRepository
 import com.hxbreak.animalcrossingtools.domain.home.LoadCachedFishUseCase
-import com.hxbreak.animalcrossingtools.services.InstantMessageServices
 import com.hxbreak.animalcrossingtools.services.handler.InstantMessageController
 import com.hxbreak.animalcrossingtools.ui.AppbarFragment
-import com.hxbreak.animalcrossingtools.ui.EditableAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.item_navigation_menu.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -61,14 +53,6 @@ class MainFragment : AppbarFragment() {
         val forward = MaterialSharedAxis(MaterialSharedAxis.X, true)
         exitTransition = forward
 
-        val intent = Intent(requireContext(), InstantMessageServices::class.java).apply {
-            val bundle = Bundle().apply {
-                putString("host", "120.53.22.183")
-                putInt("port", 19999)
-            }
-            putExtras(bundle)
-        }
-        requireContext().startService(intent)
     }
 
     override fun onCreateView(
@@ -85,8 +69,6 @@ class MainFragment : AppbarFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         postponeEnterTransition()
         recycler_view.layoutManager = LinearLayoutManager(requireContext())
@@ -130,6 +112,7 @@ class MainFragment : AppbarFragment() {
             NavigationMenu(getString(R.string.villager_catalog), R.id.action_mainFragment_to_villagerFragment),
             NavigationMenu(getString(R.string.art_catalog), R.id.action_mainFragment_to_artFragment),
             NavigationMenu(getString(R.string.furniture_catalog), R.id.action_mainFragment_to_housewaresFragment),
+//            NavigationMenu("Test", R.id.action_mainFragment_to_UITestFragment),
 //            NavigationMenu("Flutter",
 //                direction = MainNavDirections.actionGlobalFlutterFragment("/hello", cachedEngineId = "only")
 //            ),

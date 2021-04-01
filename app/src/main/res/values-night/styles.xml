@@ -7,6 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorOnPrimary">#FFFFFF</item>
         <item name="toolbarStyle">@style/AppTheme.Widget.Toolbar</item>
+        <item name="colorControlNormal">#FFFFFF</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

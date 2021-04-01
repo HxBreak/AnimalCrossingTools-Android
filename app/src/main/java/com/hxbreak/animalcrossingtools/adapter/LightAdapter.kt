@@ -1,5 +1,6 @@
 package com.hxbreak.animalcrossingtools.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,6 +58,22 @@ internal object DefaultItemComparableDiffUtil : DiffUtil.ItemCallback<ItemCompar
         newItem: ItemComparable<*>
     ): Boolean {
         return oldItem.equals(newItem)
+    }
+
+}
+
+object CommonItemComparableDiffUtil : DiffUtil.ItemCallback<Any>() {
+
+    override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+        if(oldItem is ItemComparable<*> && newItem is ItemComparable<*>){
+            return (oldItem.javaClass == newItem.javaClass && oldItem.id() == newItem.id())
+        }
+        return false
+    }
+
+    @SuppressLint("DiffUtilEquals")
+    override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+        return oldItem == newItem
     }
 
 }

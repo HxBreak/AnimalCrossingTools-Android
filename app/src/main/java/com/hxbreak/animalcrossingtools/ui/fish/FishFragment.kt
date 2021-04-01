@@ -1,44 +1,55 @@
 package com.hxbreak.animalcrossingtools.ui.fish
 
+import FishViewBinder
+import android.animation.AnimatorSet
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.view.doOnLayout
-import androidx.core.view.doOnPreDraw
+import androidx.core.animation.doOnEnd
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.ItemKeyProvider
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StorageStrategy
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.transition.FadeThroughProvider
 import com.google.android.material.transition.MaterialSharedAxis
 import com.hxbreak.animalcrossingtools.R
+import com.hxbreak.animalcrossingtools.adapter.CommonItemComparableDiffUtil
+import com.hxbreak.animalcrossingtools.adapter.SelectableTypedAdapter
+import com.hxbreak.animalcrossingtools.components.selections.SelectionModeTrackerPredicate
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntityMix
-import com.hxbreak.animalcrossingtools.extensions.removeAllItemDecorations
-import com.hxbreak.animalcrossingtools.extensions.testChanged
+import com.hxbreak.animalcrossingtools.databinding.FragmentFishBinding
 import com.hxbreak.animalcrossingtools.ui.EditBackAbleAppbarFragment
-import com.hxbreak.animalcrossingtools.ui.LazyMutableBooleanProperty
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.bottom_sheet_fish.*
-import kotlinx.android.synthetic.main.fragment_fish.*
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
+
 
 @AndroidEntryPoint
 class FishFragment : EditBackAbleAppbarFragment() {
 
     private val viewModel by viewModels<FishViewModel>()
     private var bottomSheetView: View? = null
-    private var adapter: FishAdapter? = null
 
     override val uiSelectModeMutableLiveData by lazy { viewModel.editMode }
 
-    private fun requireAdapter() = adapter ?: throw IllegalStateException("adapter == null")
+    private var _binding: FragmentFishBinding? = null
+    private val binding: FragmentFishBinding
+        get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val forward = MaterialSharedAxis(MaterialSharedAxis.X, true)
         enterTransition = forward
+
         val backward = MaterialSharedAxis(MaterialSharedAxis.X, false)
         returnTransition = backward
     }
@@ -46,148 +57,219 @@ class FishFragment : EditBackAbleAppbarFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_fish, container, false)
+    ): View {
+        _binding = FragmentFishBinding.inflate(inflater, container, false)
+        return binding.root
     }
+
+    var tracker: SelectionTracker<Long>? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireToolbar().setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-
-        arrayOf(donate, found).forEach { it.alpha = 0f }
         val enableIndicator = viewModel.locale.language == "zh"
         requireToolbar().title = null
         requireToolbarTitle().setText(res.getString(R.string.fish_catalog))
-        viewModel.data.observe(viewLifecycleOwner){ fishList ->
-            requireAdapter().submitList(fishList)
-            recycler_view.doOnPreDraw { _ ->
-                recycler_view.run {
-                    if (fishList != null) {
-                        removeAllItemDecorations()
-                        if (enableIndicator) {
-                            addItemDecoration(
-                                FishHeadDecoration(
-                                    requireContext(),
-                                    fishList.map { it.fish.fish },
-                                    recycler_view.width
-                                )
-                            )
-                        }
+        binding.recyclerView.mEnableAlphabet = false
+        val adapter = SelectableTypedAdapter(CommonItemComparableDiffUtil)
+        val provider = object : ItemKeyProvider<Long>(SCOPE_CACHED) {
+            override fun getKey(position: Int): Long? {
+                val entity = adapter.differ.peek(position) as? FishEntityMix
+                return entity?.fish?.id?.toLong()
+            }
+
+            override fun getPosition(key: Long): Int {
+                val index = adapter.differ.snapshot().items.indexOfFirst {
+                    if (it is FishEntityMix) {
+                        it.fish.id.toLong() == key
+                    } else {
+                        false
                     }
+                }
+                return if (index >= 0) {
+                    index
+                } else {
+                    RecyclerView.NO_POSITION
                 }
             }
         }
-        viewModel.loading.observe(viewLifecycleOwner) {
-            refresh_layout.isRefreshing = it == true
-        }
-        refresh_layout.setOnRefreshListener {
-            viewModel.refresh.value = true
-        }
-        viewModel.error.observe(viewLifecycleOwner){
-            if (it == null){
-                common_layout.clearState()
-            }else{
-                common_layout.setException(it.first, it.second)
+
+        val lookup = object : ItemDetailsLookup<Long>() {
+            override fun getItemDetails(e: MotionEvent): ItemDetails<Long>? {
+                val v = binding.recyclerView.findChildViewUnder(e.x, e.y) ?: return null
+                val vh = binding.recyclerView.getChildViewHolder(v)
+                if (vh is FishViewBinder.ViewBinder) {
+                    return vh.detail()
+                }
+                return null
             }
         }
-        viewModel.selected.observe(viewLifecycleOwner) {
-            val enable = !it.isNullOrEmpty()
-            arrayOf(donate, found).forEach {
-                it.isEnabled = enable
+        binding.recyclerView.adapter = adapter
+        tracker = SelectionTracker.Builder(
+            "selection",
+            binding.recyclerView,
+            provider,
+            lookup,
+            StorageStrategy.createLongStorage()
+        ).withSelectionPredicate(SelectionModeTrackerPredicate(viewModel.editMode)).build()
+        adapter.register(FishViewBinder(viewModel, tracker!!))
+        tracker?.addObserver(object : SelectionTracker.SelectionObserver<Long>() {
+            override fun onItemStateChanged(key: Long, selected: Boolean) {
+                viewModel.selectFish(key, selected)
+            }
+        })
+        binding.refreshLayout.setOnRefreshListener {
+            adapter.differ.refresh()
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.selectedIds.collectLatest {
+                val enable = !it.isNullOrEmpty()
+                arrayOf(binding.donate, binding.found).forEach {
+                    it.isEnabled = enable
+                }
             }
         }
-        viewModel.selected.testChanged().observe(viewLifecycleOwner){
-            if (it.collection.isNullOrEmpty()){
-                requireToolbarTitle().clearLastSelected()
-                requireToolbarTitle().setText(getString(R.string.fish_catalog), it.inc)
-            } else {
-                requireToolbarTitle().setText(getString(R.string.numbers_of_fish_select, it.collection.size), it.inc)
+        lifecycleScope.launchWhenStarted {
+            viewModel.selectedIds.reduce { accumulator, value ->
+                val direction = accumulator.size > value.size
+                if (value.isEmpty()) {
+                    requireToolbarTitle().setText(getString(R.string.fish_catalog), direction)
+                } else {
+                    requireToolbarTitle().setText(
+                        getString(
+                            R.string.numbers_of_fish_select,
+                            value.size
+                        ), direction
+                    )
+                }
+                value
             }
         }
 
-        adapter = FishAdapter()
-        requireAdapter().register(FishViewBinder(viewModel, viewLifecycleOwner))
-        recycler_view.adapter = adapter
-        recycler_view.mEnableAlphabet = enableIndicator
+        lifecycleScope.launchWhenStarted {
+            viewModel.pagingFish.collectLatest {
+                adapter.differ.submitData(it as PagingData<Any>)
+            }
+        }
 
-        edit_mode.setOnClickListener {
+        lifecycleScope.launchWhenStarted {
+            adapter.differ.loadStateFlow.collectLatest { loadStates ->
+                binding.refreshLayout.isRefreshing = loadStates.refresh is LoadState.Loading
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            adapter.differ.loadStateFlow
+                .distinctUntilChanged()
+                .collect {
+                    val refresh = it.refresh
+                    if (refresh is LoadState.Error) {
+                        binding.commonLayout.setException(refresh.error) {
+                            adapter.differ.retry()
+                        }
+                    } else if (refresh is LoadState.NotLoading
+                        && ((it.mediator?.refresh ?: refresh) is LoadState.NotLoading)
+                        && (it.source.refresh.endOfPaginationReached)
+                        && adapter.differ.snapshot().items.isEmpty()) {
+                        binding.commonLayout.setEmpty()
+                    } else {
+                        binding.commonLayout.clearState()
+                    }
+                }
+        }
+        binding.editMode.setOnClickListener {
             uiSelectMode = !uiSelectMode
         }
 
-        donate.setOnClickListener {
-            viewModel.toggleDonate()
-        }
-
-        found.setOnClickListener {
-            viewModel.toggleFounded()
-        }
-
-        viewModel.active.observe(viewLifecycleOwner, Observer {
-            active_summary.text = it
-        })
-
-        viewModel.found.observe(viewLifecycleOwner, Observer {
-            founded_summary.text = it
-        })
-
-        viewModel.donated.observe(viewLifecycleOwner, Observer {
-            donated_summary.text = it
-        })
-
-        viewModel.donateAction.observe(viewLifecycleOwner, Observer {
-            if (it == donate.isSelected)
-                donate.morph()
-        })
-
-        viewModel.foundAction.observe(viewLifecycleOwner, Observer {
-            if (it == found.isSelected)
-                found.morph()
-        })
-
-        viewModel.editMode.observe(viewLifecycleOwner){
-            requireAdapter().editMode = it
-            if (edit_mode.isSelected != it) { edit_mode.morph() }
-            if (it == false){ viewModel.clearSelected() }
-        }
-
-        viewModel.clickedFish.observe(viewLifecycleOwner){
-//            effectBottomSheet(it.getContentIfNotHandled())
-        }
-    }
-
-    var lastOffset = -1.0f
-
-    private val listener = object : BottomSheetBehavior.BottomSheetCallback() {
-
-        override fun onSlide(bottomSheet: View, slideOffset: Float) {
-            val child = recycler_view
-            if (child.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL)) {
-                val percent = slideOffset - lastOffset
-                lastOffset = slideOffset
-                child.nestedScrollBy(0, (percent * bottomSheet.height / 4).toInt())
+        binding.donate.setOnClickListener {
+            tracker?.selection?.let {
+                val ids = it.toList()
+                if (ids.isNotEmpty()) {
+                    viewModel.toggleDonate(ids)
+                }
             }
         }
 
-        override fun onStateChanged(bottomSheet: View, newState: Int) {}
-    }
+        binding.found.setOnClickListener {
+            tracker?.selection?.let {
+                val ids = it.toList()
+                if (ids.isNotEmpty()) {
+                    viewModel.toggleFounded(ids)
+                }
+            }
+        }
 
-    private fun effectBottomSheet(fish: FishEntityMix?) {
-        bottomSheetView = bottomSheetView ?: bottom_sheet_viewstub.inflate()
-        val sheetBehavior = BottomSheetBehavior.from(bottomSheetView!!)
-        sheetBehavior.addBottomSheetCallback(listener)
-        if (fish == null) {
-            sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        } else {
-            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            Glide.with(requireContext()).clear(bt_fish_image)
-            Glide.with(requireContext())
-                .load("https://acnhapi.com/v1/images/fish/${fish.fish.id}")
-                .placeholder(R.drawable.ic_fish)
-                .into(bt_fish_image)
-            bt_fish_name.text = fish.fish.name.nameCNzh
-            bt_item_stock.text = "${fish.saved?.quantity ?: 0}"
+        lifecycleScope.launchWhenStarted {
+            viewModel.active.collectLatest {
+                binding.activeSummary.text = it
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.donated.collectLatest {
+                binding.donatedSummary.text = it
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.found.collectLatest {
+                binding.foundedSummary.text = it
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.donateAction.collectLatest {
+                if (it == binding.donate.isSelected) {
+                    binding.donate.morph()
+                }
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.foundAction.collectLatest {
+                if (it == binding.found.isSelected) {
+                    binding.found.morph()
+                }
+            }
+        }
+
+        viewModel.editMode.observe(viewLifecycleOwner) {
+            fadeContentWithAnimation {
+                adapter.mode = it
+            }
+            if (binding.editMode.isSelected != it) {
+                binding.editMode.morph()
+            }
+            if (it == false) {
+                tracker?.clearSelection()
+            }
         }
     }
 
-    override fun animateIconList() = listOf(donate, found)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        tracker?.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        tracker?.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun fadeContentWithAnimation(disappearBlock: () -> Unit) {
+        val s = FadeThroughProvider()
+        val disappear = s.createDisappear(binding.recyclerView, binding.recyclerView)
+        val appear = s.createAppear(binding.recyclerView, binding.recyclerView)
+        val set = AnimatorSet()
+        set.duration = 200
+        set.playSequentially(disappear, appear)
+        disappear?.doOnEnd { _ ->
+            disappearBlock()
+        }
+        set.start()
+    }
+
+    override fun animateIconList() = listOf(binding.donate, binding.found)
 }

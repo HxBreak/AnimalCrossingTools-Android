@@ -16,7 +16,7 @@ fun LocalizationName.toLocaleName(locale: Locale): String {
         if (this.nameUSen.isNullOrEmpty()) {
             "Error"
         } else {
-            this.nameUSen
+            this.nameUSen!!
         }
     }
 }

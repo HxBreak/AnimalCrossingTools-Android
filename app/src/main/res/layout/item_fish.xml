@@ -8,7 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/viewstub_checkbox"/>
+    <include android:id="@+id/stub" layout="@layout/viewstub_checkbox"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/desc_part"

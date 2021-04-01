@@ -55,4 +55,12 @@
     <string name="choose_hemisphere">Choose Hemisphere</string>
     <string name="northern">Northern</string>
     <string name="southern">Southern</string>
+    <string name="alert">Alert</string>
+    <string name="stun_request_message">Allow Connect To %1$s ?</string>
+    <string name="allow">Allow</string>
+    <string name="reject">Reject</string>
+    <string name="public_ip" >PublicIp</string>
+    <string name="error_code">Error Code</string>
+    <string name="error_reason">Error Reason</string>
+    <string name="nat_type">Nat Type</string>
 </resources>

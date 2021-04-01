@@ -8,6 +8,7 @@ import com.hxbreak.animalcrossingtools.media.MusicServiceConnection
 import com.hxbreak.animalcrossingtools.services.InstantMessageServices
 import dagger.hilt.android.HiltAndroidApp
 import io.flutter.embedding.engine.FlutterEngine
+import java.lang.Exception
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -24,13 +25,11 @@ open class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val intent = Intent(this, InstantMessageServices::class.java).apply {
-            val bundle = Bundle().apply {
-                putString("host", "192.168.0.117")
-                putInt("port", 19999)
-            }
-            putExtras(bundle)
+        val intent = Intent(this, InstantMessageServices::class.java)
+        try {
+            startService(intent)
+        }catch (e: Exception){
+            e.printStackTrace()
         }
-//        startService(intent)
     }
 }

@@ -3,7 +3,10 @@ package com.hxbreak.animalcrossingtools.utils
 import android.content.Context
 import android.content.res.Resources
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageButton
+import androidx.core.view.forEach
 
 object ViewUtils {
 
@@ -32,4 +35,35 @@ object ViewUtils {
         }
     }
 
+    fun <T> findViewByClass(view: View, clazz: Class<T>): T? {
+        if (view is ViewGroup){
+            view.forEach {
+                val result = findViewByClass(it, clazz)
+                if (result != null){
+                    return result
+                }
+            }
+            return null
+        }else{
+            return if (clazz.isInstance(view)){
+                view as T
+            }else{
+                null
+            }
+        }
+    }
+
+}
+
+const val ANIMATION_FAST_MILLIS = 50L
+const val ANIMATION_SLOW_MILLIS = 100L
+
+fun View.simulateClick(delay: Long = ANIMATION_FAST_MILLIS) {
+//    performClick()
+    isPressed = true
+    invalidate()
+    postDelayed({
+        invalidate()
+        isPressed = false
+    }, delay)
 }

@@ -2,6 +2,8 @@ package com.hxbreak.animalcrossingtools
 
 import com.hxbreak.animalcrossingtools.character.CharUtil
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 import net.sourceforge.pinyin4j.PinyinHelper
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,5 +44,29 @@ class UnitTest {
         val now = Clock.systemDefaultZone()
         val instant = now.instant()
         println(instant.toEpochMilli() - (instant.epochSecond * 1000))
+    }
+
+    @Test
+    fun testFlow(){
+        val f1 = flow {
+            repeat(3){
+                delay(5000L)
+                emit("${Math.random()}")
+            }
+            delay(Long.MAX_VALUE)
+        }
+        val f2 = flow {
+            repeat(Int.MAX_VALUE){
+                delay(2000L)
+                emit(it)
+            }
+        }
+        runBlocking {
+            f1.combine(f2){ x, y ->
+                x to y
+            }.collect {
+                println(it.toString())
+            }
+        }
     }
 }

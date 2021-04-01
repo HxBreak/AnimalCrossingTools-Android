@@ -156,6 +156,8 @@
                 android:layout_gravity="right"
                 android:layout_marginRight="8dp"
                 android:visibility="invisible"
+                android:alpha="0"
+                tools:visibility="visible"
                 app:icon1="@drawable/am_invisible_to_visible"
                 app:icon2="@drawable/am_visible_to_invisible"
                 android:id="@+id/found"

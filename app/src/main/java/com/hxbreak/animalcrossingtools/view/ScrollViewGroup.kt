@@ -106,11 +106,6 @@ class ScrollViewGroup @JvmOverloads constructor(
         }
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        Timber.e("$ev")
-        return super.dispatchTouchEvent(ev)
-    }
-
     private fun updateLayout() {
         val oScroller = if (mScroller.isFinished) mScroller.finalY else mScroller.currY
         val scroll = oScroller.coerceIn(0, mPinnedView.measuredHeight)
@@ -158,7 +153,6 @@ class ScrollViewGroup @JvmOverloads constructor(
             return it.canScrollVertically(direction)
         }
         return super.canScrollVertically(direction)
-
     }
 
     override fun onNestedScroll(

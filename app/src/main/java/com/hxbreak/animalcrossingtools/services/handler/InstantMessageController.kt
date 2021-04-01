@@ -2,8 +2,9 @@ package com.hxbreak.animalcrossingtools.services.handler
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.hxbreak.animalcrossingtools.fragment.Event
 import com.hxbreak.backend.BackendPacket
-import io.netty.channel.Channel
+import io.netty.channel.ChannelHandlerContext
 import kotlinx.coroutines.*
 
 class InstantMessageController {
@@ -14,9 +15,17 @@ class InstantMessageController {
     private val _lastException = MutableLiveData<Throwable?>()
     private val _authorized = MutableLiveData(false)
     private val _lobbyList = MutableLiveData<List<BackendPacket.NetUserEntity>>()
+    private val _stunResponse = MutableLiveData<Event<BackendPacket.StunResponse>>()
+    private val _stunRequest = MutableLiveData<Event<BackendPacket.StunRequest>>()
 
     val authorized: LiveData<Boolean>
         get() = _authorized
+
+    val stunResponse: LiveData<Event<BackendPacket.StunResponse>>
+        get() = _stunResponse
+
+    val stunRequest: LiveData<Event<BackendPacket.StunRequest>>
+        get() = _stunRequest
 
     val lastException: LiveData<Throwable?>
         get() = _lastException
@@ -27,7 +36,7 @@ class InstantMessageController {
     /**
      * Init By InstantMessageHandler Remove By InstantMessageHandler
      */
-    var mainChannel: Channel? = null
+    var mainChannel: ChannelHandlerContext? = null
     set(value) {
         field = value
         if (value == null){
@@ -41,9 +50,9 @@ class InstantMessageController {
         }
     }
 
-    private suspend fun authorizedBlock(block: (Channel) -> Unit) : Boolean{
+    private suspend fun authorizedBlock(block: (ChannelHandlerContext) -> Unit) : Boolean{
         return withContext(serviceScope.coroutineContext){
-            if ((mainChannel?.isActive == true) && (mainChannel?.isOpen == true)){
+            if ((mainChannel?.isRemoved == false)){
                 if (_authorized.value == true){
                     block(mainChannel!!)
                     return@withContext true
@@ -59,19 +68,20 @@ class InstantMessageController {
 
     suspend fun sendStunRequest(toId: String): Boolean {
         return authorizedBlock {
-            val packet = BackendPacket.ToClientPacket.newBuilder().apply {
+            val packet = BackendPacket.ToServerPacket.newBuilder().apply {
                 messageType = BackendPacket.BackendMessageType.STUN_REQUEST
                 stunRequest = BackendPacket.StunRequest.newBuilder().apply {
                     setToId(toId)
                 }.build()
             }.build()
-            mainChannel!!.writeAndFlush(packet)
+            val p = mainChannel!!.writeAndFlush(packet)
+            p.await()
         }
     }
 
     suspend fun sendMessageTo(toId: String, msg: String): Boolean {
         return authorizedBlock {
-            val packet = BackendPacket.ToClientPacket.newBuilder().apply {
+            val packet = BackendPacket.ToServerPacket.newBuilder().apply {
                 messageType = BackendPacket.BackendMessageType.TEXT
                 chatTextEntity = BackendPacket.ChatMessageEntity.newBuilder().apply {
                     setToId(toId)
@@ -91,6 +101,18 @@ class InstantMessageController {
     fun updateOnlineList(list: List<BackendPacket.NetUserEntity>) {
         serviceScope.launch {
             _lobbyList.value = list
+        }
+    }
+
+    fun handleStunResponse(response: BackendPacket.StunResponse){
+        serviceScope.launch {
+            _stunResponse.value = Event(response)
+        }
+    }
+
+    fun handleStunRequest(request: BackendPacket.StunRequest){
+        serviceScope.launch {
+            _stunRequest.value = Event(request)
         }
     }
 

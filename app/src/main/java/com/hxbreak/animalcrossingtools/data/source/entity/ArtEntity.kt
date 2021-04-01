@@ -1,12 +1,8 @@
 package com.hxbreak.animalcrossingtools.data.source.entity
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.hxbreak.animalcrossingtools.adapter.ItemComparable
 import com.hxbreak.animalcrossingtools.data.ArtSaved
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class ArtEntity(
     val id: Int,
     @SerializedName("file-name")
@@ -21,7 +17,7 @@ data class ArtEntity(
     val imageUri: String,
     @SerializedName("museum-desc")
     val museumDesc: String,
-) : Parcelable
+)
 
 open class ArtEntityMix(
     val art: ArtEntity,

@@ -9,11 +9,14 @@ import com.hxbreak.backend.BackendPacket
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import io.netty.bootstrap.Bootstrap
+import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelFuture
+import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioSocketChannel
+import io.netty.handler.codec.MessageToByteEncoder
 import io.netty.handler.codec.compression.JdkZlibDecoder
 import io.netty.handler.codec.compression.JdkZlibEncoder
 import io.netty.handler.codec.protobuf.ProtobufDecoder
@@ -39,6 +42,9 @@ class InstantMessageServices : LifecycleService(){
     @AndroidId
     lateinit var androidId: Lazy<String>
 
+    @Volatile
+    var channelFuture: ChannelFuture? = null
+
     override fun onCreate() {
         super.onCreate()
         b.group(group)
@@ -46,71 +52,44 @@ class InstantMessageServices : LifecycleService(){
             .handler(object : ChannelInitializer<SocketChannel>() {
                 override fun initChannel(ch: SocketChannel?) {
                     ch?.pipeline()?.run {
+                        addLast(object : MessageToByteEncoder<ByteBuf>(){
+                            override fun encode(
+                                ctx: ChannelHandlerContext?,
+                                msg: ByteBuf?,
+                                out: ByteBuf?
+                            ) {
+                                out?.writeBytes(msg)
+                                Timber.e(msg.toString())
+                            }
+                        })
                         addLast(JdkZlibEncoder())
                         addLast(JdkZlibDecoder())
                         addLast(ProtobufVarint32LengthFieldPrepender())
                         addLast(ProtobufVarint32FrameDecoder())
                         addLast("encoder", ProtobufEncoder())
-                        addLast("decoder", ProtobufDecoder(BackendPacket.ToClientPacket.getDefaultInstance()))
+                        addLast(
+                            "decoder",
+                            ProtobufDecoder(BackendPacket.ToClientPacket.getDefaultInstance())
+                        )
                         addLast(handler.get())
                     }
                 }
             })
-    }
-
-    @Volatile
-    var channelFuture: ChannelFuture? = null
-    @Volatile
-    var runningJob: Job? = null
-    @Volatile
-    var connectingJob: Deferred<ChannelFuture?>? = null
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val host = intent?.getStringExtra("host")
-        val port = intent?.getIntExtra("port", -1) ?: -1
-
-        val nextConnectJob = serviceScope.async (start = CoroutineStart.LAZY){
+        val job = serviceScope.async(start = CoroutineStart.LAZY){
             try {
-                return@async b.connect(host, port).sync()
+                channelFuture = b.connect("192.168.0.104", 19999).sync()
+                return@async channelFuture
             }catch (e: Exception){
                 e.printStackTrace()
                 return@async null
             }
         }
-        serviceScope.launch {
-            Timber.d("Start Job")
-            Timber.e("$connectingJob $channelFuture $runningJob")
-            /**
-             * Close Previous Channel When Previous ConnectingJob Is Done
-             */
-            val future = connectingJob?.await()
-            future?.channel()?.close()?.await()
-            /**
-             * Close Running Channel
-             */
-            channelFuture?.channel()?.close()?.await()
-            connectingJob = nextConnectJob
-            /**
-             * Start Next Connecting Job
-             */
-            nextConnectJob.start()
-            nextConnectJob.await()?.let {
-                /**
-                 * Setup RunningJob To Instance Field And Launch A Job Waiting For Channel Close
-                 */
-                connectingJob = null
-                channelFuture = it
-                val runningJob = serviceScope.async (start = CoroutineStart.LAZY){
-                    it.channel().closeFuture().await()
-                    Timber.d("Connection Close")
-                    channelFuture = null
-                    runningJob = null
-                }
-                this@InstantMessageServices.runningJob = runningJob
-                runningJob.start()
-            }
-        }
-        return super.onStartCommand(intent, flags, startId)
+        job.start()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        return START_STICKY
     }
 
     override fun onDestroy() {
