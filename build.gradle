@@ -40,9 +40,11 @@ buildscript {
 
     }
     repositories {
-        google()
         jcenter()
-//        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/flutter/download.flutter.io' }
+        google()
+        maven{ url 'https://maven.aliyun.com/repository/google' }
+        maven{ url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/flutter/download.flutter.io' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.1'
@@ -61,8 +63,11 @@ plugins {
 
 allprojects {
     repositories {
+        jcenter()
+        google()
         maven{ url 'https://maven.aliyun.com/repository/google' }
         maven{ url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/flutter/download.flutter.io' }
 //        google()
 //        jcenter()
 //        maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
