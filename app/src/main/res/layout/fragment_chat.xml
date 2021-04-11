@@ -1,52 +1,16 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout android:layout_width="match_parent"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fish.FishFragment"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:layout_marginBottom="54dp"
-        android:id="@+id/refresh_layout"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_gravity="bottom"
-        android:layout_width="match_parent"
-        android:layout_height="54dp">
-
-        <Button
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:id="@+id/send"
-            android:text="Send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            app:layout_constraintRight_toLeftOf="@id/send"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/chat_input"
-            android:layout_width="0dp"
-            android:layout_height="54dp" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <com.google.android.material.appbar.AppBarLayout
+        android:fitsSystemWindows="true"
+        app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
@@ -94,6 +58,61 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp" />
         </androidx.appcompat.widget.Toolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
+    <LinearLayout
+        android:id="@+id/chat_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+            app:layout_constraintBottom_toTopOf="@id/input_area"
+            android:id="@+id/recycler_view"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+        <LinearLayout
+            android:id="@+id/interactive_area"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <View
+                android:id="@+id/test"
+                android:background="#ffff00"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/input_area"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="54dp">
+                <Button
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:id="@+id/send"
+                    android:text="Send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    app:layout_constraintRight_toLeftOf="@id/send"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:id="@+id/chat_input"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

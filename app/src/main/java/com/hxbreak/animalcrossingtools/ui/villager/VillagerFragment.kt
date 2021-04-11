@@ -18,9 +18,6 @@ import com.hxbreak.animalcrossingtools.adapter.CommonItemDecoration
 import com.hxbreak.animalcrossingtools.adapter.SelectionAdapter
 import com.hxbreak.animalcrossingtools.ui.BackAbleAppbarFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_chat.*
-import kotlinx.android.synthetic.main.fragment_chat.recycler_view
-import kotlinx.android.synthetic.main.fragment_chat.refresh_layout
 import kotlinx.android.synthetic.main.fragment_villager.*
 import java.lang.Exception
 
@@ -78,6 +75,7 @@ class VillagerFragment : BackAbleAppbarFragment(){
         viewModel.villagers.observe(viewLifecycleOwner) {
             requireAdapter().submitList(it)
         }
+
         recycler_view.layoutManager = StaggeredGridLayoutManager(3, GridLayoutManager.VERTICAL)
         recycler_view.adapter = adapter
         recycler_view.addItemDecoration(CommonItemDecoration(requireContext()))

@@ -19,10 +19,10 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
+            android:windowSoftInputMode="adjustUnspecified"
             android:theme="@style/AppTheme.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -53,6 +53,15 @@
             <meta-data
                 android:name="${applicationId}.startup.NormalInitializer"
                 android:value="androidx.startup" />
+        </provider>
+        <provider
+            android:authorities="${applicationId}.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:name="androidx.core.content.FileProvider">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_path" />
         </provider>
     </application>
 

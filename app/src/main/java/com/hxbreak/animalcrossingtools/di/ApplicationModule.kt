@@ -167,8 +167,8 @@ object ApplicationModule {
             context.applicationContext,
             AnimalCrossingDatabase::class.java, "ACNH.db"
         ).build()
-        val mem = Room.inMemoryDatabaseBuilder(context.applicationContext, AnimalCrossingDatabase::class.java).build()
-        return mem
+//        val mem = Room.inMemoryDatabaseBuilder(context.applicationContext, AnimalCrossingDatabase::class.java).build()
+        return result
     }
 
     @Qualifier
@@ -211,7 +211,10 @@ object ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideInstantMessageController() = InstantMessageController()
+    fun provideInstantMessageController(
+        @ApplicationContext context: Context,
+        database: AnimalCrossingDatabase
+    ) = InstantMessageController(context, database)
 
     @Provides
     fun datetimeFormatter(preferenceStorage: PreferenceStorage) : DateTimeFormatter {

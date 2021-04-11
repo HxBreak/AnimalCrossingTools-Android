@@ -54,37 +54,6 @@
                 android:gravity="center"
                 android:layout_width="wrap_content" />
 
-            <com.hxbreak.animalcrossingtools.view.IconView
-                android:layout_gravity="right"
-                android:layout_marginRight="12dp"
-                app:icon1="@drawable/am_edit_to_ok"
-                app:icon2="@drawable/am_ok_to_edit"
-                android:id="@+id/edit_mode"
-                android:layout_width="24dp"
-                android:layout_height="24dp" />
-
-            <!--            <com.hxbreak.animalcrossingtools.view.IconView-->
-            <!--                android:layout_gravity="right"-->
-            <!--                android:layout_marginRight="8dp"-->
-            <!--                android:visibility="invisible"-->
-            <!--                app:icon1="@drawable/am_invisible_to_visible"-->
-            <!--                app:icon2="@drawable/am_visible_to_invisible"-->
-            <!--                android:id="@+id/donated"-->
-            <!--                android:tooltipText="Mark Founded"-->
-            <!--                android:layout_width="24dp"-->
-            <!--                android:layout_height="24dp"/>-->
-
-
-            <com.hxbreak.animalcrossingtools.view.IconView
-                android:layout_gravity="right"
-                android:layout_marginRight="8dp"
-                android:visibility="invisible"
-                app:icon2="@drawable/am_none_to_mark"
-                app:icon1="@drawable/am_mark_to_none"
-                android:tooltipText="Mark Donated"
-                android:id="@+id/donate"
-                android:layout_width="24dp"
-                android:layout_height="24dp" />
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>

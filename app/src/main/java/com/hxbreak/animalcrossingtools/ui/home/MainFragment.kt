@@ -52,7 +52,6 @@ class MainFragment : AppbarFragment() {
 
         val forward = MaterialSharedAxis(MaterialSharedAxis.X, true)
         exitTransition = forward
-
     }
 
     override fun onCreateView(

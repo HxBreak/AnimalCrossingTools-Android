@@ -80,6 +80,13 @@
         app:layout_constraintEnd_toEndOf="@+id/error_reason_value"
         app:layout_constraintTop_toTopOf="@+id/nat_type_label" />
 
+    <TextView
+        android:id="@+id/localPortInfo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"

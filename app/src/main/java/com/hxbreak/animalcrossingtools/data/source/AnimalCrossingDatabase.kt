@@ -5,8 +5,10 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.hxbreak.animalcrossingtools.data.*
 import com.hxbreak.animalcrossingtools.data.source.converters.CommonConverter
+import com.hxbreak.animalcrossingtools.data.source.converters.DateTimeConverter
 import com.hxbreak.animalcrossingtools.data.source.entity.FishEntity
 import com.hxbreak.animalcrossingtools.data.source.entity.FurnitureEntity
+import com.hxbreak.animalcrossingtools.data.source.entity.MessageEntity
 import com.hxbreak.animalcrossingtools.data.source.local.*
 
 @Database(entities = [
@@ -18,8 +20,9 @@ import com.hxbreak.animalcrossingtools.data.source.local.*
     FossilSaved::class,
     FurnitureEntity::class,
     FishEntity::class,
+    MessageEntity::class,
 ], version = 1, exportSchema = false)
-@TypeConverters(value = [CommonConverter::class])
+@TypeConverters(value = [CommonConverter::class, DateTimeConverter::class])
 abstract class AnimalCrossingDatabase : RoomDatabase() {
 
     abstract fun fishDao(): FishDao
@@ -35,5 +38,7 @@ abstract class AnimalCrossingDatabase : RoomDatabase() {
     abstract fun fossilDao(): FossilDao
 
     abstract fun furnitureDao(): FurnitureDao
+
+    abstract fun messageDao(): MessageDao
 
 }

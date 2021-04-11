@@ -36,6 +36,12 @@ class InstantMessageHandler @Inject constructor(
                 BackendPacket.BackendMessageType.STUN_REQUEST -> {
                     controller.handleStunRequest(msg.stunRequest)
                 }
+                BackendPacket.BackendMessageType.MEDIA -> {
+                    controller.handleMediaContent(msg.mediaEntity)
+                }
+                BackendPacket.BackendMessageType.STUN_INFO_SWAP -> {
+                    ctx?.fireChannelRead(msg)
+                }
                 else -> { }
             }
         }

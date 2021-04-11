@@ -14,6 +14,25 @@ message ChatMessageEntity{
   string msg = 3;
 }
 
+message MediaEntity {
+  string to_id = 1;
+  string from_id = 2;
+  int64 current_offset = 3;
+  int64 content_length = 4;
+  string content_name = 5;
+  string content_mimetype = 6;
+  bytes content_bytes = 7;
+  int64 server_datetime = 8;
+  uint32 connection_delay = 9;
+  string stream_id = 10;
+}
+
+message AbortMediaTransfer {
+  string from_id = 2;
+  string to_id = 1;
+  string content_name = 5;
+}
+
 message StunRequest{
   string to_id = 1;
   string from_id = 2;
@@ -40,7 +59,24 @@ enum BackendMessageType {
   AUTHORIZED = 5;
   STUN_REQUEST = 6;
   STUN_RESPONSE = 7;
+  STUN_INFO_SWAP = 8;
+  MEDIA = 9;
+  ABORT_MEDIA_TRANSFER = 10;
   LOGOUT = -1;
+}
+
+enum StunOperationType {
+  ACCEPT = 0;
+  DECLINE = 1;
+}
+
+message StunInfoReply {
+  StunOperationType op = 1;
+  string public_addr = 2;
+  int32 public_port = 3;
+  string local_addr = 4;
+  string local_port = 5;
+  int32 stun_type = 6;
 }
 
 message ToServerPacket {
@@ -51,6 +87,8 @@ message ToServerPacket {
     LoginEntity loginEntity = 3;
     ChatMessageEntity chatTextEntity = 4;
     StunRequest stunRequest = 5;
+    StunInfoReply stunInfoReply = 6;
+    MediaEntity mediaEntity = 7;
   }
 }
 
@@ -61,5 +99,7 @@ message ToClientPacket {
     ChatMessageEntity chatTextEntity = 3;
     StunRequest stunRequest = 4;
     StunResponse stunResponse = 5;
+    StunInfoReply stunInfoReply = 6;
+    MediaEntity mediaEntity = 7;
   }
 }

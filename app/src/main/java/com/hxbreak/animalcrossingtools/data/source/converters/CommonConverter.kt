@@ -16,4 +16,5 @@ class CommonConverter {
             it.trimStart().toShort()
         }
     }
+
 }

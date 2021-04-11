@@ -16,16 +16,23 @@ class TimeZonePreference(
     private val name: String,
     private val defaultTimeZone: TimeZone
 ) : ReadWriteProperty<Any, TimeZone> {
+
+    private var cachedValue: TimeZone? = null
+
     override fun setValue(thisRef: Any, property: KProperty<*>, value: TimeZone) {
+        cachedValue = null
         preferences.value.edit {
             putString(name, value.id)
         }
     }
 
     override fun getValue(thisRef: Any, property: KProperty<*>): TimeZone {
+        if ( cachedValue != null ) cachedValue
         val strValue = preferences.value.getString(name, null) ?: return defaultTimeZone
         return try {
-            TimeZone.getTimeZone(strValue)
+            val zone = TimeZone.getTimeZone(strValue)
+            cachedValue = zone
+            zone
         }catch (e: Exception){
             defaultTimeZone
         }

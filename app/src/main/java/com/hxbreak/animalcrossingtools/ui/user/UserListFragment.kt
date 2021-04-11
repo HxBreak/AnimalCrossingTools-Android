@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.map
 import androidx.navigation.fragment.findNavController
@@ -27,7 +28,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class UserListFragment : Fragment() {
 
-    private val viewModel by activityViewModels<UserListViewModel>()
+    private val viewModel by viewModels<UserListViewModel>()
     private var binding: FragmentUserListBinding? = null
     private var adapter: LightAdapter? = null
 
@@ -39,6 +40,8 @@ class UserListFragment : Fragment() {
         return binding!!.root
     }
 
+    val nav by lazy { findNavController() }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = binding ?: return
@@ -46,14 +49,17 @@ class UserListFragment : Fragment() {
         binding.refreshLayout.isEnabled = false
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+            nav.navigateUp()
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter = LightAdapter()
         adapter!!.register(SimpleNetUserViewBinder{
-            lifecycleScope.launch {
-                viewModel.controller.sendStunRequest(it.id)
+            if ( it.id != viewModel.id){
+                nav.navigate(UserListFragmentDirections.actionUserListFragmentToChatFragment(it.id))
             }
+//            lifecycleScope.launch {
+//                viewModel.controller.sendStunRequest(it.id)
+//            }
         })
         binding.recyclerView.adapter = adapter
         viewModel.controller.lobbyList.map { it.map { it.toSimpleNetUser() } }.observe(viewLifecycleOwner){
